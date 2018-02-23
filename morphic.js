@@ -2538,27 +2538,43 @@ Point.prototype.asArray = function () {
 
 // Rectangles //////////////////////////////////////////////////////////
 
-// Rectangle instance creation:
-
+/**
+ * Creates a Rectangle
+ * @class
+ * @param {number} [left=0] X coordinate of the left side
+ * @param {number} [top=0] Y coordinate of the top side
+ * @param {number} [right=0] X coordinate of the right side
+ * @param {number} [bottom=0] Y coordinate of the bottom side
+ */
 function Rectangle(left, top, right, bottom) {
     this.init(new Point((left || 0), (top || 0)),
             new Point((right || 0), (bottom || 0)));
 }
 
+/**
+ * Sets the origin and opposite corner Points
+ * @param {Point} originPoint Origin Point
+ * @param {Point} cornerPoint Opposite corner
+ */
 Rectangle.prototype.init = function (originPoint, cornerPoint) {
     this.origin = originPoint;
     this.corner = cornerPoint;
 };
 
-// Rectangle string representation: e.g. '[0@0 | 160@80]'
-
+/**
+ * Gets the string representation
+ * @returns {String}
+ * @example '[0@0 | 30@20]'
+ */
 Rectangle.prototype.toString = function () {
     return '[' + this.origin.toString() + ' | ' +
         this.extent().toString() + ']';
 };
 
-// Rectangle copying:
-
+/**
+ * Creates a duplicate
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.copy = function () {
     return new Rectangle(
         this.left(),
@@ -2610,6 +2626,13 @@ Point.prototype.extent = function (aPoint) {
 
 // Rectangle accessing - setting:
 
+/**
+ * Moves the rectangle
+ * @param {number} [left] X coordinate of the left side
+ * @param {number} [top] Y coordinate of the top side
+ * @param {number} [right] X coordinate of the right side
+ * @param {number} [bottom] Y coordinate of the bottom side
+ */
 Rectangle.prototype.setTo = function (left, top, right, bottom) {
     // note: all inputs are optional and can be omitted
 
@@ -2626,6 +2649,10 @@ Rectangle.prototype.setTo = function (left, top, right, bottom) {
 
 // Rectangle accessing - getting:
 
+/**
+ * Gets the area
+ * @returns {number}
+ */
 Rectangle.prototype.area = function () {
     //requires width() and height() to be defined
     var w = this.width();
@@ -2635,32 +2662,60 @@ Rectangle.prototype.area = function () {
     return Math.max(w * this.height(), 0);
 };
 
+/**
+ * Gets the Y coordinate of the bottom side
+ * @returns {number}
+ */
 Rectangle.prototype.bottom = function () {
     return this.corner.y;
 };
 
+/**
+ * Creates a new Point from the bottom center
+ * @returns {Point}
+ */
 Rectangle.prototype.bottomCenter = function () {
     return new Point(this.center().x, this.bottom());
 };
 
+/**
+ * Creates a new Point from the bottom left
+ * @returns {Point}
+ */
 Rectangle.prototype.bottomLeft = function () {
     return new Point(this.origin.x, this.corner.y);
 };
 
+/**
+ * Creates a new Point from the bottom right
+ * @returns {Point}
+ */
 Rectangle.prototype.bottomRight = function () {
     return this.corner.copy();
 };
 
+/**
+ * Gets the bounding box Rectangle
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.boundingBox = function () {
     return this;
 };
 
+/**
+ * Creates a new Point from the center
+ * @returns {Point}
+ */
 Rectangle.prototype.center = function () {
     return this.origin.add(
         this.corner.subtract(this.origin).floorDivideBy(2)
     );
 };
 
+/**
+ * Gets the Rectangle vertices as Array
+ * @returns {Array.<Point>}
+ */
 Rectangle.prototype.corners = function () {
     return [this.origin,
         this.bottomLeft(),
@@ -2668,61 +2723,119 @@ Rectangle.prototype.corners = function () {
         this.topRight()];
 };
 
+/**
+ * Gets the difference between the opposite corner and the origin
+ * @returns {Point}
+ */
 Rectangle.prototype.extent = function () {
     return this.corner.subtract(this.origin);
 };
 
+/**
+ * Gets the height
+ * @returns {number}
+ */
 Rectangle.prototype.height = function () {
     return this.corner.y - this.origin.y;
 };
 
+/**
+ * Gets the X coordinate of the left side
+ * @returns {number}
+ */
 Rectangle.prototype.left = function () {
     return this.origin.x;
 };
 
+/**
+ * Creates a Point from the left center
+ * @returns {Point}
+ */
 Rectangle.prototype.leftCenter = function () {
     return new Point(this.left(), this.center().y);
 };
 
+/**
+ * Gets the X coordinate of the right side
+ * @returns {Point}
+ */
 Rectangle.prototype.right = function () {
     return this.corner.x;
 };
 
+/**
+ * Creates a Point from the right center
+ * @returns {Point}
+ */
 Rectangle.prototype.rightCenter = function () {
     return new Point(this.right(), this.center().y);
 };
 
+/**
+ * Gets the Y coordinate of the top side
+ * @returns {number}
+ */
 Rectangle.prototype.top = function () {
     return this.origin.y;
 };
 
+/**
+ * Creates a Point from the top center
+ * @returns {Point}
+ */
 Rectangle.prototype.topCenter = function () {
     return new Point(this.center().x, this.top());
 };
 
+/**
+ * Gets the top left Point
+ * @returns {Point}
+ */
 Rectangle.prototype.topLeft = function () {
     return this.origin;
 };
 
+/**
+ * Creates a Point from the top right
+ * @returns {Point}
+ */
 Rectangle.prototype.topRight = function () {
     return new Point(this.corner.x, this.origin.y);
 };
 
+/**
+ * Gets the width
+ * @returns {number}
+ */
 Rectangle.prototype.width = function () {
     return this.corner.x - this.origin.x;
 };
 
+/**
+ * Gets the origin
+ * @returns {Point}
+ */
 Rectangle.prototype.position = function () {
     return this.origin;
 };
 
 // Rectangle comparison:
 
+/**
+ * Checks whether the origin and opposite corner
+ * of this and another Rectangle are equal
+ * @param {Rectangle} aRect The other Rectangle
+ * @param {boolean}
+ */
 Rectangle.prototype.eq = function (aRect) {
     return this.origin.eq(aRect.origin) &&
         this.corner.eq(aRect.corner);
 };
 
+/**
+ * Creates a Rectangle using the absolute values of the origin
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.abs = function () {
     var newOrigin, newCorner;
 
@@ -2733,6 +2846,10 @@ Rectangle.prototype.abs = function () {
 
 // Rectangle functions:
 
+/**
+ * Creates a inner version of this Rectangle
+ * @param {number|Point} delta Inner difference
+ */
 Rectangle.prototype.insetBy = function (delta) {
     // delta can be either a Point or a Number
     var result = new Rectangle();
@@ -2741,6 +2858,11 @@ Rectangle.prototype.insetBy = function (delta) {
     return result;
 };
 
+/**
+ * Creates an outer version of this Rectangle
+ * @param {number|Point} delta Outer difference
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.expandBy = function (delta) {
     // delta can be either a Point or a Number
     var result = new Rectangle();
@@ -2749,6 +2871,11 @@ Rectangle.prototype.expandBy = function (delta) {
     return result;
 };
 
+/**
+ * Creates a version of this Rectangle by expanding its opposite corner
+ * @param {number|Point} delta Expansion difference
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.growBy = function (delta) {
     // delta can be either a Point or a Number
     var result = new Rectangle();
@@ -2757,6 +2884,11 @@ Rectangle.prototype.growBy = function (delta) {
     return result;
 };
 
+/**
+ * Creates the intersecting Rectangle between this and another one
+ * @param {Rectangle} aRect The other Rectangle
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.intersect = function (aRect) {
     var result = new Rectangle();
     result.origin = this.origin.max(aRect.origin);
@@ -2764,6 +2896,11 @@ Rectangle.prototype.intersect = function (aRect) {
     return result;
 };
 
+/**
+ * Creates a Rectangle that encompass this and another one
+ * @param {Rectangle} aRect The other Rectangle
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.merge = function (aRect) {
     var result = new Rectangle();
     result.origin = this.origin.min(aRect.origin);
@@ -2771,16 +2908,29 @@ Rectangle.prototype.merge = function (aRect) {
     return result;
 };
 
+/**
+ * Changes this Rectangle to encompass this and another one
+ * @param {Rectangle} aRect The other Rectangle
+ */
 Rectangle.prototype.mergeWith = function (aRect) {
     // mutates myself
     this.origin = this.origin.min(aRect.origin);
     this.corner = this.corner.max(aRect.corner);
 };
 
+/**
+ * Creates a new Rectangle by rounding the origin and opposite corner
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.round = function () {
     return this.origin.round().corner(this.corner.round());
 };
 
+/**
+ * Creates a new Rectangle by flooring the origin
+ * and ceiling the opposite corner
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.spread = function () {
     // round me by applying floor() to my origin and ceil() to my corner
     // expand by 1 to be on the safe side, this eliminates rounding
@@ -2788,6 +2938,12 @@ Rectangle.prototype.spread = function () {
     return this.origin.floor().corner(this.corner.ceil()).expandBy(1);
 };
 
+/**
+ * Calculates how much this Rectangle, or at least its origin,
+ * needs to be moved in order to get encompassed by another one.
+ * @param {Rectangle} aRect The other Rectangle
+ * @returns {Point}
+ */
 Rectangle.prototype.amountToTranslateWithin = function (aRect) {
 /*
     Answer a Point, delta, such that self + delta is forced within
@@ -2813,15 +2969,30 @@ Rectangle.prototype.amountToTranslateWithin = function (aRect) {
 
 // Rectangle testing:
 
+/**
+ * Checks whether this Rectangle contains a Point
+ * @param {Point} aPoint The Point
+ * @returns {boolean}
+ */
 Rectangle.prototype.containsPoint = function (aPoint) {
     return this.origin.le(aPoint) && aPoint.lt(this.corner);
 };
 
+/**
+ * Checks whether this Rectangle contains another one
+ * @param {Rectangle} aRect The other Rectangle
+ * @returns {boolean}
+ */
 Rectangle.prototype.containsRectangle = function (aRect) {
     return aRect.origin.gt(this.origin) &&
         aRect.corner.lt(this.corner);
 };
 
+/**
+ * Checks whether this and another Rectangle intersect
+ * @param {Rectangle} aRect The other Rectangle
+ * @return {boolean}
+ */
 Rectangle.prototype.intersects = function (aRect) {
     var ro = aRect.origin, rc = aRect.corner;
     return (rc.x >= this.origin.x) &&
@@ -2830,6 +3001,13 @@ Rectangle.prototype.intersects = function (aRect) {
         (ro.y <= this.corner.y);
 };
 
+/**
+ * Checks whether the minimum distance between this and another Rectangle
+ * is equal or lower than a given threshold
+ * @param {Rectangle} aRect The other Rectangle
+ * @param {number} threshold The threshold
+ * @returns {boolean}
+ */
 Rectangle.prototype.isNearTo = function (aRect, threshold) {
     var ro = aRect.origin, rc = aRect.corner, border = threshold || 0;
     return (rc.x + border >= this.origin.x) &&
@@ -2840,6 +3018,11 @@ Rectangle.prototype.isNearTo = function (aRect, threshold) {
 
 // Rectangle transforming:
 
+/**
+ * Creates a Rectangle by scaling this one
+ * @param {number|Point} scale Scale factor or Point
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.scaleBy = function (scale) {
     // scale can be either a Point or a scalar
     var o = this.origin.multiplyBy(scale),
@@ -2847,6 +3030,11 @@ Rectangle.prototype.scaleBy = function (scale) {
     return new Rectangle(o.x, o.y, c.x, c.y);
 };
 
+/**
+ * Creates a Rectangle by translating this one
+ * @param {number|Point} factor Translation factor or Point
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.translateBy = function (factor) {
     // factor can be either a Point or a scalar
     var o = this.origin.add(factor),
@@ -2856,10 +3044,18 @@ Rectangle.prototype.translateBy = function (factor) {
 
 // Rectangle converting:
 
+/**
+ * Gets the bounding box as Array
+ * @returns {Array.<number>}
+ */
 Rectangle.prototype.asArray = function () {
     return [this.left(), this.top(), this.right(), this.bottom()];
 };
 
+/**
+ * Gets the position and size as Array
+ * @returns {Array.<number>}
+ */
 Rectangle.prototype.asArray_xywh = function () {
     return [this.left(), this.top(), this.width(), this.height()];
 };

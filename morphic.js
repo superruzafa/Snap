@@ -3062,35 +3062,59 @@ Rectangle.prototype.asArray_xywh = function () {
 
 // Nodes ///////////////////////////////////////////////////////////////
 
-// Node instance creation:
-
+/**
+ * Creates a Node
+ * @class
+ * @param {Node} [parent] Parent Node
+ * @param {Array.<Node>} [childrenArray] Children Nodes
+ */
 function Node(parent, childrenArray) {
     this.init(parent || null, childrenArray || []);
 }
 
+/**
+ * Sets the parent and children Nodes
+ * @param {Node} [parent] Parent Node
+ * @param {Array.<Node>} [childrenArray] Children Nodes
+ */
 Node.prototype.init = function (parent, childrenArray) {
     this.parent = parent || null;
     this.children = childrenArray || [];
 };
 
-// Node string representation: e.g. 'a Node[3]'
-
+/**
+ * Gets the string representation
+ * @returns {String}
+ * @example 'a Node[3]'
+ */
 Node.prototype.toString = function () {
     return 'a Node' + '[' + this.children.length.toString() + ']';
 };
 
 // Node accessing:
 
+/**
+ * Appends a child Node
+ * @param {Node} aNode The node to be appended
+ */
 Node.prototype.addChild = function (aNode) {
     this.children.push(aNode);
     aNode.parent = this;
 };
 
+/**
+ * Prepends a child Node
+ * @param {Node} aNode The node to be prepended
+ */
 Node.prototype.addChildFirst = function (aNode) {
     this.children.splice(0, null, aNode);
     aNode.parent = this;
 };
 
+/**
+ * Removes a child Node
+ * @param {Node} aNode The node to be removed
+ */
 Node.prototype.removeChild = function (aNode) {
     var idx = this.children.indexOf(aNode);
     if (idx !== -1) {
@@ -3100,6 +3124,10 @@ Node.prototype.removeChild = function (aNode) {
 
 // Node functions:
 
+/**
+ * Gets the root Node of the hierarchy this Node belongs to
+ * @returns {Node}
+ */
 Node.prototype.root = function () {
     if (this.parent === null) {
         return this;
@@ -3107,6 +3135,10 @@ Node.prototype.root = function () {
     return this.parent.root();
 };
 
+/**
+ * Gets the depth (how many ancestors this Node has)
+ * @return {number}
+ */
 Node.prototype.depth = function () {
     if (this.parent === null) {
         return 0;
@@ -3114,6 +3146,10 @@ Node.prototype.depth = function () {
     return this.parent.depth() + 1;
 };
 
+/**
+ * Gets all descendant of this Node, including itself
+ * @return {Array.<Node>}
+ */
 Node.prototype.allChildren = function () {
     // includes myself
     var result = [this];
@@ -3123,6 +3159,10 @@ Node.prototype.allChildren = function () {
     return result;
 };
 
+/**
+ * Applies a function to all descendant of this Node, including itself
+ * @param {Function} aFunction The function to be applied
+ */
 Node.prototype.forAllChildren = function (aFunction) {
     if (this.children.length > 0) {
         this.children.forEach(function (child) {
@@ -3132,6 +3172,12 @@ Node.prototype.forAllChildren = function (aFunction) {
     aFunction.call(null, this);
 };
 
+/**
+ * Checks whether a predicate stands for at least
+ * one descendant of this Node, including itself
+ * @param {Function} aPredicate The function to be evaluated
+ * @returns {boolean}
+ */
 Node.prototype.anyChild = function (aPredicate) {
     // includes myself
     var i;
@@ -3146,6 +3192,10 @@ Node.prototype.anyChild = function (aPredicate) {
     return false;
 };
 
+/**
+ * Gets all leaf Nodes this Node has
+ * @returns {Array.<Nodes>}
+ */
 Node.prototype.allLeafs = function () {
     var result = [];
     this.allChildren().forEach(function (element) {
@@ -3156,6 +3206,10 @@ Node.prototype.allLeafs = function () {
     return result;
 };
 
+/**
+ * Gets all ancestors of this Node, including itself
+ * @returns {Array.<Nodes>}
+ */
 Node.prototype.allParents = function () {
     // includes myself
     var result = [this];
@@ -3165,6 +3219,10 @@ Node.prototype.allParents = function () {
     return result;
 };
 
+/**
+ * Gets all the children of this Node's parent, excluding itself
+ * @returns {Array.<Nodes>}
+ */
 Node.prototype.siblings = function () {
     var myself = this;
     if (this.parent === null) {
@@ -3175,6 +3233,12 @@ Node.prototype.siblings = function () {
     });
 };
 
+/**
+ * Gets the first ancestor, including this Node,
+ * which is instance of a given constructor
+ * @param {Function} constructor The constructor function
+ * @returns {Node}
+ */
 Node.prototype.parentThatIsA = function (constructor) {
     // including myself
     if (this instanceof constructor) {
@@ -3186,6 +3250,12 @@ Node.prototype.parentThatIsA = function (constructor) {
     return this.parent.parentThatIsA(constructor);
 };
 
+/**
+ * Gets the first ancestor, including this Node,
+ * which is instance of at least one of a given list of constructors
+ * @param {Array.<Function>} constructors The constructor functions
+ * @returns {Node}
+ */
 Node.prototype.parentThatIsAnyOf = function (constructors) {
     // including myself
     var yup = false,

@@ -1821,8 +1821,19 @@ function normalizeCanvas(aCanvas, getCopy) {
     are implemented.
 */
 
-// Animation instance creation:
-
+/**
+ * Creates a Animation
+ * @class
+ * @param {Function} setter Callback called everytime a step value is
+ *                          calculated
+ * @param {Function} getter Function that computes the starting step value
+ * @param {number} [delta=0] Difference between the ending and starting value
+ * @param {number} [duration=0] Duration of the animation in milliseconds
+ * @param {String|Function} [easing=Animation#sinusoidal]
+ *                          A predefined easing function name or a custom
+ *                          function to calculate the current step value
+ * @param {Function} [onComplete] Callback called once the animation is done
+ */
 function Animation(setter, getter, delta, duration, easing, onComplete) {
     this.setter = setter; // function
     this.getter = getter; // function
@@ -1838,6 +1849,10 @@ function Animation(setter, getter, delta, duration, easing, onComplete) {
     this.start();
 }
 
+/**
+ * Predefined easing functions
+ * @enum {Function}
+ */
 Animation.prototype.easings = {
     // dictionary of a few pre-defined easing functions used to transition
     // two states
@@ -1875,6 +1890,9 @@ Animation.prototype.easings = {
     elastic_out: function (t) {return 0.04 * t / (--t) * Math.sin(25 * t); }
 };
 
+/**
+ * Resets the animation to the first step
+ */
 Animation.prototype.start = function () {
     // (re-) activate the animation, e.g. if is has previously completed,
     // make sure to plug it into something that repeatedly triggers step(),
@@ -1884,6 +1902,9 @@ Animation.prototype.start = function () {
     this.isActive = true;
 };
 
+/**
+ * Performs an animation step
+ */
 Animation.prototype.step = function () {
     if (!this.isActive) {return; }
     var now = Date.now();
@@ -1901,8 +1922,14 @@ Animation.prototype.step = function () {
 
 // Colors //////////////////////////////////////////////////////////////
 
-// Color instance creation:
-
+/**
+ * Creates a Color
+ * @class
+ * @param {number} [r=0] Red component
+ * @param {number} [g=0] Green component
+ * @param {number} [b=0] Blue component
+ * @param {number} [a=1] Alpha component
+ */
 function Color(r, g, b, a) {
     // all values are optional, just (r, g, b) is fine
     this.r = r || 0;
@@ -1911,8 +1938,11 @@ function Color(r, g, b, a) {
     this.a = a || ((a === 0) ? 0 : 1);
 }
 
-// Color string representation: e.g. 'rgba(255,165,0,1)'
-
+/**
+ * Gets the string representation
+ * @returns {String}
+ * @example 'rgba(255, 127, 63, 0.125)'
+ */
 Color.prototype.toString = function () {
     return 'rgba(' +
         Math.round(this.r) + ',' +
@@ -1921,8 +1951,10 @@ Color.prototype.toString = function () {
         this.a + ')';
 };
 
-// Color copying:
-
+/**
+ * Creates a duplicate
+ * @returns {Color}
+ */
 Color.prototype.copy = function () {
     return new Color(
         this.r,
@@ -1932,8 +1964,11 @@ Color.prototype.copy = function () {
     );
 };
 
-// Color comparison:
-
+/**
+ * Checks whether this and another color have the same RGB values
+ * @param {Color} aColor The other color
+ * @returns {boolean}
+ */
 Color.prototype.eq = function (aColor) {
     // ==
     return aColor &&
@@ -1942,8 +1977,10 @@ Color.prototype.eq = function (aColor) {
         this.b === aColor.b;
 };
 
-// Color conversion (hsv):
-
+/**
+ * Gets the values in the HSV color space
+ * @returns {Array.<number>}
+ */
 Color.prototype.hsv = function () {
     // ignore alpha
     var max, min, h, s, v, d,
@@ -1976,6 +2013,12 @@ Color.prototype.hsv = function () {
     return [h, s, v];
 };
 
+/**
+ * Sets the color given an HSV value
+ * @param {number} h Hue
+ * @param {number} s Saturation
+ * @param {number} v Value
+ */
 Color.prototype.set_hsv = function (h, s, v) {
     // ignore alpha, h, s and v are to be within [0, 1]
     var i, f, p, q, t;
@@ -2023,8 +2066,13 @@ Color.prototype.set_hsv = function (h, s, v) {
 
 };
 
-// Color mixing:
-
+/**
+ * Creates a Color by mixin this and another Color
+ * @param {number} proportion How many of this Color would be used
+ *                            (0 = none, 1 = all)
+ * @param {Color} otherColor The other color
+ * @returns {Color}
+ */
 Color.prototype.mixed = function (proportion, otherColor) {
     // answer a copy of this color mixed with another color, ignore alpha
     var frac1 = Math.min(Math.max(proportion, 0), 1),
@@ -2036,6 +2084,11 @@ Color.prototype.mixed = function (proportion, otherColor) {
     );
 };
 
+/**
+ * Creates a darker version of this Color
+ * @param {number} percent Darkness percentage
+ * @returns {Color}
+ */
 Color.prototype.darker = function (percent) {
     // return an rgb-interpolated darker copy of me, ignore alpha
     var fract = 0.8333;
@@ -2045,6 +2098,11 @@ Color.prototype.darker = function (percent) {
     return this.mixed(fract, new Color(0, 0, 0));
 };
 
+/**
+ * Creates a lighter version of this Color
+ * @param {number} percent Lightness percentage
+ * @returns {Color}
+ */
 Color.prototype.lighter = function (percent) {
     // return an rgb-interpolated lighter copy of me, ignore alpha
     var fract = 0.8333;
@@ -2054,6 +2112,10 @@ Color.prototype.lighter = function (percent) {
     return this.mixed(fract, new Color(255, 255, 255));
 };
 
+/**
+ * Creates a darker version of this Color
+ * @returns {Color}
+ */
 Color.prototype.dansDarker = function () {
     // return an hsv-interpolated darker copy of me, ignore alpha
     var hsv = this.hsv(),
@@ -2063,6 +2125,10 @@ Color.prototype.dansDarker = function () {
     return result;
 };
 
+/**
+ * Creates a negative version of this Color
+ * @returns {Color}
+ */
 Color.prototype.inverted = function () {
     return new Color(
         255 - this.r,
@@ -2073,81 +2139,145 @@ Color.prototype.inverted = function () {
 
 // Points //////////////////////////////////////////////////////////////
 
-// Point instance creation:
-
+/**
+ * Creates a Point
+ * @class
+ * @param {number} x X coordinate
+ * @param {number} y Y coordinate
+ */
 function Point(x, y) {
     this.x = x || 0;
     this.y = y || 0;
 }
 
-// Point string representation: e.g. '12@68'
-
+/**
+ * Gets the string representation
+ * @returns {String}
+ * @example '12@68'
+*/
 Point.prototype.toString = function () {
     return Math.round(this.x.toString()) +
         '@' + Math.round(this.y.toString());
 };
 
-// Point copying:
-
+/**
+ * Creates a duplicate
+ * @returns {Point}
+ */
 Point.prototype.copy = function () {
     return new Point(this.x, this.y);
 };
 
-// Point comparison:
-
+/**
+ * Checks whether the coordinates of this and another Point are equal
+ * @param {Point} aPoint The other Point
+ * @returns {boolean}
+ */
 Point.prototype.eq = function (aPoint) {
     // ==
     return this.x === aPoint.x && this.y === aPoint.y;
 };
 
+/**
+ * Checks whether the coordinates of this Point are both smaller than the
+ * ones of another Point
+ * @param {Point} aPoint The other Point
+ * @returns {boolean}
+ */
 Point.prototype.lt = function (aPoint) {
     // <
     return this.x < aPoint.x && this.y < aPoint.y;
 };
 
+/**
+ * Checks whether the coordinates of this Point are both larger than the
+ * ones of another Point
+ * @param {Point} aPoint The other Point
+ * @returns {boolean}
+ */
 Point.prototype.gt = function (aPoint) {
     // >
     return this.x > aPoint.x && this.y > aPoint.y;
 };
 
+/**
+ * Checks whether the coordinates of this Point are both larger or equal
+ * than the ones of another Point
+ * @param {Point} aPoint The other Point
+ * @returns {boolean}
+ */
 Point.prototype.ge = function (aPoint) {
     // >=
     return this.x >= aPoint.x && this.y >= aPoint.y;
 };
 
+/**
+ * Checks whether the coordinates of this Point are both smaller or equal
+ * than the ones of another Point
+ * @param {Point} aPoint The other Point
+ * @returns {boolean}
+ */
 Point.prototype.le = function (aPoint) {
     // <=
     return this.x <= aPoint.x && this.y <= aPoint.y;
 };
 
+/**
+ * Creates a Point taking the larger coordinate of each Point
+ * @param {Point} aPoint The other Point
+ * @returns {Point}
+ */
 Point.prototype.max = function (aPoint) {
     return new Point(Math.max(this.x, aPoint.x),
         Math.max(this.y, aPoint.y));
 };
 
+/**
+ * Creates a Point taking the smaller coordinate of each Point
+ * @param {Point} aPoint The other Point
+ * @returns {Point}
+ */
 Point.prototype.min = function (aPoint) {
     return new Point(Math.min(this.x, aPoint.x),
         Math.min(this.y, aPoint.y));
 };
 
-// Point conversion:
-
+/**
+ * Creates a Point rounding each coordinate
+ * @returns {Point}
+ */
 Point.prototype.round = function () {
     return new Point(Math.round(this.x), Math.round(this.y));
 };
 
+/**
+ * Creates a Point using the absolute value of each coordinate
+ * @returns {Point}
+ */
 Point.prototype.abs = function () {
     return new Point(Math.abs(this.x), Math.abs(this.y));
 };
 
+/**
+ * Creates a negative version of this Point
+ * @returns {Point}
+ */
 Point.prototype.neg = function () {
     return new Point(-this.x, -this.y);
 };
 
+/**
+ * Creates a Point by swapping the coordinates
+ * @returns {Point}
+ */
 Point.prototype.mirror = function () {
     return new Point(this.y, this.x);
 };
 
+/**
+ * Creates a Point by flooring the coordinates
+ * @returns {Point}
+ */
 Point.prototype.floor = function () {
     return new Point(
         Math.max(Math.floor(this.x), 0),
@@ -2155,12 +2285,19 @@ Point.prototype.floor = function () {
     );
 };
 
+/**
+ * Creates a Point by ceiling the coordinates
+ * @returns {Point}
+ */
 Point.prototype.ceil = function () {
     return new Point(Math.ceil(this.x), Math.ceil(this.y));
 };
 
-// Point arithmetic:
-
+/**
+ * Creates a Point by adding some value to the coordinates
+ * @param {number|Point} other Scalar value or Point to be added
+ * @returns {Point}
+ */
 Point.prototype.add = function (other) {
     if (other instanceof Point) {
         return new Point(this.x + other.x, this.y + other.y);
@@ -2168,6 +2305,11 @@ Point.prototype.add = function (other) {
     return new Point(this.x + other, this.y + other);
 };
 
+/**
+ * Creates a Point by subtracting some value from the coordinates
+ * @param {number|Point} other Scalar value or Point to be subtracted
+ * @returns {Point}
+ */
 Point.prototype.subtract = function (other) {
     if (other instanceof Point) {
         return new Point(this.x - other.x, this.y - other.y);
@@ -2175,6 +2317,11 @@ Point.prototype.subtract = function (other) {
     return new Point(this.x - other, this.y - other);
 };
 
+/**
+ * Creates a Point by multiplying the coordinates by some value
+ * @param {number|Point} other Scalar value or Point to multiply
+ * @returns {Point}
+ */
 Point.prototype.multiplyBy = function (other) {
     if (other instanceof Point) {
         return new Point(this.x * other.x, this.y * other.y);
@@ -2182,6 +2329,11 @@ Point.prototype.multiplyBy = function (other) {
     return new Point(this.x * other, this.y * other);
 };
 
+/**
+ * Creates a Point by dividing the coordinates by some value
+ * @param {number|Point} other Scalar value or Point to divide
+ * @returns {Point}
+ */
 Point.prototype.divideBy = function (other) {
     if (other instanceof Point) {
         return new Point(this.x / other.x, this.y / other.y);
@@ -2189,6 +2341,11 @@ Point.prototype.divideBy = function (other) {
     return new Point(this.x / other, this.y / other);
 };
 
+/**
+ * Creates a Point by dividing and then flooring the coordinates by some value
+ * @param {number|Point} other Scalar value or Point to divide
+ * @returns {Point}
+ */
 Point.prototype.floorDivideBy = function (other) {
     if (other instanceof Point) {
         return new Point(Math.floor(this.x / other.x),
@@ -2198,13 +2355,19 @@ Point.prototype.floorDivideBy = function (other) {
         Math.floor(this.y / other));
 };
 
-// Point polar coordinates:
-
+/**
+ * Gets the polar radius this Point makes with (0, 0)
+ * @returns {number}
+ */
 Point.prototype.r = function () {
     var t = (this.multiplyBy(this));
     return Math.sqrt(t.x + t.y);
 };
 
+/**
+ * Gets the angle (in degrees) this Point makes with (0, 0)
+ * @returns {number}
+ */
 Point.prototype.degrees = function () {
 /*
     answer the angle I make with origin in degrees.
@@ -2229,6 +2392,10 @@ Point.prototype.degrees = function () {
     return 180 + degrees(theta);
 };
 
+/**
+ * Gets the angle (in radians) this Point makes with (0, 0)
+ * @returns {number}
+ */
 Point.prototype.theta = function () {
 /*
     answer the angle I make with origin in radians.
@@ -2255,14 +2422,27 @@ Point.prototype.theta = function () {
 
 // Point functions:
 
+/**
+ * @returns {Point}
+ */
 Point.prototype.crossProduct = function (aPoint) {
     return this.multiplyBy(aPoint.mirror());
 };
 
+/**
+ * Gets the distance between this and another Point
+ * @param {Point} aPoint The other point
+ * @returns {number}
+ */
 Point.prototype.distanceTo = function (aPoint) {
     return (aPoint.subtract(this)).r();
 };
 
+/**
+ * @param {String} direction
+ * @param {Point} center
+ * @returns {Point}
+ */
 Point.prototype.rotate = function (direction, center) {
     // direction must be 'right', 'left' or 'pi'
     var offset = this.subtract(center);
@@ -2276,6 +2456,12 @@ Point.prototype.rotate = function (direction, center) {
     return center.subtract(offset);
 };
 
+/**
+ * Creates a Point by flipping this one around a given flipping center
+ * @param {String} direction
+ * @param {Point} center
+ * @returns {Point}
+ */
 Point.prototype.flip = function (direction, center) {
     // direction must be 'vertical' or 'horizontal'
     if (direction === 'vertical') {
@@ -2285,6 +2471,11 @@ Point.prototype.flip = function (direction, center) {
     return new Point(center.x * 2 - this.x, this.y);
 };
 
+/**
+ * @param {number} dist
+ * @param {number} angle
+ * @returns {Point}
+ */
 Point.prototype.distanceAngle = function (dist, angle) {
     var deg = angle, x, y;
     if (deg > 270) {
@@ -2302,16 +2493,30 @@ Point.prototype.distanceAngle = function (dist, angle) {
     return new Point(x + this.x, this.y + y);
 };
 
-// Point transforming:
-
+/**
+ * Creates a Point by scaling this one by some value
+ * @param {Point} scalePoint Scale Point
+ * @returns {Point}
+ */
 Point.prototype.scaleBy = function (scalePoint) {
     return this.multiplyBy(scalePoint);
 };
 
+/**
+ * Creates a Point by translating this one by some value
+ * @param {Point} deltaPoint Translation point
+ * @returns {Point}
+ */
 Point.prototype.translateBy = function (deltaPoint) {
     return this.add(deltaPoint);
 };
 
+/**
+ * Creates a Point by clockwise rotating this one around a given center point
+ * @param {number} angle Rotation degrees (in radians)
+ * @param {Point} centerPoint Rotation center
+ * @returns {Point}
+ */
 Point.prototype.rotateBy = function (angle, centerPoint) {
     var center = centerPoint || new Point(0, 0),
         p = this.subtract(center),
@@ -2323,8 +2528,10 @@ Point.prototype.rotateBy = function (angle, centerPoint) {
     );
 };
 
-// Point conversion:
-
+/**
+ * Gets the coordinates as Array
+ * @returns {Array.<number>}
+ */
 Point.prototype.asArray = function () {
     return [this.x, this.y];
 };
@@ -2361,8 +2568,12 @@ Rectangle.prototype.copy = function () {
     );
 };
 
-// creating Rectangle instances from Points:
-
+/**
+ * Creates a Rectangle using this Point as origin
+ * and another one as opposite corner
+ * @param {Point} cornerPoint Opposite corner Point
+ * @returns {Rectangle}
+ */
 Point.prototype.corner = function (cornerPoint) {
     // answer a new Rectangle
     return new Rectangle(
@@ -2373,6 +2584,11 @@ Point.prototype.corner = function (cornerPoint) {
     );
 };
 
+/**
+ * Creates a Rectangle delimited by this and another Point
+ * @param {Point} aPoint The other Point
+ * @returns {Rectangle}
+ */
 Point.prototype.rectangle = function (aPoint) {
     // answer a new Rectangle
     var org, crn;
@@ -2381,6 +2597,11 @@ Point.prototype.rectangle = function (aPoint) {
     return new Rectangle(org.x, org.y, crn.x, crn.y);
 };
 
+/**
+ * Creates a Rectangle formed by this and another offset Point
+ * @param {Point} aPoint The offset Point
+ * @returns {Rectangle}
+ */
 Point.prototype.extent = function (aPoint) {
     //answer a new Rectangle
     var crn = this.add(aPoint);

@@ -5350,10 +5350,20 @@ ShadowMorph.uber = Morph.prototype;
 
 // ShadowMorph instance creation:
 
+/**
+ * Creates a ShadowMorph
+ * @class
+ * @extends Morph
+ */
 function ShadowMorph() {
     this.init();
 }
 
+/**
+ * Gets which visible child Morph (or self) has drawn over some point
+ * @param {Point} point The point
+ * @return {Morph}
+ */
 ShadowMorph.prototype.topMorphAt = function () {
     return null;
 };

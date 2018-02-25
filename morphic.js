@@ -3456,6 +3456,7 @@ Morph.prototype.nextSteps = function (arrayOfFunctions) {
     }
 };
 
+/** Performs a step */
 Morph.prototype.step = nop;
 
 // Morph accessing - geometry getting:
@@ -5589,6 +5590,7 @@ HandleMorph.prototype.drawOnCanvas = function (
 
 // HandleMorph stepping:
 
+/** Performs a step */
 HandleMorph.prototype.step = null;
 
 /**
@@ -6323,10 +6325,20 @@ BlinkerMorph.uber = Morph.prototype;
 
 // BlinkerMorph instance creation:
 
+/**
+ * Creates a BlinkerMorph
+ * @class
+ * @extends Morph
+ * @param {number} [rate=2] How often this Morph blinks
+ */
 function BlinkerMorph(rate) {
     this.init(rate);
 }
 
+/**
+ * Initializes this BlinkerMorph
+ * @param {number} [rate=2] How often this Morph blinks
+ */
 BlinkerMorph.prototype.init = function (rate) {
     BlinkerMorph.uber.init.call(this);
     this.color = new Color(0, 0, 0);
@@ -6336,6 +6348,7 @@ BlinkerMorph.prototype.init = function (rate) {
 
 // BlinkerMorph stepping:
 
+/** Performs a step */
 BlinkerMorph.prototype.step = function () {
     this.toggleVisibility();
 };

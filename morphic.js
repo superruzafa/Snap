@@ -6891,10 +6891,24 @@ BoxMorph.uber = Morph.prototype;
 
 // BoxMorph instance creation:
 
+/**
+ * Creates a BoxMorph
+ * @class
+ * @extends Morph
+ * @param {number} [edge=4] Corner radius
+ * @param {number} [border=2] Border width
+ * @param {Color} [borderColor] Border color
+ */
 function BoxMorph(edge, border, borderColor) {
     this.init(edge, border, borderColor);
 }
 
+/**
+ * Initializes this BoxMorph
+ * @param {number} [edge=4] Corner radius
+ * @param {number} [border=2] Border width
+ * @param {Color} [borderColor] Border color
+ */
 BoxMorph.prototype.init = function (edge, border, borderColor) {
     this.edge = edge || 4;
     this.border = border || ((border === 0) ? 0 : 2);
@@ -6904,6 +6918,7 @@ BoxMorph.prototype.init = function (edge, border, borderColor) {
 
 // BoxMorph drawing:
 
+/** Draws this BoxMorph */
 BoxMorph.prototype.drawNew = function () {
     var context;
 
@@ -6932,6 +6947,13 @@ BoxMorph.prototype.drawNew = function () {
     }
 };
 
+/**
+ * Draws the border
+ * @private
+ * @param {RenderingContext} context Target anvas context
+ * @param {number} radius Border radius
+ * @param {number} inset Shrink distance
+ */
 BoxMorph.prototype.outlinePath = function (context, radius, inset) {
     var offset = radius + inset,
         w = this.width(),
@@ -6978,6 +7000,7 @@ BoxMorph.prototype.outlinePath = function (context, radius, inset) {
 
 // BoxMorph menus:
 
+/** Gets the developer menu */
 BoxMorph.prototype.developersMenu = function () {
     var menu = BoxMorph.uber.developersMenu.call(this);
     menu.addLine();
@@ -7028,6 +7051,10 @@ BoxMorph.prototype.developersMenu = function () {
     return menu;
 };
 
+/**
+ * Sets the border width
+ * @param {number} size Border width
+ */
 BoxMorph.prototype.setBorderWidth = function (size) {
     // for context menu demo purposes
     var newSize;
@@ -7043,6 +7070,10 @@ BoxMorph.prototype.setBorderWidth = function (size) {
     this.changed();
 };
 
+/**
+ * Sets the border color
+ * @param {Color} color Border color
+ */
 BoxMorph.prototype.setBorderColor = function (color) {
     // for context menu demo purposes
     if (color) {
@@ -7052,6 +7083,10 @@ BoxMorph.prototype.setBorderColor = function (color) {
     }
 };
 
+/**
+ * Sets the corners radius
+ * @param {number} size Corner radius
+ */
 BoxMorph.prototype.setCornerSize = function (size) {
     // for context menu demo purposes
     var newSize;

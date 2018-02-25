@@ -2472,8 +2472,9 @@ Point.prototype.flip = function (direction, center) {
 };
 
 /**
- * @param {number} dist
- * @param {number} angle
+ * Creates a Point at some distance of and making some angle with this Point
+ * @param {number} dist Distance
+ * @param {number} angle Angle
  * @returns {Point}
  */
 Point.prototype.distanceAngle = function (dist, angle) {
@@ -5705,10 +5706,16 @@ PenMorph.uber = Morph.prototype;
 
 // PenMorph instance creation:
 
+/**
+ * Creates a PenMorph
+ * @class
+ * @extends Morph
+ */
 function PenMorph() {
     this.init();
 }
 
+/** Initializes this PenMorph */
 PenMorph.prototype.init = function () {
     var size = MorphicPreferences.handleSize * 4;
 
@@ -5727,6 +5734,7 @@ PenMorph.prototype.init = function () {
 
 // PenMorph updating - optimized for warping, i.e atomic recursion
 
+/** Invoked whenever the region of this Morph should be redrawn */
 PenMorph.prototype.changed = function () {
     if (this.isWarped === false) {
         var w = this.root();
@@ -5741,6 +5749,11 @@ PenMorph.prototype.changed = function () {
 
 // PenMorph display:
 
+/**
+/* Draws this Morph
+ * @param {number} [facing] Angle that overrides the current PenMorph heading
+ *                          angle (only for drawing purposes)
+ */
 PenMorph.prototype.drawNew = function (facing) {
     // my orientation can be overridden with the "facing" parameter to
     // implement Scratch-style rotation styles
@@ -5796,12 +5809,17 @@ PenMorph.prototype.drawNew = function (facing) {
 
 // PenMorph access:
 
+/**
+ * Sets the facing direction of this PenHandler
+ * @param {number} degrees Angle (in degrees)
+ */
 PenMorph.prototype.setHeading = function (degrees) {
     this.heading = ((+degrees % 360) + 360) % 360;
     this.drawNew();
     this.changed();
 };
 
+/** @private */
 PenMorph.prototype.numericalSetters = function () {
     // for context menu demo purposes
     return [
@@ -5816,6 +5834,10 @@ PenMorph.prototype.numericalSetters = function () {
 
 // PenMorph menu:
 
+/**
+ * Builds the developers menu
+ * @returns {MenuMorph}
+ */
 PenMorph.prototype.developersMenu = function () {
     var menu = PenMorph.uber.developersMenu.call(this);
     menu.addLine();
@@ -5827,6 +5849,10 @@ PenMorph.prototype.developersMenu = function () {
     return menu;
 };
 
+/**
+ * Developer menu's "set rotation" menu action handler
+ * @private
+ */
 PenMorph.prototype.setRotation = function () {
     var menu, dial,
     	name = this.name || this.constructor.name;
@@ -5850,6 +5876,11 @@ PenMorph.prototype.setRotation = function () {
 
 // PenMorph drawing:
 
+/**
+ * Draws a straight line in the pen trails canvas of the parent Morph
+ * @param {Point} start Starting point
+ * @param {Point} dest Ending point
+ */
 PenMorph.prototype.drawLine = function (start, dest) {
     var context = this.parent.penTrails().getContext('2d'),
         from = start.subtract(this.parent.bounds.origin),
@@ -5875,10 +5906,19 @@ PenMorph.prototype.drawLine = function (start, dest) {
 
 // PenMorph turtle ops:
 
+/**
+ * Turns clockwise turns this PenMorph
+ * @param {number} degrees Angle (in degrees)
+ */
 PenMorph.prototype.turn = function (degrees) {
     this.setHeading(this.heading + parseFloat(degrees));
 };
 
+/**
+ * Draws a stright line from the current position
+ * to a given distance in the direction this PenMorph is facing
+ * @param {number} steps Movement increment
+ */
 PenMorph.prototype.forward = function (steps) {
     var start = this.center(),
         dest,
@@ -5895,14 +5935,19 @@ PenMorph.prototype.forward = function (steps) {
     this.drawLine(start, this.center());
 };
 
+/** Sets this PenMorph down, so it will draw when moving */
 PenMorph.prototype.down = function () {
     this.isDown = true;
 };
 
+/** Lifts this PenMorph up, so it won't draw when moving */
 PenMorph.prototype.up = function () {
     this.isDown = false;
 };
 
+/**
+ * Clears the pen trails canvas of the parent Morph
+ */
 PenMorph.prototype.clear = function () {
     this.parent.drawNew();
     this.parent.changed();
@@ -5910,11 +5955,13 @@ PenMorph.prototype.clear = function () {
 
 // PenMorph optimization for atomic recursion:
 
+/** Activates the warping mode */
 PenMorph.prototype.startWarp = function () {
     this.wantsRedraw = false;
     this.isWarped = true;
 };
 
+/** Deactivates the warping mode and performs all drawings done so far */
 PenMorph.prototype.endWarp = function () {
     this.isWarped = false;
     if (this.wantsRedraw) {
@@ -5924,12 +5971,22 @@ PenMorph.prototype.endWarp = function () {
     this.parent.changed();
 };
 
+/**
+ * In warp mode, runs a function in the PenMorph context
+ * @param {Function} fun Function to be executed
+ */
 PenMorph.prototype.warp = function (fun) {
     this.startWarp();
     fun.call(this);
     this.endWarp();
 };
 
+/**
+ * Runs a demo method in warp mode
+ * @private
+ * @param {String} selector One of the PenMorph demo methods
+ * @param {Array} argsArray Arguments
+ */
 PenMorph.prototype.warpOp = function (selector, argsArray) {
     this.startWarp();
     this[selector].apply(this, argsArray);
@@ -5939,10 +5996,22 @@ PenMorph.prototype.warpOp = function (selector, argsArray) {
 // PenMorph demo ops:
 // try these with WARP eg.: this.warp(function () {tree(12, 120, 20)})
 
+/**
+ * Draws a Sierpinski triangle in warp mode
+ * @private
+ * @param {number} length Starting length
+ * @param {number} min Minimum length
+ */
 PenMorph.prototype.warpSierpinski = function (length, min) {
     this.warpOp('sierpinski', [length, min]);
 };
 
+/**
+ * Recursively draws a sierpinksi triangle
+ * @private
+ * @param {number} length Starting length
+ * @param {number} min Minimum length
+ */
 PenMorph.prototype.sierpinski = function (length, min) {
     var i;
     if (length > min) {
@@ -5954,10 +6023,24 @@ PenMorph.prototype.sierpinski = function (length, min) {
     }
 };
 
+/**
+ * Draws a tree in warp mode
+ * @private
+ * @param {number} level Tree depth
+ * @param {number} length Branches length
+ * @param {number} angle Branches angle
+ */
 PenMorph.prototype.warpTree = function (level, length, angle) {
     this.warpOp('tree', [level, length, angle]);
 };
 
+/**
+ * Recursively draws a tree
+ * @private
+ * @param {number} level Tree depth
+ * @param {number} length Branches length
+ * @param {number} angle Branches angle
+ */
 PenMorph.prototype.tree = function (level, length, angle) {
     if (level > 0) {
         this.size = level;

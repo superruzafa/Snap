@@ -3936,9 +3936,7 @@ Morph.prototype.setColor = function (aColor) {
 
 // Morph displaying:
 
-/**
- * Draws this Morph
- */
+/** Draws this Morph */
 Morph.prototype.drawNew = function () {
     // initialize my surface property
     this.image = newCanvas(this.extent());
@@ -5380,11 +5378,31 @@ HandleMorph.uber = Morph.prototype;
 
 // HandleMorph instance creation:
 
+/**
+ * Creates a HandleMorph
+ * @class
+ * @extends Morph
+ * @param {Morph} [target] Morph this HandleMorph is attached to
+ * @param {number} [minX=0] Minimum width
+ * @param {number} [minY=0] Minimum height
+ * @param {number} [insetX=0]
+ * @param {number} [insetY=0]
+ * @param {String} [type=resize] 'resize', 'move', 'moveCenter' or 'movePivot'
+ */
 function HandleMorph(target, minX, minY, insetX, insetY, type) {
     // if insetY is missing, it will be the same as insetX
     this.init(target, minX, minY, insetX, insetY, type);
 }
 
+/**
+ * Initializes this HandleMorph
+ * @param {Morph} [target] Morph this HandleMorph is attached to
+ * @param {number} [minX=0] Minimum width
+ * @param {number} [minY=0] Minimum height
+ * @param {number} [insetX=0]
+ * @param {number} [insetY=0]
+ * @param {String} [type=resize] 'resize', 'move', 'moveCenter' or 'movePivot'
+ */
 HandleMorph.prototype.init = function (
     target,
     minX,
@@ -5410,6 +5428,7 @@ HandleMorph.prototype.init = function (
 
 // HandleMorph drawing:
 
+/** Draws this Morph */
 HandleMorph.prototype.drawNew = function () {
     this.normalImage = newCanvas(this.extent());
     this.highlightImage = newCanvas(this.extent());
@@ -5446,6 +5465,11 @@ HandleMorph.prototype.drawNew = function () {
     }
 };
 
+/**
+ * Draws a crosshair on a canvas
+ * @param {HTMLCanvasElement} aCanvas
+ * @param {number} fract Circunference ratio
+ */
 HandleMorph.prototype.drawCrosshairsOnCanvas = function (aCanvas, fract) {
     var ctx = aCanvas.getContext('2d'),
         r = aCanvas.width / 2;
@@ -5465,6 +5489,12 @@ HandleMorph.prototype.drawCrosshairsOnCanvas = function (aCanvas, fract) {
     ctx.stroke();
 };
 
+/**
+ * Draws this HandleMorph on a canvas
+ * @param {HTMLCanvasElement} aCanvas
+ * @param {Color} color Stroke color
+ * @param {Color} shadowColor Shadow color
+ */
 HandleMorph.prototype.drawOnCanvas = function (
     aCanvas,
     color,
@@ -5560,6 +5590,10 @@ HandleMorph.prototype.drawOnCanvas = function (
 
 HandleMorph.prototype.step = null;
 
+/**
+ * Handles the left mouse down event over this HandleMorph
+ * @param {Point} [pos] HandMorph position
+ */
 HandleMorph.prototype.mouseDownLeft = function (pos) {
     var world = this.root(),
         offset,
@@ -5619,11 +5653,13 @@ HandleMorph.prototype.rootForGrab = function () {
 
 // HandleMorph events:
 
+/** Handles the mouse entrance event over this HandleMorph */
 HandleMorph.prototype.mouseEnter = function () {
     this.image = this.highlightImage;
     this.changed();
 };
 
+/** Handles the mouse leaving event over this HandleMorph */
 HandleMorph.prototype.mouseLeave = function () {
     this.image = this.normalImage;
     this.changed();
@@ -5631,6 +5667,10 @@ HandleMorph.prototype.mouseLeave = function () {
 
 // HandleMorph menu:
 
+/**
+ * Developer menu's "attach" menu action handler
+ * @private
+ */
 HandleMorph.prototype.attach = function () {
     var choices = this.overlappedMorphs(),
         menu = new MenuMorph(this, 'choose target:'),

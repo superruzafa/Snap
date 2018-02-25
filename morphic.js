@@ -6205,8 +6205,13 @@ GrayPaletteMorph.prototype = new ColorPaletteMorph();
 GrayPaletteMorph.prototype.constructor = GrayPaletteMorph;
 GrayPaletteMorph.uber = ColorPaletteMorph.prototype;
 
-// GrayPaletteMorph instance creation:
-
+/**
+ * Creates a GrayPaletteMorph
+ * @class
+ * @extends ColorPaletteMorph
+ * @param {Morph} [target] Morph this ColorPaletteMorph is related to
+ * @param {Point} [sizePoint] Size
+ */
 function GrayPaletteMorph(target, sizePoint) {
     this.init(
         target || null,
@@ -6214,6 +6219,7 @@ function GrayPaletteMorph(target, sizePoint) {
     );
 }
 
+/** Draws this Morph */
 GrayPaletteMorph.prototype.drawNew = function () {
     var context, ext, gradient;
 

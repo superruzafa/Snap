@@ -6244,10 +6244,20 @@ ColorPickerMorph.uber = Morph.prototype;
 
 // ColorPickerMorph instance creation:
 
+/**
+ * Creates a ColorPickerMorph
+ * @class
+ * @extends Morph
+ * @param {Color} [defaultColor] Default color
+ */
 function ColorPickerMorph(defaultColor) {
     this.init(defaultColor || new Color(255, 255, 255));
 }
 
+/**
+ * Initializes this ColorPickerMorph
+ * @param {Color} [defaultColor] Default color
+ */
 ColorPickerMorph.prototype.init = function (defaultColor) {
     this.choice = defaultColor;
     ColorPickerMorph.uber.init.call(this);

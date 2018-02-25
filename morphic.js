@@ -6064,8 +6064,13 @@ ColorPaletteMorph.prototype = new Morph();
 ColorPaletteMorph.prototype.constructor = ColorPaletteMorph;
 ColorPaletteMorph.uber = Morph.prototype;
 
-// ColorPaletteMorph instance creation:
-
+/**
+ * Creates a ColorPaletteMorph
+ * @class
+ * @extends Morph
+ * @param {Morph} [target] Morph this ColorPaletteMorph is attached to
+ * @param {Point} [sizePoint] Size
+ */
 function ColorPaletteMorph(target, sizePoint) {
     this.init(
         target || null,
@@ -6073,6 +6078,11 @@ function ColorPaletteMorph(target, sizePoint) {
     );
 }
 
+/**
+ * Initializes this ColorPaletteMorph
+ * @param {Morph} [target] Morph this ColorPaletteMorph is related to
+ * @param {Point} [sizePoint] Size
+ */
 ColorPaletteMorph.prototype.init = function (target, size) {
     ColorPaletteMorph.uber.init.call(this);
     this.target = target;
@@ -6082,6 +6092,7 @@ ColorPaletteMorph.prototype.init = function (target, size) {
     this.drawNew();
 };
 
+/** Draws this Morph */
 ColorPaletteMorph.prototype.drawNew = function () {
     var context, ext, x, y, h, l;
 
@@ -6099,16 +6110,19 @@ ColorPaletteMorph.prototype.drawNew = function () {
     }
 };
 
+/** Handles the mouse movement event over this ColorPaletteMorph */
 ColorPaletteMorph.prototype.mouseMove = function (pos) {
     this.choice = this.getPixelColor(pos);
     this.updateTarget();
 };
 
+/** Handles the left mouse down event over this ColorPaletteMorph */
 ColorPaletteMorph.prototype.mouseDownLeft = function (pos) {
     this.choice = this.getPixelColor(pos);
     this.updateTarget();
 };
 
+/** Updates the color of the target Morph */
 ColorPaletteMorph.prototype.updateTarget = function () {
     if (this.target instanceof Morph && this.choice !== null) {
         if (this.target[this.targetSetter] instanceof Function) {
@@ -6123,6 +6137,10 @@ ColorPaletteMorph.prototype.updateTarget = function () {
 
 // ColorPaletteMorph menu:
 
+/**
+ * Builds the developers menu
+ * @returns {MenuMorph}
+ */
 ColorPaletteMorph.prototype.developersMenu = function () {
     var menu = ColorPaletteMorph.uber.developersMenu.call(this);
     menu.addLine();
@@ -6135,6 +6153,10 @@ ColorPaletteMorph.prototype.developersMenu = function () {
     return menu;
 };
 
+/**
+ * Developer menu's "set target" menu action handler
+ * @private
+ */
 ColorPaletteMorph.prototype.setTarget = function () {
     var choices = this.overlappedMorphs(),
         menu = new MenuMorph(this, 'choose target:'),
@@ -6155,6 +6177,7 @@ ColorPaletteMorph.prototype.setTarget = function () {
     }
 };
 
+/** @private */
 ColorPaletteMorph.prototype.setTargetSetter = function () {
     var choices = this.target.colorSetters(),
         menu = new MenuMorph(this, 'choose target property:'),

@@ -2992,7 +2992,7 @@ Rectangle.prototype.containsRectangle = function (aRect) {
 /**
  * Checks whether this and another Rectangle intersect
  * @param {Rectangle} aRect The other Rectangle
- * @return {boolean}
+ * @returns {boolean}
  */
 Rectangle.prototype.intersects = function (aRect) {
     var ro = aRect.origin, rc = aRect.corner;
@@ -3138,7 +3138,7 @@ Node.prototype.root = function () {
 
 /**
  * Gets the depth (how many ancestors this Node has)
- * @return {number}
+ * @returns {number}
  */
 Node.prototype.depth = function () {
     if (this.parent === null) {
@@ -3149,7 +3149,7 @@ Node.prototype.depth = function () {
 
 /**
  * Gets all descendant of this Node, including itself
- * @return {Array.<Node>}
+ * @returns {Array.<Node>}
  */
 Node.prototype.allChildren = function () {
     // includes myself
@@ -3850,6 +3850,7 @@ Morph.prototype.scrollIntoView = function () {
 
 /**
  * Sets the size
+ * @param {Point} aPoint New size
  * @param {boolean} [silently=false] Whether redraw this Morph
  */
 Morph.prototype.setExtent = function (aPoint, silently) {
@@ -4361,7 +4362,7 @@ Morph.prototype.addBack = function (aMorph) {
 /**
  * Gets which visible child Morph (or self) has drawn over some point
  * @param {Point} point The point
- * @return {Morph}
+ * @returns {Morph}
  */
 Morph.prototype.topMorphAt = function (point) {
     var i, result;
@@ -4467,7 +4468,7 @@ Morph.prototype.isTransparentAt = function (aPoint) {
 
 /**
  * Creates a duplicate, excluding its children
- * @return {Morph}
+ * @returns {Morph}
  */
 Morph.prototype.copy = function () {
     var c = copy(this);
@@ -4479,7 +4480,7 @@ Morph.prototype.copy = function () {
 
 /**
  * Creates a duplicate, including its children
- * @return {Morph}
+ * @returns {Morph}
  */
 Morph.prototype.fullCopy = function () {
     /*
@@ -5362,7 +5363,7 @@ function ShadowMorph() {
 /**
  * Gets which visible child Morph (or self) has drawn over some point
  * @param {Point} point The point
- * @return {Morph}
+ * @returns {Morph}
  */
 ShadowMorph.prototype.topMorphAt = function () {
     return null;
@@ -5656,13 +5657,13 @@ HandleMorph.prototype.rootForGrab = function () {
 
 // HandleMorph events:
 
-/** Handles the mouse entrance event over this HandleMorph */
+/** Handles the mouse enter event over this HandleMorph */
 HandleMorph.prototype.mouseEnter = function () {
     this.image = this.highlightImage;
     this.changed();
 };
 
-/** Handles the mouse leaving event over this HandleMorph */
+/** Handles the mouse leave event over this HandleMorph */
 HandleMorph.prototype.mouseLeave = function () {
     this.image = this.normalImage;
     this.changed();
@@ -5837,7 +5838,7 @@ PenMorph.prototype.numericalSetters = function () {
 // PenMorph menu:
 
 /**
- * Builds the developers menu
+ * Builds the developer menu
  * @returns {MenuMorph}
  */
 PenMorph.prototype.developersMenu = function () {
@@ -6140,7 +6141,7 @@ ColorPaletteMorph.prototype.updateTarget = function () {
 // ColorPaletteMorph menu:
 
 /**
- * Builds the developers menu
+ * Builds the developer menu
  * @returns {MenuMorph}
  */
 ColorPaletteMorph.prototype.developersMenu = function () {
@@ -6179,7 +6180,10 @@ ColorPaletteMorph.prototype.setTarget = function () {
     }
 };
 
-/** @private */
+/**
+ * Developer menu's "choose target" menu action handler
+ * @private
+ */
 ColorPaletteMorph.prototype.setTargetSetter = function () {
     var choices = this.target.colorSetters(),
         menu = new MenuMorph(this, 'choose target property:'),
@@ -6373,10 +6377,20 @@ CursorMorph.prototype.viewPadding = 1;
 
 // CursorMorph instance creation:
 
+/**
+ * Creates a CursorMorph
+ * @class
+ * @extends BlinkerMorph
+ * @param {StringMorph|TextMorph} aStringOrTextMorph
+ */
 function CursorMorph(aStringOrTextMorph) {
     this.init(aStringOrTextMorph);
 }
 
+/**
+ * Initializes this CursorMorph
+ * @param {StringMorph|TextMorph} aStringOrTextMorph
+ */
 CursorMorph.prototype.init = function (aStringOrTextMorph) {
     var ls;
 
@@ -6399,6 +6413,10 @@ CursorMorph.prototype.init = function (aStringOrTextMorph) {
     this.initializeClipboardHandler();
 };
 
+/**
+ * Adds a hidden text box for copying and pasting
+ * @private
+ */
 CursorMorph.prototype.initializeClipboardHandler = function () {
     // Add hidden text box for copying and pasting
     var myself = this,
@@ -6839,6 +6857,10 @@ CursorMorph.prototype.destroy = function () {
     CursorMorph.uber.destroy.call(this);
 };
 
+/**
+ * Releases the resources of the hidden text box for copying and pasting
+ * @private
+ */
 CursorMorph.prototype.destroyClipboardHandler = function () {
     var nodes = document.body.children,
         each,
@@ -6856,6 +6878,11 @@ CursorMorph.prototype.destroyClipboardHandler = function () {
 
 // CursorMorph utilities:
 
+/**
+ * Shows information about a key event
+ * @private
+ * @param {MouseEvent} event MouseEvent argument
+ */
 CursorMorph.prototype.inspectKeyEvent = function (event) {
     // private
     this.inform(
@@ -6948,9 +6975,9 @@ BoxMorph.prototype.drawNew = function () {
 };
 
 /**
- * Draws the border
+ * Draws the outline
  * @private
- * @param {RenderingContext} context Target anvas context
+ * @param {RenderingContext} context Target canvas context
  * @param {number} radius Border radius
  * @param {number} inset Shrink distance
  */
@@ -7000,7 +7027,10 @@ BoxMorph.prototype.outlinePath = function (context, radius, inset) {
 
 // BoxMorph menus:
 
-/** Gets the developer menu */
+/**
+ * Builds the developer menu
+ * @returns {MenuMorph}
+ */
 BoxMorph.prototype.developersMenu = function () {
     var menu = BoxMorph.uber.developersMenu.call(this);
     menu.addLine();
@@ -7134,6 +7164,18 @@ SpeechBubbleMorph.uber = BoxMorph.prototype;
 
 // SpeechBubbleMorph instance creation:
 
+/**
+ * Creates a SpeechBubbleMorph
+ * @class
+ * @extends BoxMorph
+ * @param {String} [contents=''] Bubble contents
+ * @param {Color} [color] Background color
+ * @param {number} [edge=6] Corners radius
+ * @param {number} [border=1] Border width
+ * @param {Color} [borderColor] Border color
+ * @param {number} [padding=0] Padding
+ * @param {boolean} [isThought=false] Whether this is a thought bubble
+ */
 function SpeechBubbleMorph(
     contents,
     color,
@@ -7146,6 +7188,16 @@ function SpeechBubbleMorph(
     this.init(contents, color, edge, border, borderColor, padding, isThought);
 }
 
+/**
+ * Initializes this SpeechBubbleMorph
+ * @param {String} [contents=''] Bubble contents
+ * @param {Color} [color] Background color
+ * @param {number} [edge=6] Corners radius
+ * @param {number} [border=1] Border width
+ * @param {Color} [borderColor] Border color
+ * @param {number} [padding=0] Padding
+ * @param {boolean} [isThought=false] Whether this is a thought bubble
+ */
 SpeechBubbleMorph.prototype.init = function (
     contents,
     color,
@@ -7172,6 +7224,12 @@ SpeechBubbleMorph.prototype.init = function (
 
 // SpeechBubbleMorph invoking:
 
+/**
+ * Adds this SpeechBubbleMorph to a WorldMorph at some position
+ * @param {WorldMorph} world Target WorldMorph
+ * @param {Point} pos Position of the bubble tail
+ * @param {boolean} isClickable Whether this SpeechBubbleMorph is clickable
+ */
 SpeechBubbleMorph.prototype.popUp = function (world, pos, isClickable) {
     this.drawNew();
     this.setPosition(pos.subtract(new Point(0, this.height())));
@@ -7193,6 +7251,7 @@ SpeechBubbleMorph.prototype.popUp = function (world, pos, isClickable) {
 
 // SpeechBubbleMorph drawing:
 
+/** Draws this SpeechBubbleMorph */
 SpeechBubbleMorph.prototype.drawNew = function () {
     // re-build my contents
     if (this.contentsMorph) {
@@ -7247,6 +7306,13 @@ SpeechBubbleMorph.prototype.drawNew = function () {
     ));
 };
 
+/**
+ * Draws the outline
+ * @private
+ * @param {RenderingContext} context Target canvas context
+ * @param {number} radius Border radius
+ * @param {number} inset Shrink distance
+ */
 SpeechBubbleMorph.prototype.outlinePath = function (
     context,
     radius,
@@ -7357,6 +7423,12 @@ SpeechBubbleMorph.prototype.outlinePath = function (
     shadow doesn't become conflicted by embedded scrolling panes
 */
 
+/**
+ * Creates a solid shadow for this SpeechBubbleMorph
+ * @param {Point} [off] Shadow offset
+ * @param {Color} [color] Shadow color
+ * @returns {HTMLCanvasElement}
+ */
 SpeechBubbleMorph.prototype.shadowImage = function (off, color) {
     // fallback for Windows Chrome-Shadow bug
     var fb, img, outline, sha, ctx,
@@ -7382,6 +7454,13 @@ SpeechBubbleMorph.prototype.shadowImage = function (off, color) {
     return sha;
 };
 
+/**
+ * Creates a shadow for this SpeechBubbleMorph
+ * using the global Morphic preferences
+ * @param {Point} [off] Shadow offset
+ * @param {Color} [color] Shadow color
+ * @returns {ShadowMorph}
+ */
 SpeechBubbleMorph.prototype.shadowImageBlurred = function (off, color) {
     var fb, img, sha, ctx,
         offset = off || new Point(7, 7),
@@ -7414,6 +7493,7 @@ SpeechBubbleMorph.prototype.shadowImageBlurred = function (off, color) {
 
 // SpeechBubbleMorph resizing
 
+/** Fix the layout to make room to the contents */
 SpeechBubbleMorph.prototype.fixLayout = function () {
     this.removeShadow();
     this.drawNew();
@@ -7432,10 +7512,28 @@ DialMorph.prototype = new Morph();
 DialMorph.prototype.constructor = DialMorph;
 DialMorph.uber = Morph.prototype;
 
+/**
+ * Creates a DialMorph
+ * @class
+ * @extends Morph
+ * @param {number} [min=0] Minimum value
+ * @param {number} [max=360] Maximum value
+ * @param {number} [value=0] Current value
+ * @param {number} [tick=15] Marks frequency
+ * @param {number} [radius] Dial radius
+ */
 function DialMorph(min, max, value, tick, radius) {
     this.init(min, max, value, tick, radius);
 }
 
+/**
+ * Initializes this DialMorph
+ * @param {number} [min=0] Minimum value
+ * @param {number} [max=360] Maximum value
+ * @param {number} [value=0] Current value
+ * @param {number} [tick=15] Marks frequency
+ * @param {number} [radius] Dial radius
+ */
 DialMorph.prototype.init = function (min, max, value, tick, radius) {
     this.target = null;
     this.action = null;
@@ -7452,11 +7550,22 @@ DialMorph.prototype.init = function (min, max, value, tick, radius) {
     this.setRadius(radius || MorphicPreferences.menuFontSize * 4);
 };
 
+/**
+ * Sets the radius
+ * @param {number} radius Dial radius
+ */
 DialMorph.prototype.setRadius = function (radius) {
 	this.radius = radius;
     this.setExtent(new Point(this.radius * 2, this.radius * 2));
 };
 
+/**
+ * Sets the current value
+ * @param {number} value New value
+ * @param {boolean} snapToTick Whether the value must be rounded
+ *                             to its closer tick
+ * @param {boolean} noUpdate Whether the DialMorph must be updated
+ */
 DialMorph.prototype.setValue = function (value, snapToTick, noUpdate) {
 	var range = this.max - this.min;
  	value = value || 0;
@@ -7474,6 +7583,11 @@ DialMorph.prototype.setValue = function (value, snapToTick, noUpdate) {
   	this.updateTarget();
 };
 
+/**
+ * Calculates the current value given some polar point
+ * @private
+ * @param {Point} point Point where the arrow is pointing to
+ */
 DialMorph.prototype.getValueOf = function (point) {
     var range = this.max - this.min,
     	center = this.center(),
@@ -7489,12 +7603,17 @@ DialMorph.prototype.getValueOf = function (point) {
     return range * ratio + this.min;
 };
 
+/**
+ * Sets the size
+ * @param {Point} aPoint New size
+ */
 DialMorph.prototype.setExtent = function (aPoint) {
 	var size = Math.min(aPoint.x, aPoint.y);
 	this.radius = size / 2;
     DialMorph.uber.setExtent.call(this, new Point(size, size));
 };
 
+/** Draws this DialMorph */
 DialMorph.prototype.drawNew = function () {
     var ctx, i, angle, x1, y1, x2, y2,
     	light = this.color.lighter().toString(),
@@ -7653,6 +7772,7 @@ DialMorph.prototype.drawNew = function () {
 
 DialMorph.prototype.step = null;
 
+/** Handles the left mouse down event over this DialMorph */
 DialMorph.prototype.mouseDownLeft = function (pos) {
     var world, myself = this;
     world = this.root();
@@ -7670,6 +7790,10 @@ DialMorph.prototype.mouseDownLeft = function (pos) {
 
 // DialMorph menu:
 
+/**
+ * Builds the developer menu
+ * @returns {MenuMorph}
+ */
 DialMorph.prototype.developersMenu = function () {
     var menu = DialMorph.uber.developersMenu.call(this);
     menu.addLine();
@@ -7682,6 +7806,10 @@ DialMorph.prototype.developersMenu = function () {
     return menu;
 };
 
+/**
+ * Developer menu's "set target" menu action handler
+ * @private
+ */
 DialMorph.prototype.setTarget = function () {
     var choices = this.overlappedMorphs(),
         menu = new MenuMorph(this, 'choose target:'),
@@ -7702,6 +7830,7 @@ DialMorph.prototype.setTarget = function () {
     }
 };
 
+/** @private */
 DialMorph.prototype.setTargetSetter = function () {
     var choices = this.target.numericalSetters(),
         menu = new MenuMorph(this, 'choose target property:'),
@@ -7719,6 +7848,7 @@ DialMorph.prototype.setTargetSetter = function () {
     }
 };
 
+/** @private */
 DialMorph.prototype.updateTarget = function () {
     if (this.action) {
         if (typeof this.action === 'function') {
@@ -7741,10 +7871,20 @@ CircleBoxMorph.prototype = new Morph();
 CircleBoxMorph.prototype.constructor = CircleBoxMorph;
 CircleBoxMorph.uber = Morph.prototype;
 
+/**
+ * Creates a CircleBoxMorph
+ * @class
+ * @extends Morph
+ * @param {String} [orientation='vertical']
+ */
 function CircleBoxMorph(orientation) {
     this.init(orientation || 'vertical');
 }
 
+/**
+ * Initializes this CircleBoxMorph
+ * @param {String} [orientation='vertical']
+ */
 CircleBoxMorph.prototype.init = function (orientation) {
     CircleBoxMorph.uber.init.call(this);
     this.orientation = orientation;
@@ -7752,6 +7892,7 @@ CircleBoxMorph.prototype.init = function (orientation) {
     this.setExtent(new Point(20, 100));
 };
 
+/** Auto-orients this CircleBoxMorph */
 CircleBoxMorph.prototype.autoOrientation = function () {
     if (this.height() > this.width()) {
         this.orientation = 'vertical';
@@ -7760,6 +7901,7 @@ CircleBoxMorph.prototype.autoOrientation = function () {
     }
 };
 
+/** Draws a new CircleBoxMorph */
 CircleBoxMorph.prototype.drawNew = function () {
     var radius, center1, center2, rect, points, x, y,
         context, ext,
@@ -7818,6 +7960,10 @@ CircleBoxMorph.prototype.drawNew = function () {
 
 // CircleBoxMorph menu:
 
+/**
+ * Builds the developer menu
+ * @returns {MenuMorph}
+ */
 CircleBoxMorph.prototype.developersMenu = function () {
     var menu = CircleBoxMorph.uber.developersMenu.call(this);
     menu.addLine();
@@ -7837,6 +7983,10 @@ CircleBoxMorph.prototype.developersMenu = function () {
     return menu;
 };
 
+/**
+ * Developer menu's "horizontal..." and "vertical..." menus action handler
+ * @private
+ */
 CircleBoxMorph.prototype.toggleOrientation = function () {
     var center = this.center();
     this.changed();
@@ -7861,10 +8011,20 @@ SliderButtonMorph.prototype = new CircleBoxMorph();
 SliderButtonMorph.prototype.constructor = SliderButtonMorph;
 SliderButtonMorph.uber = CircleBoxMorph.prototype;
 
+/**
+ * Creates a new SliderButtonMorph
+ * @class
+ * @extends CircleBoxMorph
+ * @param {String} [orientation='vertical']
+ */
 function SliderButtonMorph(orientation) {
     this.init(orientation);
 }
 
+/**
+ * Initializes this SliderButtonMorph
+ * @param {String} [orientation='vertical']
+ */
 SliderButtonMorph.prototype.init = function (orientation) {
     this.color = new Color(80, 80, 80);
     this.highlightColor = new Color(90, 90, 140);
@@ -7876,6 +8036,7 @@ SliderButtonMorph.prototype.init = function (orientation) {
 
 SliderButtonMorph.prototype.autoOrientation = nop;
 
+/** Draws this SliderButtonMorph */
 SliderButtonMorph.prototype.drawNew = function () {
     var colorBak = this.color.copy();
 
@@ -7904,6 +8065,7 @@ SliderButtonMorph.prototype.drawNew = function () {
 
 };
 
+/** @private */
 SliderButtonMorph.prototype.drawEdges = function () {
     var context = this.image.getContext('2d'),
         gradient,
@@ -8037,27 +8199,32 @@ SliderButtonMorph.prototype.drawEdges = function () {
 
 //SliderButtonMorph events:
 
+/** Handles the mouse enter event over this SliderButtonMorph */
 SliderButtonMorph.prototype.mouseEnter = function () {
     this.image = this.highlightImage;
     this.changed();
 };
 
+/** Handles the mouse leave event over this SliderButtonMorph */
 SliderButtonMorph.prototype.mouseLeave = function () {
     this.image = this.normalImage;
     this.changed();
 };
 
+/** Handles the left mouse down event over this SliderButtonMorph */
 SliderButtonMorph.prototype.mouseDownLeft = function (pos) {
     this.image = this.pressImage;
     this.changed();
     this.escalateEvent('mouseDownLeft', pos);
 };
 
+/** Handles the left mouse click event over this SliderButtonMorph */
 SliderButtonMorph.prototype.mouseClickLeft = function () {
     this.image = this.highlightImage;
     this.changed();
 };
 
+/** Handles the mouse move event over this SliderButtonMorph */
 SliderButtonMorph.prototype.mouseMove = function () {
     // prevent my parent from getting picked up
     nop();
@@ -8071,6 +8238,17 @@ SliderMorph.prototype = new CircleBoxMorph();
 SliderMorph.prototype.constructor = SliderMorph;
 SliderMorph.uber = CircleBoxMorph.prototype;
 
+/**
+ * Creates a SliderMorph
+ * @class
+ * @extends CircleBoxMorph
+ * @param {number} [start=1]
+ * @param {number} [stop=100]
+ * @param {number} [value=50]
+ * @param {number} [size=10]
+ * @param {String} [orientation='vertical']
+ * @param {Color} [color]
+ */
 function SliderMorph(start, stop, value, size, orientation, color) {
     this.init(
         start || 1,
@@ -8082,6 +8260,15 @@ function SliderMorph(start, stop, value, size, orientation, color) {
     );
 }
 
+/**
+ * Initializes this SliderMorph
+ * @param {number} [start=1] Minimum value
+ * @param {number} [stop=100] Maximum value
+ * @param {number} [value=50] Current value
+ * @param {number} [size=10] Thumb size
+ * @param {String} [orientation='vertical'] Orientation
+ * @param {Color} [color] 
+ */
 SliderMorph.prototype.init = function (
     start,
     stop,
@@ -8112,10 +8299,18 @@ SliderMorph.prototype.init = function (
 
 SliderMorph.prototype.autoOrientation = nop;
 
+/**
+ * Gets how many values this SliderMorph can have
+ * @returns {number}
+ */
 SliderMorph.prototype.rangeSize = function () {
     return this.stop - this.start;
 };
 
+/**
+ * Gets the proportion between the SliderMorph's size and its thumb's
+ * @returns {number}
+ */
 SliderMorph.prototype.ratio = function () {
     return this.size / (this.rangeSize() + 1);
 };
@@ -8129,6 +8324,7 @@ SliderMorph.prototype.unitSize = function () {
         this.rangeSize();
 };
 
+/** Draws this SliderMorph */
 SliderMorph.prototype.drawNew = function () {
     var bw, bh, posX, posY;
 
@@ -8160,6 +8356,7 @@ SliderMorph.prototype.drawNew = function () {
     this.button.changed();
 };
 
+/** Updates the value */
 SliderMorph.prototype.updateValue = function () {
     var relPos;
     if (this.orientation === 'vertical') {
@@ -8171,6 +8368,7 @@ SliderMorph.prototype.updateValue = function () {
     this.updateTarget();
 };
 
+/** @private */
 SliderMorph.prototype.updateTarget = function () {
     if (this.action) {
         if (typeof this.action === 'function') {
@@ -8183,6 +8381,10 @@ SliderMorph.prototype.updateTarget = function () {
 
 // SliderMorph menu:
 
+/**
+ * Builds the developer menu
+ * @returns {MenuMorph}
+ */
 SliderMorph.prototype.developersMenu = function () {
     var menu = SliderMorph.uber.developersMenu.call(this);
     menu.addItem(
@@ -8248,6 +8450,10 @@ SliderMorph.prototype.developersMenu = function () {
     return menu;
 };
 
+/**
+ * Developer menu's "show value..." menu action handler
+ * @private
+ */
 SliderMorph.prototype.showValue = function () {
     this.inform(this.value);
 };
@@ -8340,6 +8546,7 @@ SliderMorph.prototype.setTarget = function () {
     }
 };
 
+/** @private */
 SliderMorph.prototype.setTargetSetter = function () {
     var choices = this.target.numericalSetters(),
         menu = new MenuMorph(this, 'choose target property:'),
@@ -8368,6 +8575,7 @@ SliderMorph.prototype.numericalSetters = function () {
 
 SliderMorph.prototype.step = null;
 
+/** Handles the left mouse down event over this SliderButtonMorph */
 SliderMorph.prototype.mouseDownLeft = function (pos) {
     var world, myself = this;
 
@@ -9000,6 +9208,15 @@ MenuMorph.uber = BoxMorph.prototype;
 
 // MenuMorph instance creation:
 
+/**
+ * Creates a MenuMorph
+ * @class
+ * @extends BoxMorph
+ * @param {Object|Function} target
+ * @param {String} [title] Menu title
+ * @param {String} [environment]
+ * @param {number} [fontSize]
+ */
 function MenuMorph(target, title, environment, fontSize) {
     this.init(target, title, environment, fontSize);
 
@@ -9024,6 +9241,13 @@ function MenuMorph(target, title, environment, fontSize) {
     */
 }
 
+/**
+ * Initializes this MenuMorph
+ * @param {Object|Function} target
+ * @param {String} [title] Menu title
+ * @param {String} [environment]
+ * @param {number} [fontSize]
+ */
 MenuMorph.prototype.init = function (target, title, environment, fontSize) {
     // additional properties:
     this.target = target;
@@ -9049,6 +9273,17 @@ MenuMorph.prototype.init = function (target, title, environment, fontSize) {
     this.edge = null;
 };
 
+/**
+ * Adds an item entry
+ * @param {String|Morph|HTMLCanvasElement|Array} [labelString='close']
+ * @param {String|Function} [action]
+ * @param {String} hint
+ * @param {Color} [color] Text color
+ * @param {boolean} [bold=false] Whether the font weight is bold
+ * @param {boolean} [italic=false] Whether the font style is italic
+ * @param {Function} [doubleClickAction]
+ * @param {String|Morph|Canvas|Array} [shortcut]
+ */
 MenuMorph.prototype.addItem = function (
     labelString,
     action,
@@ -9078,18 +9313,36 @@ MenuMorph.prototype.addItem = function (
         shortcut]);
 };
 
+/**
+ * Adds a submenu entry
+ * @param {String} [label] Menu entry text
+ * @param {MenuMorph} [aMenu] The submenu
+ * @param {String|Morph|Canvas|Array} [indicator]
+ */
 MenuMorph.prototype.addMenu = function (label, aMenu, indicator) {
     this.addPair(label, aMenu, isNil(indicator) ? '\u25ba' : indicator);
 };
 
+/**
+ * Short version of MenuMorph#addItem
+ * @param {String} label
+ * @param {Function} action
+ * @param {String|Morph|Canvas|Array} shortcut
+ * @param {String} hint
+ */
 MenuMorph.prototype.addPair = function (label, action, shortcut, hint) {
     this.addItem(label, action, hint, null, null, null, null, shortcut);
 };
 
+/**
+ * Adds a separator
+ * @param {number} [width=1] Separator width
+ */
 MenuMorph.prototype.addLine = function (width) {
     this.items.push([0, width || 1]);
 };
 
+/** @private */
 MenuMorph.prototype.createLabel = function () {
     var text;
     if (this.label !== null) {
@@ -9197,6 +9450,10 @@ MenuMorph.prototype.drawNew = function () {
     MenuMorph.uber.drawNew.call(this);
 };
 
+/**
+ * @private
+ * @returns {number}
+ */
 MenuMorph.prototype.maxWidth = function () {
     var w = 0;
 
@@ -9253,6 +9510,7 @@ MenuMorph.prototype.adjustWidths = function () {
     });
 };
 
+/** Deselects all items */
 MenuMorph.prototype.unselectAllItems = function () {
     this.children.forEach(function (item) {
         if (item instanceof MenuItemMorph) {
@@ -9270,6 +9528,11 @@ MenuMorph.prototype.unselectAllItems = function () {
 
 // MenuMorph popping up
 
+/**
+ * Shows this menu in a WorldMorph at some position
+ * @param {WorldMorph} world
+ * @param {Point} pos
+ */
 MenuMorph.prototype.popup = function (world, pos) {
 	var scroller;
 
@@ -9301,6 +9564,10 @@ MenuMorph.prototype.popup = function (world, pos) {
     this.fullChanged();
 };
 
+/**
+ * Moves all items into a ScollFrameMorph
+ * @private
+ */
 MenuMorph.prototype.scroll = function () {
     // private - move all items into a scroll frame
      var scroller = new ScrollFrameMorph(),
@@ -9316,11 +9583,19 @@ MenuMorph.prototype.scroll = function () {
     return scroller;
 };
 
+/**
+ * Shows this MenuMorph in a WorldMorph at the current hand position
+ * @param {WorldMorph} world
+ */
 MenuMorph.prototype.popUpAtHand = function (world) {
     var wrrld = world || this.world;
     this.popup(wrrld, wrrld.hand.position());
 };
 
+/**
+ * Shows this MenuMorph in a WorldMorph centered at the current hand position
+ * @param {WorldMorph} world
+ */
 MenuMorph.prototype.popUpCenteredAtHand = function (world) {
     var wrrld = world || this.world;
     this.drawNew();
@@ -9332,6 +9607,10 @@ MenuMorph.prototype.popUpCenteredAtHand = function (world) {
     );
 };
 
+/**
+ * Shows this MenuMorph centred in a WorldMorph
+ * @param {WorldMorph} world
+ */
 MenuMorph.prototype.popUpCenteredInWorld = function (world) {
     var wrrld = world || this.world;
     this.drawNew();
@@ -9345,6 +9624,9 @@ MenuMorph.prototype.popUpCenteredInWorld = function (world) {
 
 // MenuMorph submenus
 
+/**
+ * Destroys this sub-MenuMorph's top level MenuMorph
+ */
 MenuMorph.prototype.closeRootMenu = function () {
     if (this.parent instanceof MenuMorph) {
         this.parent.closeRootMenu();
@@ -9495,6 +9777,7 @@ MenuMorph.prototype.select = function (aMenuItem) {
     this.selection = aMenuItem;
 };
 
+/** Releases all taken resources */
 MenuMorph.prototype.destroy = function () {
     if (this.hasFocus) {
         this.world.keyboardReceiver = null;
@@ -9514,6 +9797,21 @@ StringMorph.uber = Morph.prototype;
 
 // StringMorph instance creation:
 
+/**
+ * Creates a StringMorph
+ * @class
+ * @extends Morph
+ * @param {String} [text='StringMorph'] The text
+ * @param {number} [fontSize=12] Text font size
+ * @param {String} [fontStyle='sans-serif'] Text font size
+ * @param {boolean} [bold=false] Whether the font weight is bold
+ * @param {boolean} [italic=false] Whether the font style is italic
+ * @param {boolean} [isNumeric] Whether this StringMorph can show only numbers
+ * @param {number} [shadowOffset] Shadow offset
+ * @param {Color} [shadowColor] Shadow color
+ * @param {Color} [color] Text color
+ * @param {String} [fontName] Font name
+ */
 function StringMorph(
     text,
     fontSize,
@@ -9540,6 +9838,19 @@ function StringMorph(
     );
 }
 
+/**
+ * Initializes this StringMorph
+ * @param {String} [text='StringMorph'] The text
+ * @param {number} [fontSize=12] Text font size
+ * @param {String} [fontStyle='sans-serif'] Text font size
+ * @param {boolean} [bold=false] Whether the font weight is bold
+ * @param {boolean} [italic=false] Whether the font style is italic
+ * @param {boolean} [isNumeric] Whether this StringMorph can show only numbers
+ * @param {number} [shadowOffset] Shadow offset
+ * @param {Color} [shadowColor] Shadow color
+ * @param {Color} [color] Text color
+ * @param {String} [fontName] Font name
+ */
 StringMorph.prototype.init = function (
     text,
     fontSize,
@@ -9584,6 +9895,11 @@ StringMorph.prototype.init = function (
     this.drawNew();
 };
 
+/**
+ * Gets the string representation
+ * @returns {String}
+ * @example 'a StringMorph("Hello World")'
+ */
 StringMorph.prototype.toString = function () {
     // e.g. 'a StringMorph("Hello World")'
     return 'a ' +
@@ -9592,6 +9908,13 @@ StringMorph.prototype.toString = function () {
         '("' + this.text.slice(0, 30) + '...")';
 };
 
+/**
+ * Repeates some string a given number of times
+ * @private
+ * @param {String} letter
+ * @param {number} length
+ * @returns {String}
+ */
 StringMorph.prototype.password = function (letter, length) {
     var ans = '',
         i;
@@ -9601,6 +9924,11 @@ StringMorph.prototype.password = function (letter, length) {
     return ans;
 };
 
+/**
+ * Gets the font representation
+ * @returns {String}
+ * @example 'bold italic 12px sans-serif'
+ */
 StringMorph.prototype.font = function () {
     // answer a font string, e.g. 'bold italic 12px sans-serif'
     var font = '';
@@ -9616,6 +9944,7 @@ StringMorph.prototype.font = function () {
         this.fontStyle;
 };
 
+/** Draws this StringMorph */
 StringMorph.prototype.drawNew = function () {
     var context, width, start, stop, i, p, c, x, y,
         shadowOffset = this.shadowOffset || new Point(),
@@ -9686,6 +10015,13 @@ StringMorph.prototype.drawNew = function () {
     }
 };
 
+/**
+ * Renders the string using a dot for represent blank spaces
+ * @private
+ * @param {RenderingContext} context Target canvas context
+ * @param {number} startX
+ * @param {number} y
+ */
 StringMorph.prototype.renderWithBlanks = function (context, startX, y) {
     var space = context.measureText(' ').width,
         blank = newCanvas(new Point(space, this.height())),
@@ -9725,6 +10061,12 @@ StringMorph.prototype.renderWithBlanks = function (context, startX, y) {
 
 // StringMorph measuring:
 
+/**
+ * Gets the Point where the cursor should be placed
+ * to be drawn after some character
+ * @param {number} slot
+ * @returns {Point}
+ */
 StringMorph.prototype.slotPosition = function (slot) {
     // answer the position point of the given index ("slot")
     // where the cursor should be placed
@@ -9747,6 +10089,11 @@ StringMorph.prototype.slotPosition = function (slot) {
     return new Point(x, y);
 };
 
+/**
+ * Gets the character index which is closer to a Point
+ * @param {Point} aPoint
+ * @return {number}
+ */
 StringMorph.prototype.slotAt = function (aPoint) {
     // answer the slot (index) closest to the given point taking
     // in account how far from the middle of the character it is,
@@ -9779,26 +10126,51 @@ StringMorph.prototype.slotAt = function (aPoint) {
     }
 };
 
+/**
+ * Gets the slot (index) which lays above another
+ * @param {number} slot
+ * @returns {number}
+ */
 StringMorph.prototype.upFrom = function (slot) {
     // answer the slot above the given one
     return slot;
 };
 
+/**
+ * Gets the slot (index) which lays below another
+ * @param {number} slot
+ * @returns {number}
+ */
 StringMorph.prototype.downFrom = function (slot) {
     // answer the slot below the given one
     return slot;
 };
 
+/**
+ * Gets the slot (index) for the first character of the line
+ * @param {number} slot
+ * @returns {number}
+ */
 StringMorph.prototype.startOfLine = function () {
     // answer the first slot (index) of the line for the given slot
     return 0;
 };
 
+/**
+ * Gets the slot (index) for the last character of the line
+ * @param {number} slot
+ * @returns {number}
+ */
 StringMorph.prototype.endOfLine = function () {
     // answer the slot (index) indicating the EOL for the given slot
     return this.text.length;
 };
 
+/**
+ * Gets the index of the previous word to that occuping a given index starts
+ * @param {number} aSlot
+ * @returns {number}
+ */
 StringMorph.prototype.previousWordFrom = function (aSlot) {
     // answer the slot (index) slots indicating the position of the
     // previous word to the left of aSlot
@@ -9820,6 +10192,11 @@ StringMorph.prototype.previousWordFrom = function (aSlot) {
     return index;
 };
 
+/**
+ * Gets the index of the next word to that occuping a given index starts
+ * @param {number} aSlot
+ * @returns {number}
+ */
 StringMorph.prototype.nextWordFrom = function (aSlot) {
     var index = aSlot;
     
@@ -9834,6 +10211,9 @@ StringMorph.prototype.nextWordFrom = function (aSlot) {
     return index;
 };
 
+/**
+ * @return {number}
+ */
 StringMorph.prototype.rawHeight = function () {
     // answer my corrected fontSize
     return this.height() / 1.2;
@@ -9841,6 +10221,10 @@ StringMorph.prototype.rawHeight = function () {
 
 // StringMorph menus:
 
+/**
+ * Builds the developer menu
+ * @returns {MenuMorph}
+ */
 StringMorph.prototype.developersMenu = function () {
     var menu = StringMorph.uber.developersMenu.call(this);
 
@@ -9901,6 +10285,10 @@ StringMorph.prototype.toggleIsDraggable = function () {
     }
 };
 
+/**
+ * Developer menu's "hide blanks" and "show blanks" menus action handler
+ * @private
+ */
 StringMorph.prototype.toggleShowBlanks = function () {
     this.isShowingBlanks = !this.isShowingBlanks;
     this.changed();
@@ -9908,6 +10296,10 @@ StringMorph.prototype.toggleShowBlanks = function () {
     this.changed();
 };
 
+/**
+ * Developer menu's "normal weight" and "bold" menus action handler
+ * @private
+ */
 StringMorph.prototype.toggleWeight = function () {
     this.isBold = !this.isBold;
     this.changed();
@@ -9915,6 +10307,10 @@ StringMorph.prototype.toggleWeight = function () {
     this.changed();
 };
 
+/**
+ * Developer menu's "normal style" and "italic" menus action handler
+ * @private
+ */
 StringMorph.prototype.toggleItalic = function () {
     this.isItalic = !this.isItalic;
     this.changed();
@@ -9922,6 +10318,11 @@ StringMorph.prototype.toggleItalic = function () {
     this.changed();
 };
 
+/**
+ * Developer menu's "show characters" and "hide characters"
+ * menus action handler
+ * @private
+ */
 StringMorph.prototype.toggleIsPassword = function () {
     this.isPassword = !this.isPassword;
     this.changed();
@@ -9929,6 +10330,10 @@ StringMorph.prototype.toggleIsPassword = function () {
     this.changed();
 };
 
+/**
+ * Developer menu's "serif" menu action handler
+ * @private
+ */
 StringMorph.prototype.setSerif = function () {
     this.fontStyle = 'serif';
     this.changed();
@@ -9936,6 +10341,10 @@ StringMorph.prototype.setSerif = function () {
     this.changed();
 };
 
+/**
+ * Developer menu's "sans-serif" menu action handler
+ * @private
+ */
 StringMorph.prototype.setSansSerif = function () {
     this.fontStyle = 'sans-serif';
     this.changed();
@@ -9986,6 +10395,10 @@ StringMorph.prototype.edit = function () {
     this.root().edit(this);
 };
 
+/**
+ * Gets the selected text
+ * @returns {String}
+ */
 StringMorph.prototype.selection = function () {
     var start, stop;
     start = Math.min(this.startMark, this.endMark);
@@ -9993,10 +10406,15 @@ StringMorph.prototype.selection = function () {
     return this.text.slice(start, stop);
 };
 
+/**
+ * Gets the slot (index) of the character where the selection starts
+ * @returns {number}
+ */
 StringMorph.prototype.selectionStartSlot = function () {
     return Math.min(this.startMark, this.endMark);
 };
 
+/** Clears the selection */
 StringMorph.prototype.clearSelection = function () {
     if (!this.currentlySelecting &&
             isNil(this.startMark) &&
@@ -10010,6 +10428,7 @@ StringMorph.prototype.clearSelection = function () {
     this.changed();
 };
 
+/** Deletes the current selected text */
 StringMorph.prototype.deleteSelection = function () {
     var start, stop, text;
     text = this.text;
@@ -10020,6 +10439,7 @@ StringMorph.prototype.deleteSelection = function () {
     this.clearSelection();
 };
 
+/** Selects all the text */
 StringMorph.prototype.selectAll = function () {
     var cursor;
     if (this.isEditable) {
@@ -10034,6 +10454,10 @@ StringMorph.prototype.selectAll = function () {
     }
 };
 
+/**
+ * Handles the left mouse down event over this StringMorph
+ * @param {Point} pos Point where the event occured 
+ */
 StringMorph.prototype.mouseDownLeft = function (pos) {
     if (this.world().currentKey === 16) {
         this.shiftClick(pos);
@@ -10060,6 +10484,10 @@ StringMorph.prototype.shiftClick = function (pos) {
     this.escalateEvent('mouseDownLeft', pos);
 };
 
+/**
+ * Handles the left mouse click event over this StringMorph
+ * @param {Point} pos Point where the event occured 
+ */
 StringMorph.prototype.mouseClickLeft = function (pos) {
     var cursor;
     if (this.isEditable) {
@@ -10076,6 +10504,10 @@ StringMorph.prototype.mouseClickLeft = function (pos) {
     }
 };
 
+/**
+ * Handles the mouse double click event over this StringMorph
+ * @param {Point} pos Point where the event occured 
+ */
 StringMorph.prototype.mouseDoubleClick = function (pos) {
     // selects the word at pos
     // if there is no word, we select whatever is between
@@ -10103,6 +10535,10 @@ StringMorph.prototype.mouseDoubleClick = function (pos) {
     }
 };
 
+/**
+ * Selects the word containing the character at slot (index)
+ * @param {number} slot
+ */
 StringMorph.prototype.selectWordAt = function (slot) {
     var cursor = this.root().cursor;
 
@@ -10136,6 +10572,7 @@ StringMorph.prototype.selectBetweenWordsAt = function (slot) {
     this.changed();
 };
 
+/** Disables selecting text on this StringMorph */
 StringMorph.prototype.enableSelecting = function () {
     this.mouseDownLeft = function (pos) {
         var crs = this.root().cursor,
@@ -10168,6 +10605,7 @@ StringMorph.prototype.enableSelecting = function () {
     };
 };
 
+/** Disables selecting text in this StringMorph */
 StringMorph.prototype.disableSelecting = function () {
     this.mouseDownLeft = StringMorph.prototype.mouseDownLeft;
     delete this.mouseMove;
@@ -13225,6 +13663,7 @@ WorldMorph.prototype.initEventListeners = function () {
         // For Safari / chrome
         return msg;
     };
+    window.onbeforeunload = null;
 };
 
 WorldMorph.prototype.mouseDownLeft = nop;

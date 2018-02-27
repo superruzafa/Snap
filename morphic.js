@@ -3004,10 +3004,19 @@ Rectangle.prototype.asArray_xywh = function () {
 
 // Node instance creation:
 
+/**
+ * @constructor
+ * @param {Node} [parent]
+ * @param {Array.<Node>} [childrenArray=[]]
+ */
 function Node(parent, childrenArray) {
     this.init(parent || null, childrenArray || []);
 }
 
+/**
+ * @param {Node} [parent]
+ * @param {Array.<Node>} [childrenArray=[]]
+ */
 Node.prototype.init = function (parent, childrenArray) {
     this.parent = parent || null;
     this.children = childrenArray || [];
@@ -3015,22 +3024,35 @@ Node.prototype.init = function (parent, childrenArray) {
 
 // Node string representation: e.g. 'a Node[3]'
 
+/**
+ * @returns {String}
+ * @example 'a Node[5]'
+ */
 Node.prototype.toString = function () {
     return 'a Node' + '[' + this.children.length.toString() + ']';
 };
 
 // Node accessing:
 
+/**
+ * @param {Node} aNode
+ */
 Node.prototype.addChild = function (aNode) {
     this.children.push(aNode);
     aNode.parent = this;
 };
 
+/**
+ * @param {Node} aNode
+ */
 Node.prototype.addChildFirst = function (aNode) {
     this.children.splice(0, null, aNode);
     aNode.parent = this;
 };
 
+/**
+ * @param {Node} aNode
+ */
 Node.prototype.removeChild = function (aNode) {
     var idx = this.children.indexOf(aNode);
     if (idx !== -1) {
@@ -3040,6 +3062,9 @@ Node.prototype.removeChild = function (aNode) {
 
 // Node functions:
 
+/**
+ * @returns {Node}
+ */
 Node.prototype.root = function () {
     if (this.parent === null) {
         return this;
@@ -3047,6 +3072,9 @@ Node.prototype.root = function () {
     return this.parent.root();
 };
 
+/**
+ * @returns {number}
+ */
 Node.prototype.depth = function () {
     if (this.parent === null) {
         return 0;
@@ -3054,6 +3082,9 @@ Node.prototype.depth = function () {
     return this.parent.depth() + 1;
 };
 
+/**
+ * @returns {Array.<Node>}
+ */
 Node.prototype.allChildren = function () {
     // includes myself
     var result = [this];
@@ -3063,6 +3094,9 @@ Node.prototype.allChildren = function () {
     return result;
 };
 
+/**
+ * @param {Function} aFunction
+ */
 Node.prototype.forAllChildren = function (aFunction) {
     if (this.children.length > 0) {
         this.children.forEach(function (child) {
@@ -3072,6 +3106,10 @@ Node.prototype.forAllChildren = function (aFunction) {
     aFunction.call(null, this);
 };
 
+/**
+ * @param {Function} aPredicate
+ * @returns {boolean}
+ */
 Node.prototype.anyChild = function (aPredicate) {
     // includes myself
     var i;
@@ -3086,6 +3124,9 @@ Node.prototype.anyChild = function (aPredicate) {
     return false;
 };
 
+/**
+ * @returns {Array.<Node>}
+ */
 Node.prototype.allLeafs = function () {
     var result = [];
     this.allChildren().forEach(function (element) {
@@ -3096,6 +3137,9 @@ Node.prototype.allLeafs = function () {
     return result;
 };
 
+/**
+ * @returns {Array.<Node>}
+ */
 Node.prototype.allParents = function () {
     // includes myself
     var result = [this];
@@ -3105,6 +3149,9 @@ Node.prototype.allParents = function () {
     return result;
 };
 
+/**
+ * @returns {Array.<Node>}
+ */
 Node.prototype.siblings = function () {
     var myself = this;
     if (this.parent === null) {
@@ -3115,6 +3162,10 @@ Node.prototype.siblings = function () {
     });
 };
 
+/**
+ * @param {Function} constructor
+ * @returns {Node}
+ */
 Node.prototype.parentThatIsA = function (constructor) {
     // including myself
     if (this instanceof constructor) {
@@ -3126,6 +3177,10 @@ Node.prototype.parentThatIsA = function (constructor) {
     return this.parent.parentThatIsA(constructor);
 };
 
+/**
+ * @param {Array.<Function>} constructors
+ * @returns {Node}
+ */
 Node.prototype.parentThatIsAnyOf = function (constructors) {
     // including myself
     var yup = false,
@@ -3201,12 +3256,19 @@ Morph.prototype.shadowBlur = 4;
 
 // Morph instance creation:
 
+/**
+ * @constructor
+ * @extends {Node}
+ */
 function Morph() {
     this.init();
 }
 
 // Morph initialization:
 
+/**
+ * @param {boolean} [noDraw=false]
+ */
 Morph.prototype.init = function (noDraw) {
     Morph.uber.init.call(this);
     this.isMorph = true;
@@ -3232,6 +3294,10 @@ Morph.prototype.init = function (noDraw) {
 
 // Morph string representation: e.g. 'a Morph 2 [20@45 | 130@250]'
 
+/**
+ * @returns {String}
+ * @example 'a Morph 10 [0@0 | 50@40]'
+ */
 Morph.prototype.toString = function () {
     return 'a ' +
         (this.constructor.name ||
@@ -3243,6 +3309,7 @@ Morph.prototype.toString = function () {
 
 // Morph deleting:
 
+/** */
 Morph.prototype.destroy = function () {
     if (this.parent !== null) {
         this.fullChanged();
@@ -3252,6 +3319,7 @@ Morph.prototype.destroy = function () {
 
 // Morph stepping:
 
+/** */
 Morph.prototype.stepFrame = function () {
     if (!this.step) {
         return null;
@@ -3278,6 +3346,9 @@ Morph.prototype.stepFrame = function () {
     }
 };
 
+/**
+ * @param {Array.<Function>} arrayOfFunctions
+ */
 Morph.prototype.nextSteps = function (arrayOfFunctions) {
     var lst = arrayOfFunctions || [],
         nxt = lst.shift(),
@@ -3290,85 +3361,147 @@ Morph.prototype.nextSteps = function (arrayOfFunctions) {
     }
 };
 
+/** */
 Morph.prototype.step = nop;
 
 // Morph accessing - geometry getting:
 
+/**
+ * @returns {number}
+ */
 Morph.prototype.left = function () {
     return this.bounds.left();
 };
 
+/**
+ * @returns {number}
+ */
 Morph.prototype.right = function () {
     return this.bounds.right();
 };
 
+/**
+ * @returns {number}
+ */
 Morph.prototype.top = function () {
     return this.bounds.top();
 };
 
+/**
+ * @returns {number}
+ */
 Morph.prototype.bottom = function () {
     return this.bounds.bottom();
 };
 
+/**
+ * @returns {Point}
+ */
 Morph.prototype.center = function () {
     return this.bounds.center();
 };
 
+/**
+ * @returns {Point}
+ */
 Morph.prototype.bottomCenter = function () {
     return this.bounds.bottomCenter();
 };
 
+/**
+ * @returns {Point}
+ */
 Morph.prototype.bottomLeft = function () {
     return this.bounds.bottomLeft();
 };
 
+/**
+ * @returns {Point}
+ */
 Morph.prototype.bottomRight = function () {
     return this.bounds.bottomRight();
 };
 
+/**
+ * @returns {Point}
+ */
 Morph.prototype.boundingBox = function () {
     return this.bounds;
 };
 
+/**
+ * @returns {Array.<Point>}
+ */
 Morph.prototype.corners = function () {
     return this.bounds.corners();
 };
 
+/**
+ * @returns {Point}
+ */
 Morph.prototype.leftCenter = function () {
     return this.bounds.leftCenter();
 };
 
+/**
+ * @returns {Point}
+ */
 Morph.prototype.rightCenter = function () {
     return this.bounds.rightCenter();
 };
 
+/**
+ * @returns {Point}
+ */
 Morph.prototype.topCenter = function () {
     return this.bounds.topCenter();
 };
 
+/**
+ * @returns {Point}
+ */
 Morph.prototype.topLeft = function () {
     return this.bounds.topLeft();
 };
 
+/**
+ * @returns {Point}
+ */
 Morph.prototype.topRight = function () {
     return this.bounds.topRight();
 };
+
+/**
+ * @returns {Point}
+ */
 Morph.prototype.position = function () {
     return this.bounds.origin;
 };
 
+/**
+ * @returns {Point}
+ */
 Morph.prototype.extent = function () {
     return this.bounds.extent();
 };
 
+/**
+ * @returns {number}
+ */
 Morph.prototype.width = function () {
     return this.bounds.width();
 };
 
+/**
+ * @returns {number}
+ */
 Morph.prototype.height = function () {
     return this.bounds.height();
 };
 
+/**
+ * @returns {Rectangle}
+ */
 Morph.prototype.fullBounds = function () {
     var result;
     result = this.bounds;
@@ -3380,6 +3513,9 @@ Morph.prototype.fullBounds = function () {
     return result;
 };
 
+/**
+ * @returns {Rectangle}
+ */
 Morph.prototype.fullBoundsNoShadow = function () {
     // answer my full bounds but ignore any shadow
     var result;
@@ -3392,6 +3528,9 @@ Morph.prototype.fullBoundsNoShadow = function () {
     return result;
 };
 
+/**
+ * @returns {Rectangle}
+ */
 Morph.prototype.visibleBounds = function () {
     // answer which part of me is not clipped by a Frame
     var visible = this.bounds,
@@ -3406,12 +3545,18 @@ Morph.prototype.visibleBounds = function () {
 
 // Morph accessing - simple changes:
 
+/**
+ * @param {number|Point} delta
+ */
 Morph.prototype.moveBy = function (delta) {
     this.fullChanged();
     this.silentMoveBy(delta);
     this.fullChanged();
 };
 
+/**
+ * @param {number|Point} delta
+ */
 Morph.prototype.silentMoveBy = function (delta) {
     var children = this.children,
         i = children.length;
@@ -3425,6 +3570,9 @@ Morph.prototype.silentMoveBy = function (delta) {
     }
 };
 
+/**
+ * @param {Point} aPoint
+ */
 Morph.prototype.setPosition = function (aPoint) {
     var delta = aPoint.subtract(this.topLeft());
     if ((delta.x !== 0) || (delta.y !== 0)) {
@@ -3432,6 +3580,9 @@ Morph.prototype.setPosition = function (aPoint) {
     }
 };
 
+/**
+ * @param {Point} aPoint
+ */
 Morph.prototype.silentSetPosition = function (aPoint) {
     var delta = aPoint.subtract(this.topLeft());
     if ((delta.x !== 0) || (delta.y !== 0)) {
@@ -3439,6 +3590,9 @@ Morph.prototype.silentSetPosition = function (aPoint) {
     }
 };
 
+/**
+ * @param {number} x
+ */
 Morph.prototype.setLeft = function (x) {
     this.setPosition(
         new Point(
@@ -3448,6 +3602,9 @@ Morph.prototype.setLeft = function (x) {
     );
 };
 
+/**
+ * @param {number} x
+ */
 Morph.prototype.setRight = function (x) {
     this.setPosition(
         new Point(
@@ -3457,6 +3614,9 @@ Morph.prototype.setRight = function (x) {
     );
 };
 
+/**
+ * @param {number} y
+ */
 Morph.prototype.setTop = function (y) {
     this.setPosition(
         new Point(
@@ -3466,6 +3626,9 @@ Morph.prototype.setTop = function (y) {
     );
 };
 
+/**
+ * @param {number} y
+ */
 Morph.prototype.setBottom = function (y) {
     this.setPosition(
         new Point(
@@ -3475,6 +3638,9 @@ Morph.prototype.setBottom = function (y) {
     );
 };
 
+/**
+ * @param {Point} aPoint
+ */
 Morph.prototype.setCenter = function (aPoint) {
     this.setPosition(
         aPoint.subtract(
@@ -3483,6 +3649,9 @@ Morph.prototype.setCenter = function (aPoint) {
     );
 };
 
+/**
+ * @param {Point} aPoint
+ */
 Morph.prototype.setFullCenter = function (aPoint) {
     this.setPosition(
         aPoint.subtract(
@@ -3491,6 +3660,9 @@ Morph.prototype.setFullCenter = function (aPoint) {
     );
 };
 
+/**
+ * @param {Morph} aMorph
+ */
 Morph.prototype.keepWithin = function (aMorph) {
     // make sure I am completely within another Morph's bounds
     var leftOff, rightOff, topOff, bottomOff;
@@ -3512,6 +3684,7 @@ Morph.prototype.keepWithin = function (aMorph) {
     }
 };
 
+/** */
 Morph.prototype.scrollIntoView = function () {
     var leftOff, rightOff, topOff, bottomOff,
         sf = this.parentThatIsA(ScrollFrameMorph);
@@ -3540,6 +3713,10 @@ Morph.prototype.scrollIntoView = function () {
 
 // Morph accessing - dimensional changes requiring a complete redraw
 
+/**
+ * @param {Point} aPoint
+ * @param {boolean} [silently=false]
+ */
 Morph.prototype.setExtent = function (aPoint, silently) {
     // silently avoids redrawing the receiver
     if (silently) {
@@ -3554,6 +3731,9 @@ Morph.prototype.setExtent = function (aPoint, silently) {
     }
 };
 
+/**
+ * @param {Point} aPoint
+ */
 Morph.prototype.silentSetExtent = function (aPoint) {
     var ext, newWidth, newHeight;
     ext = aPoint.round();
@@ -3565,10 +3745,16 @@ Morph.prototype.silentSetExtent = function (aPoint) {
     );
 };
 
+/**
+ * @param {number} width
+ */
 Morph.prototype.setWidth = function (width) {
     this.setExtent(new Point(width || 0, this.height()));
 };
 
+/**
+ * @param {number} width
+ */
 Morph.prototype.silentSetWidth = function (width) {
     // do not drawNew() just yet
     var w = Math.max(Math.round(width || 0), 0);
@@ -3578,10 +3764,16 @@ Morph.prototype.silentSetWidth = function (width) {
     );
 };
 
+/**
+ * @param {number} height
+ */
 Morph.prototype.setHeight = function (height) {
     this.setExtent(new Point(this.width(), height || 0));
 };
 
+/**
+ * @param {number} height
+ */
 Morph.prototype.silentSetHeight = function (height) {
     // do not drawNew() just yet
     var h = Math.max(Math.round(height || 0), 0);
@@ -3591,6 +3783,9 @@ Morph.prototype.silentSetHeight = function (height) {
     );
 };
 
+/**
+ * @param {Color} aColor
+ */
 Morph.prototype.setColor = function (aColor) {
     if (aColor) {
         if (!this.color.eq(aColor)) {
@@ -3603,6 +3798,7 @@ Morph.prototype.setColor = function (aColor) {
 
 // Morph displaying:
 
+/** */
 Morph.prototype.drawNew = function () {
     // initialize my surface property
     this.image = newCanvas(this.extent());
@@ -3616,6 +3812,9 @@ Morph.prototype.drawNew = function () {
     }
 };
 
+/**
+ * @param {String} url
+ */
 Morph.prototype.drawTexture = function (url) {
     var myself = this;
     this.cachedTexture = new Image();
@@ -3625,6 +3824,7 @@ Morph.prototype.drawTexture = function (url) {
     this.cachedTexture.src = this.texture = url; // make absolute
 };
 
+/** */
 Morph.prototype.drawCachedTexture = function () {
     var bg = this.cachedTexture,
         cols = Math.floor(this.image.width / bg.width),
@@ -3651,6 +3851,10 @@ Morph.prototype.drawCachedTexture = function () {
 };
 */
 
+/**
+ * @param {HTMLCanvasElement} aCanvas
+ * @param {Rectangle} [aRect]
+ */
 Morph.prototype.drawOn = function (aCanvas, aRect) {
     var rectangle, area, delta, src, context, w, h, sl, st,
         pic = this.cachedFullImage || this.image,
@@ -3689,6 +3893,10 @@ Morph.prototype.drawOn = function (aCanvas, aRect) {
     }
 };
 
+/**
+ * @param {HTMLCanvasElement} aCanvas
+ * @param {Rectangle} [aRect]
+ */
 Morph.prototype.fullDrawOn = function (aCanvas, aRect) {
     var rectangle;
     if (!this.isVisible) {
@@ -3702,6 +3910,7 @@ Morph.prototype.fullDrawOn = function (aCanvas, aRect) {
     });
 };
 
+/** */
 Morph.prototype.hide = function () {
     this.isVisible = false;
     this.changed();
@@ -3710,6 +3919,7 @@ Morph.prototype.hide = function () {
     });
 };
 
+/** */
 Morph.prototype.show = function () {
     this.isVisible = true;
     this.changed();
@@ -3718,6 +3928,7 @@ Morph.prototype.show = function () {
     });
 };
 
+/** */
 Morph.prototype.toggleVisibility = function () {
     this.isVisible = (!this.isVisible);
     this.changed();
@@ -3728,6 +3939,9 @@ Morph.prototype.toggleVisibility = function () {
 
 // Morph full image:
 
+/**
+ * @returns {HTMLCanvasElement}
+ */
 Morph.prototype.fullImageClassic = function () {
     // use the cache since fullDrawOn() will
     var fb = this.cachedFullBounds || this.fullBounds(),
@@ -3739,6 +3953,9 @@ Morph.prototype.fullImageClassic = function () {
     return img;
 };
 
+/**
+ * @returns {HTMLCanvasElement}
+ */
 Morph.prototype.fullImage = function () {
     var img, ctx, fb;
     img = newCanvas(this.fullBounds().extent());
@@ -3761,6 +3978,11 @@ Morph.prototype.fullImage = function () {
 
 // Morph shadow:
 
+/**
+ * @param {Point} [off]
+ * @param {Color} [color]
+ * @returns {HTMLCanvasElement}
+ */
 Morph.prototype.shadowImage = function (off, color) {
     // fallback for Windows Chrome-Shadow bug
     var fb, img, outline, sha, ctx,
@@ -3786,6 +4008,11 @@ Morph.prototype.shadowImage = function (off, color) {
     return sha;
 };
 
+/**
+ * @param {Point} [off]
+ * @param {Color} [color]
+ * @returns {HTMLCanvasElement}
+ */
 Morph.prototype.shadowImageBlurred = function (off, color) {
     var fb, img, sha, ctx,
         offset = off || new Point(7, 7),
@@ -3816,6 +4043,12 @@ Morph.prototype.shadowImageBlurred = function (off, color) {
     return sha;
 };
 
+/**
+ * @param {Point} [off]
+ * @param {number} [a]
+ * @param {Color} [color]
+ * @returns {ShadowMorph}
+ */
 Morph.prototype.shadow = function (off, a, color) {
     var shadow = new ShadowMorph(),
         offset = off || new Point(7, 7),
@@ -3834,6 +4067,12 @@ Morph.prototype.shadow = function (off, a, color) {
     return shadow;
 };
 
+/**
+ * @param {Point} [off]
+ * @param {number} [a]
+ * @param {Color} [color]
+ * @returns {ShadowMorph}
+ */
 Morph.prototype.addShadow = function (off, a, color) {
     var shadow,
         offset = off || new Point(7, 7),
@@ -3844,6 +4083,9 @@ Morph.prototype.addShadow = function (off, a, color) {
     return shadow;
 };
 
+/**
+ * @returns {ShadowMorph}
+ */
 Morph.prototype.getShadow = function () {
     var shadows;
     shadows = this.children.slice(0).reverse().filter(
@@ -3857,6 +4099,7 @@ Morph.prototype.getShadow = function () {
     return null;
 };
 
+/** */
 Morph.prototype.removeShadow = function () {
     var shadow = this.getShadow();
     if (shadow !== null) {
@@ -3867,6 +4110,9 @@ Morph.prototype.removeShadow = function () {
 
 // Morph pen trails:
 
+/**
+ * @returns {HTMLCanvasElement}
+ */
 Morph.prototype.penTrails = function () {
     // answer my pen trails canvas. default is to answer my image
     return this.image;
@@ -3874,6 +4120,7 @@ Morph.prototype.penTrails = function () {
 
 // Morph updating:
 
+/** */
 Morph.prototype.changed = function () {
     if (this.trackChanges) {
         var w = this.root();
@@ -3886,6 +4133,7 @@ Morph.prototype.changed = function () {
     }
 };
 
+/** */
 Morph.prototype.fullChanged = function () {
     if (this.trackChanges) {
         var w = this.root();
@@ -3897,6 +4145,7 @@ Morph.prototype.fullChanged = function () {
     }
 };
 
+/** */
 Morph.prototype.childChanged = function () {
     // react to a change in one of my children,
     // default is to just pass this message on upwards
@@ -3908,6 +4157,9 @@ Morph.prototype.childChanged = function () {
 
 // Morph accessing - structure:
 
+/**
+ * @returns {WorldMorph}
+ */
 Morph.prototype.world = function () {
     var root = this.root();
     if (root instanceof WorldMorph) {
@@ -3919,6 +4171,9 @@ Morph.prototype.world = function () {
     return null;
 };
 
+/**
+ * @param {Morph} aMorph
+ */
 Morph.prototype.add = function (aMorph) {
     var owner = aMorph.parent;
     if (owner !== null) {
@@ -3927,6 +4182,9 @@ Morph.prototype.add = function (aMorph) {
     this.addChild(aMorph);
 };
 
+/**
+ * @param {Morph} aMorph
+ */
 Morph.prototype.addBack = function (aMorph) {
     var owner = aMorph.parent;
     if (owner !== null) {
@@ -3935,6 +4193,10 @@ Morph.prototype.addBack = function (aMorph) {
     this.addChildFirst(aMorph);
 };
 
+/**
+ * @param {Point} point
+ * @returns {Morph}
+ */
 Morph.prototype.topMorphAt = function (point) {
     var i, result;
     if (!this.isVisible) {return null; }
@@ -3947,6 +4209,10 @@ Morph.prototype.topMorphAt = function (point) {
               : null;
 };
 
+/**
+ * @param {Function} predicate
+ * @returns {Morph}
+ */
 Morph.prototype.topMorphSuchThat = function (predicate) {
     var next;
     if (predicate.call(null, this)) {
@@ -3962,6 +4228,9 @@ Morph.prototype.topMorphSuchThat = function (predicate) {
     return null;
 };
 
+/**
+ * @returns {Array.<Morph>}
+ */
 Morph.prototype.overlappedMorphs = function () {
     //exclude the World
     var world = this.world(),
@@ -3984,6 +4253,10 @@ Morph.prototype.overlappedMorphs = function () {
 
 // Morph pixel access:
 
+/**
+ * @param {Point} aPoint
+ * @returns {Color}
+ */
 Morph.prototype.getPixelColor = function (aPoint) {
     var point, context, data;
     point = aPoint.subtract(this.bounds.origin);
@@ -3997,6 +4270,10 @@ Morph.prototype.getPixelColor = function (aPoint) {
     );
 };
 
+/**
+ * @param {Point} aPoint
+ * @returns {boolean}
+ */
 Morph.prototype.isTransparentAt = function (aPoint) {
     var point, context, data;
     if (this.bounds.containsPoint(aPoint)) {
@@ -4018,6 +4295,9 @@ Morph.prototype.isTransparentAt = function (aPoint) {
 
 // Morph duplicating:
 
+/**
+ * @returns {Morph}
+ */
 Morph.prototype.copy = function () {
     var c = copy(this);
     c.parent = null;
@@ -4026,6 +4306,9 @@ Morph.prototype.copy = function () {
     return c;
 };
 
+/**
+ * @returns {Morph}
+ */
 Morph.prototype.fullCopy = function () {
     /*
     Produce a copy of me with my entire tree of submorphs. Morphs
@@ -4041,6 +4324,10 @@ Morph.prototype.fullCopy = function () {
     return c;
 };
 
+/**
+ * @param {Map} map
+ * @returns {Morph}
+ */
 Morph.prototype.copyRecordingReferences = function (map) {
     /*
     Recursively copy this entire composite morph, recording the
@@ -4062,6 +4349,9 @@ Morph.prototype.copyRecordingReferences = function (map) {
     return c;
 };
 
+/**
+ * @param {Map} map
+ */
 Morph.prototype.updateReferences = function (map) {
     /*
     Update intra-morph references within a composite morph that has
@@ -4087,6 +4377,9 @@ Morph.prototype.updateReferences = function (map) {
 
 // Morph dragging and dropping:
 
+/**
+ * @returns {Morph}
+ */
 Morph.prototype.rootForGrab = function () {
     if (this instanceof ShadowMorph) {
         return this.parent.rootForGrab();
@@ -4103,6 +4396,9 @@ Morph.prototype.rootForGrab = function () {
     return this.parent.rootForGrab();
 };
 
+/**
+ * @returns {boolean}
+ */
 Morph.prototype.isCorrectingOutsideDrag = function () {
     // make sure I don't "trail behind" the hand when dragged
     // override for morphs that you want to be dragged outside
@@ -4110,6 +4406,10 @@ Morph.prototype.isCorrectingOutsideDrag = function () {
     return true;
 };
 
+/**
+ * @param {Morph} aMorph
+ * @returns {boolean}
+ */
 Morph.prototype.wantsDropOf = function (aMorph) {
     // default is to answer the general flag - change for my heirs
     if ((aMorph instanceof HandleMorph) ||
@@ -4120,6 +4420,9 @@ Morph.prototype.wantsDropOf = function (aMorph) {
     return this.acceptsDrops;
 };
 
+/**
+ * @param {WorldMorph} [wrrld]
+ */
 Morph.prototype.pickUp = function (wrrld) {
     var world = wrrld || this.world();
     this.setPosition(
@@ -4130,10 +4433,16 @@ Morph.prototype.pickUp = function (wrrld) {
     world.hand.grab(this);
 };
 
+/**
+ * @returns {boolean}
+ */
 Morph.prototype.isPickedUp = function () {
     return this.parentThatIsA(HandMorph) !== null;
 };
 
+/**
+ * @returns {Object}
+ */
 Morph.prototype.situation = function () {
     // answer a dictionary specifying where I am right now, so
     // I can slide back to it if I'm dropped somewhere else
@@ -4146,6 +4455,12 @@ Morph.prototype.situation = function () {
     return null;
 };
 
+/**
+ * @param {Object} situation
+ * @param {number} [msecs]
+ * @param {Function} [onBeforeDrop]
+ * @param {Function} [onComplete]
+ */
 Morph.prototype.slideBackTo = function (
     situation,
     msecs,
@@ -4172,6 +4487,12 @@ Morph.prototype.slideBackTo = function (
 
 // Morph animating:
 
+/**
+ * @param {Point} endPoint
+ * @param {number} [msecs]
+ * @param {String|Function} [easing]
+ * @param {Function} [onComplete]
+ */
 Morph.prototype.glideTo = function (endPoint, msecs, easing, onComplete) {
     var world = this.world(),
         myself = this;
@@ -4192,6 +4513,12 @@ Morph.prototype.glideTo = function (endPoint, msecs, easing, onComplete) {
     ));
 };
 
+/**
+ * @param {number} endAlpha
+ * @param {number} [msecs]
+ * @param {String|Function} [easing]
+ * @param {Function} [onComplete]
+ */
 Morph.prototype.fadeTo = function (endAlpha, msecs, easing, onComplete) {
     // include all my children, restore all original transparencies
     // on completion, so I can be recovered
@@ -4217,6 +4544,10 @@ Morph.prototype.fadeTo = function (endAlpha, msecs, easing, onComplete) {
     ));
 };
 
+/**
+ * @param {number} [msecs]
+ * @param {Function} [onComplete]
+ */
 Morph.prototype.perish = function (msecs, onComplete) {
     var myself = this;
     this.fadeTo(
@@ -4234,10 +4565,12 @@ Morph.prototype.perish = function (msecs, onComplete) {
 
 Morph.prototype.nop = nop;
 
+/** */
 Morph.prototype.resize = function () {
     this.world().activeHandle = new HandleMorph(this);
 };
 
+/** */
 Morph.prototype.move = function () {
     this.world().activeHandle = new HandleMorph(
         this,
@@ -4249,6 +4582,7 @@ Morph.prototype.move = function () {
     );
 };
 
+/** */
 Morph.prototype.moveCenter = function () {
     this.world().activeHandle = new HandleMorph(
         this,
@@ -4260,6 +4594,9 @@ Morph.prototype.moveCenter = function () {
     );
 };
 
+/**
+ * @param {String} [msg='NULL']
+ */
 Morph.prototype.hint = function (msg) {
     var m, text;
     text = msg;
@@ -4275,6 +4612,9 @@ Morph.prototype.hint = function (msg) {
     m.popUpCenteredAtHand(this.world());
 };
 
+/**
+ * @param {String} [msg='NULL']
+ */
 Morph.prototype.inform = function (msg) {
     var m, text;
     text = msg;
@@ -4291,6 +4631,16 @@ Morph.prototype.inform = function (msg) {
     m.popUpCenteredAtHand(this.world());
 };
 
+/**
+ * @param {String} [msg='']
+ * @param {Function} [callback]
+ * @param {String} [environment]
+ * @param {String} [defaultContents='']
+ * @param {number} [width=100]
+ * @param {number} [floorNum]
+ * @param {number} [ceilingNum]
+ * @param {boolean} [isRounded=false]
+ */
 Morph.prototype.prompt = function (
     msg,
     callback,
@@ -4367,6 +4717,12 @@ Morph.prototype.prompt = function (
     entryField.text.edit();
 };
 
+/**
+ * @param {String} [msg='']
+ * @param {Function} [callback]
+ * @param {String} [environment]
+ * @param {String} [defaultContents='']
+ */
 Morph.prototype.pickColor = function (
     msg,
     callback,
@@ -4392,6 +4748,9 @@ Morph.prototype.pickColor = function (
     menu.popUpAtHand(this.world());
 };
 
+/**
+ * @param {*} anotherObject
+ */
 Morph.prototype.inspect = function (anotherObject) {
     var world = this.world instanceof Function ?
             this.world() : this.root() || this.world,
@@ -4410,6 +4769,9 @@ Morph.prototype.inspect = function (anotherObject) {
 
 // Morph menus:
 
+/**
+ * @returns {MenuMorph}
+ */
 Morph.prototype.contextMenu = function () {
     var world;
 
@@ -4427,6 +4789,9 @@ Morph.prototype.contextMenu = function () {
         (this.parent && this.parent.userMenu());
 };
 
+/**
+ * @returns {MenuMorph}
+ */
 Morph.prototype.hierarchyMenu = function () {
     var parents = this.allParents(),
         world = this.world instanceof Function ? this.world() : this.world,
@@ -4448,6 +4813,9 @@ Morph.prototype.hierarchyMenu = function () {
     return menu;
 };
 
+/**
+ * @returns {MenuMorph}
+ */
 Morph.prototype.developersMenu = function () {
     // 'name' is not an official property of a function, hence:
     var world = this.world instanceof Function ? this.world() : this.world,
@@ -4557,12 +4925,18 @@ Morph.prototype.developersMenu = function () {
     return menu;
 };
 
+/**
+ * @returns {MenuMorph}
+ */
 Morph.prototype.userMenu = function () {
     return null;
 };
 
 // Morph menu actions
 
+/**
+ * @param {number} alpha
+ */
 Morph.prototype.setAlphaScaled = function (alpha) {
     // for context menu demo purposes
     var newAlpha, unscaled;
@@ -4579,6 +4953,7 @@ Morph.prototype.setAlphaScaled = function (alpha) {
     this.changed();
 };
 
+/** */
 Morph.prototype.attach = function () {
     var choices = this.overlappedMorphs(),
         menu = new MenuMorph(this, 'choose new parent:'),
@@ -4595,16 +4970,23 @@ Morph.prototype.attach = function () {
     }
 };
 
+/** */
 Morph.prototype.toggleIsDraggable = function () {
     // for context menu demo purposes
     this.isDraggable = !this.isDraggable;
 };
 
+/**
+ * @returns {Array.<String>}
+ */
 Morph.prototype.colorSetters = function () {
     // for context menu demo purposes
     return ['color'];
 };
 
+/**
+ * @returns {Array.<String>}
+ */
 Morph.prototype.numericalSetters = function () {
     // for context menu demo purposes
     return [
@@ -4618,6 +5000,9 @@ Morph.prototype.numericalSetters = function () {
 
 // Morph entry field tabbing:
 
+/**
+ * @returns {Array.<Morph>}
+ */
 Morph.prototype.allEntryFields = function () {
     return this.allChildren().filter(function (each) {
         return each.isEditable &&
@@ -4626,6 +5011,10 @@ Morph.prototype.allEntryFields = function () {
     });
 };
 
+/**
+ * @param {number} current
+ * @returns {Morph}
+ */
 Morph.prototype.nextEntryField = function (current) {
     var fields = this.allEntryFields(),
         idx = fields.indexOf(current);
@@ -4637,6 +5026,10 @@ Morph.prototype.nextEntryField = function (current) {
     return fields[0];
 };
 
+/**
+ * @param {number} current
+ * @returns {Morph}
+ */
 Morph.prototype.previousEntryField = function (current) {
     var fields = this.allEntryFields(),
         idx = fields.indexOf(current);
@@ -4649,6 +5042,9 @@ Morph.prototype.previousEntryField = function (current) {
     return fields[0];
 };
 
+/**
+ * @param {Morph} editField
+ */
 Morph.prototype.tab = function (editField) {
 /*
     the <tab> key was pressed in one of my edit fields.
@@ -4662,6 +5058,9 @@ Morph.prototype.tab = function (editField) {
     }
 };
 
+/**
+ * @param {Morph} editField
+ */
 Morph.prototype.backTab = function (editField) {
 /*
     the <back tab> key was pressed in one of my edit fields.
@@ -4699,6 +5098,10 @@ Morph.prototype.previousTab = function (editField) {
 
 // Morph events:
 
+/**
+ * @param {String} functionName
+ * @param {*} arg
+ */
 Morph.prototype.escalateEvent = function (functionName, arg) {
     var handler = this.parent;
     while (!handler[functionName] && handler.parent !== null) {
@@ -4711,6 +5114,10 @@ Morph.prototype.escalateEvent = function (functionName, arg) {
 
 // Morph eval:
 
+/**
+ * @param {String} code
+ * @returns {*}
+ */
 Morph.prototype.evaluateString = function (code) {
     var result;
 
@@ -4726,6 +5133,10 @@ Morph.prototype.evaluateString = function (code) {
 
 // Morph collision detection:
 
+/**
+ * @param {Morph} otherMorph
+ * @returns {boolean}
+ */
 Morph.prototype.isTouching = function (otherMorph) {
     var oImg = this.overlappingImage(otherMorph),
         data;
@@ -4743,6 +5154,10 @@ Morph.prototype.isTouching = function (otherMorph) {
     ) !== null;
 };
 
+/**
+ * @param {Morph} otherMorph
+ * @returns {HTMLCanvasElement}
+ */
 Morph.prototype.overlappingImage = function (otherMorph) {
     var fb = this.fullBounds(),
         otherFb = otherMorph.fullBounds(),

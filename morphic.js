@@ -1823,6 +1823,15 @@ function normalizeCanvas(aCanvas, getCopy) {
 
 // Animation instance creation:
 
+/**
+ * @constructor
+ * @param {Function} setter
+ * @param {Function} getter
+ * @param {number} [delta]
+ * @param {number} [duration]
+ * @param {String|Function} [easing]
+ * @param {Function} [onComplete]
+ */
 function Animation(setter, getter, delta, duration, easing, onComplete) {
     this.setter = setter; // function
     this.getter = getter; // function
@@ -1838,6 +1847,10 @@ function Animation(setter, getter, delta, duration, easing, onComplete) {
     this.start();
 }
 
+/**
+ * Dictionary of a pre-defined easing functions used to transition two states
+ * @enum {Function}
+ */
 Animation.prototype.easings = {
     // dictionary of a few pre-defined easing functions used to transition
     // two states
@@ -1875,6 +1888,9 @@ Animation.prototype.easings = {
     elastic_out: function (t) {return 0.04 * t / (--t) * Math.sin(25 * t); }
 };
 
+/**
+ * Resets the animation
+ */
 Animation.prototype.start = function () {
     // (re-) activate the animation, e.g. if is has previously completed,
     // make sure to plug it into something that repeatedly triggers step(),
@@ -1884,6 +1900,9 @@ Animation.prototype.start = function () {
     this.isActive = true;
 };
 
+/**
+ * Performs a step
+ */
 Animation.prototype.step = function () {
     if (!this.isActive) {return; }
     var now = Date.now();
@@ -1903,6 +1922,13 @@ Animation.prototype.step = function () {
 
 // Color instance creation:
 
+/**
+ * @constructor
+ * @param {number} [r=0]
+ * @param {number} [g=0]
+ * @param {number} [b=0]
+ * @param {number} [a=1]
+ */
 function Color(r, g, b, a) {
     // all values are optional, just (r, g, b) is fine
     this.r = r || 0;
@@ -1913,6 +1939,10 @@ function Color(r, g, b, a) {
 
 // Color string representation: e.g. 'rgba(255,165,0,1)'
 
+/**
+ * @returns {String}
+ * @example 'rgba(255,127,63,0.12)'
+*/
 Color.prototype.toString = function () {
     return 'rgba(' +
         Math.round(this.r) + ',' +
@@ -1923,6 +1953,9 @@ Color.prototype.toString = function () {
 
 // Color copying:
 
+/**
+ * @returns {Color}
+ */
 Color.prototype.copy = function () {
     return new Color(
         this.r,
@@ -1934,6 +1967,10 @@ Color.prototype.copy = function () {
 
 // Color comparison:
 
+/**
+ * @param {Color} aColor
+ * @returns {boolean}
+ */
 Color.prototype.eq = function (aColor) {
     // ==
     return aColor &&
@@ -1944,6 +1981,9 @@ Color.prototype.eq = function (aColor) {
 
 // Color conversion (hsv):
 
+/**
+ * @returns {Array.<number>}
+ */
 Color.prototype.hsv = function () {
     // ignore alpha
     var max, min, h, s, v, d,
@@ -1976,6 +2016,11 @@ Color.prototype.hsv = function () {
     return [h, s, v];
 };
 
+/**
+ * @param {number} h
+ * @param {number} s
+ * @param {number} v
+ */
 Color.prototype.set_hsv = function (h, s, v) {
     // ignore alpha, h, s and v are to be within [0, 1]
     var i, f, p, q, t;
@@ -2025,6 +2070,11 @@ Color.prototype.set_hsv = function (h, s, v) {
 
 // Color mixing:
 
+/**
+ * @param {number} proportion
+ * @param {Color} otherColor
+ * @returns {Color}
+ */
 Color.prototype.mixed = function (proportion, otherColor) {
     // answer a copy of this color mixed with another color, ignore alpha
     var frac1 = Math.min(Math.max(proportion, 0), 1),
@@ -2036,6 +2086,10 @@ Color.prototype.mixed = function (proportion, otherColor) {
     );
 };
 
+/**
+ * @param {number} percent
+ * @returns {Color}
+ */
 Color.prototype.darker = function (percent) {
     // return an rgb-interpolated darker copy of me, ignore alpha
     var fract = 0.8333;
@@ -2045,6 +2099,10 @@ Color.prototype.darker = function (percent) {
     return this.mixed(fract, new Color(0, 0, 0));
 };
 
+/**
+ * @param {number} percent
+ * @returns {Color}
+ */
 Color.prototype.lighter = function (percent) {
     // return an rgb-interpolated lighter copy of me, ignore alpha
     var fract = 0.8333;
@@ -2054,6 +2112,9 @@ Color.prototype.lighter = function (percent) {
     return this.mixed(fract, new Color(255, 255, 255));
 };
 
+/**
+ * @returns {Color}
+ */
 Color.prototype.dansDarker = function () {
     // return an hsv-interpolated darker copy of me, ignore alpha
     var hsv = this.hsv(),
@@ -2063,6 +2124,9 @@ Color.prototype.dansDarker = function () {
     return result;
 };
 
+/**
+ * @returns {Color}
+ */
 Color.prototype.inverted = function () {
     return new Color(
         255 - this.r,
@@ -2075,6 +2139,11 @@ Color.prototype.inverted = function () {
 
 // Point instance creation:
 
+/**
+ * @constructor
+ * @param {number} x
+ * @param {number} y
+ */
 function Point(x, y) {
     this.x = x || 0;
     this.y = y || 0;
@@ -2082,6 +2151,10 @@ function Point(x, y) {
 
 // Point string representation: e.g. '12@68'
 
+/**
+ * @returns {String}
+ * @example '1@2'
+ */
 Point.prototype.toString = function () {
     return Math.round(this.x.toString()) +
         '@' + Math.round(this.y.toString());
@@ -2089,42 +2162,73 @@ Point.prototype.toString = function () {
 
 // Point copying:
 
+/**
+ * @returns {Point}
+ */
 Point.prototype.copy = function () {
     return new Point(this.x, this.y);
 };
 
 // Point comparison:
 
+/**
+ * @param {Point} aPoint
+ * @returns {boolean}
+ */
 Point.prototype.eq = function (aPoint) {
     // ==
     return this.x === aPoint.x && this.y === aPoint.y;
 };
 
+/**
+ * @param {Point} aPoint
+ * @returns {boolean}
+ */
 Point.prototype.lt = function (aPoint) {
     // <
     return this.x < aPoint.x && this.y < aPoint.y;
 };
 
+/**
+ * @param {Point} aPoint
+ * @returns {boolean}
+ */
 Point.prototype.gt = function (aPoint) {
     // >
     return this.x > aPoint.x && this.y > aPoint.y;
 };
 
+/**
+ * @param {Point} aPoint
+ * @returns {boolean}
+ */
 Point.prototype.ge = function (aPoint) {
     // >=
     return this.x >= aPoint.x && this.y >= aPoint.y;
 };
 
+/**
+ * @param {Point} aPoint
+ * @returns {boolean}
+ */
 Point.prototype.le = function (aPoint) {
     // <=
     return this.x <= aPoint.x && this.y <= aPoint.y;
 };
 
+/**
+ * @param {Point} aPoint
+ * @returns {Point}
+ */
 Point.prototype.max = function (aPoint) {
     return new Point(Math.max(this.x, aPoint.x),
         Math.max(this.y, aPoint.y));
 };
 
+/**
+ * @param {Point} aPoint
+ * @returns {Point}
+ */
 Point.prototype.min = function (aPoint) {
     return new Point(Math.min(this.x, aPoint.x),
         Math.min(this.y, aPoint.y));
@@ -2132,22 +2236,37 @@ Point.prototype.min = function (aPoint) {
 
 // Point conversion:
 
+/**
+ * @returns {Point}
+ */
 Point.prototype.round = function () {
     return new Point(Math.round(this.x), Math.round(this.y));
 };
 
+/**
+ * @returns {Point}
+ */
 Point.prototype.abs = function () {
     return new Point(Math.abs(this.x), Math.abs(this.y));
 };
 
+/**
+ * @returns {Point}
+ */
 Point.prototype.neg = function () {
     return new Point(-this.x, -this.y);
 };
 
+/**
+ * @returns {Point}
+ */
 Point.prototype.mirror = function () {
     return new Point(this.y, this.x);
 };
 
+/**
+ * @returns {Point}
+ */
 Point.prototype.floor = function () {
     return new Point(
         Math.max(Math.floor(this.x), 0),
@@ -2155,12 +2274,19 @@ Point.prototype.floor = function () {
     );
 };
 
+/**
+ * @returns {Point}
+ */
 Point.prototype.ceil = function () {
     return new Point(Math.ceil(this.x), Math.ceil(this.y));
 };
 
 // Point arithmetic:
 
+/**
+ * @param {number|Point} other
+ * @returns {Point}
+ */
 Point.prototype.add = function (other) {
     if (other instanceof Point) {
         return new Point(this.x + other.x, this.y + other.y);
@@ -2168,6 +2294,10 @@ Point.prototype.add = function (other) {
     return new Point(this.x + other, this.y + other);
 };
 
+/**
+ * @param {number|Point} other
+ * @returns {Point}
+ */
 Point.prototype.subtract = function (other) {
     if (other instanceof Point) {
         return new Point(this.x - other.x, this.y - other.y);
@@ -2175,6 +2305,10 @@ Point.prototype.subtract = function (other) {
     return new Point(this.x - other, this.y - other);
 };
 
+/**
+ * @param {number|Point} other
+ * @returns {Point}
+ */
 Point.prototype.multiplyBy = function (other) {
     if (other instanceof Point) {
         return new Point(this.x * other.x, this.y * other.y);
@@ -2182,6 +2316,10 @@ Point.prototype.multiplyBy = function (other) {
     return new Point(this.x * other, this.y * other);
 };
 
+/**
+ * @param {number|Point} other
+ * @returns {Point}
+ */
 Point.prototype.divideBy = function (other) {
     if (other instanceof Point) {
         return new Point(this.x / other.x, this.y / other.y);
@@ -2189,6 +2327,10 @@ Point.prototype.divideBy = function (other) {
     return new Point(this.x / other, this.y / other);
 };
 
+/**
+ * @param {number|Point} other
+ * @returns {Point}
+ */
 Point.prototype.floorDivideBy = function (other) {
     if (other instanceof Point) {
         return new Point(Math.floor(this.x / other.x),
@@ -2200,11 +2342,17 @@ Point.prototype.floorDivideBy = function (other) {
 
 // Point polar coordinates:
 
+/**
+ * @returns {number}
+ */
 Point.prototype.r = function () {
     var t = (this.multiplyBy(this));
     return Math.sqrt(t.x + t.y);
 };
 
+/**
+ * @returns {number}
+ */
 Point.prototype.degrees = function () {
 /*
     answer the angle I make with origin in degrees.
@@ -2229,6 +2377,9 @@ Point.prototype.degrees = function () {
     return 180 + degrees(theta);
 };
 
+/**
+ * @returns {number}
+ */
 Point.prototype.theta = function () {
 /*
     answer the angle I make with origin in radians.
@@ -2255,14 +2406,27 @@ Point.prototype.theta = function () {
 
 // Point functions:
 
+/**
+ * @param {Point} aPoint
+ * @returns {Point}
+ */
 Point.prototype.crossProduct = function (aPoint) {
     return this.multiplyBy(aPoint.mirror());
 };
 
+/**
+ * @param {Point} aPoint
+ * @returns {number}
+ */
 Point.prototype.distanceTo = function (aPoint) {
     return (aPoint.subtract(this)).r();
 };
 
+/**
+ * @param {String} direction
+ * @param {Point} center
+ * @return {Point}
+ */
 Point.prototype.rotate = function (direction, center) {
     // direction must be 'right', 'left' or 'pi'
     var offset = this.subtract(center);
@@ -2276,6 +2440,11 @@ Point.prototype.rotate = function (direction, center) {
     return center.subtract(offset);
 };
 
+/**
+ * @param {String} direction
+ * @param {Point} center
+ * @returns {Point}
+ */
 Point.prototype.flip = function (direction, center) {
     // direction must be 'vertical' or 'horizontal'
     if (direction === 'vertical') {
@@ -2285,6 +2454,11 @@ Point.prototype.flip = function (direction, center) {
     return new Point(center.x * 2 - this.x, this.y);
 };
 
+/**
+ * @param {number} dist
+ * @param {number} angle
+ * @returns {Point}
+ */
 Point.prototype.distanceAngle = function (dist, angle) {
     var deg = angle, x, y;
     if (deg > 270) {
@@ -2304,14 +2478,27 @@ Point.prototype.distanceAngle = function (dist, angle) {
 
 // Point transforming:
 
+/**
+ * @param {Point} scalePoint
+ * @returns {Point}
+ */
 Point.prototype.scaleBy = function (scalePoint) {
     return this.multiplyBy(scalePoint);
 };
 
+/**
+ * @param {Point} deltaPoint
+ * @returns {Point}
+ */
 Point.prototype.translateBy = function (deltaPoint) {
     return this.add(deltaPoint);
 };
 
+/**
+ * @param {number} angle
+ * @param {Point} centerPoint
+ * @returns {Point}
+ */
 Point.prototype.rotateBy = function (angle, centerPoint) {
     var center = centerPoint || new Point(0, 0),
         p = this.subtract(center),
@@ -2325,6 +2512,9 @@ Point.prototype.rotateBy = function (angle, centerPoint) {
 
 // Point conversion:
 
+/**
+ * @returns {Array.<number>}
+ */
 Point.prototype.asArray = function () {
     return [this.x, this.y];
 };
@@ -2333,11 +2523,22 @@ Point.prototype.asArray = function () {
 
 // Rectangle instance creation:
 
+/**
+ * @constructor
+ * @param {number} [left=0]
+ * @param {number} [top=0]
+ * @param {number} [right=0]
+ * @param {number} [bottom=0]
+ */
 function Rectangle(left, top, right, bottom) {
     this.init(new Point((left || 0), (top || 0)),
             new Point((right || 0), (bottom || 0)));
 }
 
+/**
+ * @param {Point} originPoint
+ * @param {Point} cornerPoint
+ */
 Rectangle.prototype.init = function (originPoint, cornerPoint) {
     this.origin = originPoint;
     this.corner = cornerPoint;
@@ -2345,6 +2546,10 @@ Rectangle.prototype.init = function (originPoint, cornerPoint) {
 
 // Rectangle string representation: e.g. '[0@0 | 160@80]'
 
+/**
+ * @returns {String}
+ * @example '[0@0 | 80@50]'
+ */
 Rectangle.prototype.toString = function () {
     return '[' + this.origin.toString() + ' | ' +
         this.extent().toString() + ']';
@@ -2352,6 +2557,9 @@ Rectangle.prototype.toString = function () {
 
 // Rectangle copying:
 
+/**
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.copy = function () {
     return new Rectangle(
         this.left(),
@@ -2363,6 +2571,10 @@ Rectangle.prototype.copy = function () {
 
 // creating Rectangle instances from Points:
 
+/**
+ * @param {Point} cornerPoint
+ * @returns {Rectangle}
+ */
 Point.prototype.corner = function (cornerPoint) {
     // answer a new Rectangle
     return new Rectangle(
@@ -2373,6 +2585,10 @@ Point.prototype.corner = function (cornerPoint) {
     );
 };
 
+/**
+ * @param {Point} aPoint
+ * @returns {Rectangle}
+ */
 Point.prototype.rectangle = function (aPoint) {
     // answer a new Rectangle
     var org, crn;
@@ -2381,6 +2597,10 @@ Point.prototype.rectangle = function (aPoint) {
     return new Rectangle(org.x, org.y, crn.x, crn.y);
 };
 
+/**
+ * @param {Point} aPoint
+ * @returns {Rectangle}
+ */
 Point.prototype.extent = function (aPoint) {
     //answer a new Rectangle
     var crn = this.add(aPoint);
@@ -2389,6 +2609,12 @@ Point.prototype.extent = function (aPoint) {
 
 // Rectangle accessing - setting:
 
+/**
+ * @param {number} [left]
+ * @param {number} [top]
+ * @param {number} [right]
+ * @param {number} [bottom]
+ */
 Rectangle.prototype.setTo = function (left, top, right, bottom) {
     // note: all inputs are optional and can be omitted
 
@@ -2405,6 +2631,9 @@ Rectangle.prototype.setTo = function (left, top, right, bottom) {
 
 // Rectangle accessing - getting:
 
+/**
+ * @returns {number}
+ */
 Rectangle.prototype.area = function () {
     //requires width() and height() to be defined
     var w = this.width();
@@ -2414,32 +2643,53 @@ Rectangle.prototype.area = function () {
     return Math.max(w * this.height(), 0);
 };
 
+/**
+ * @returns {number}
+ */
 Rectangle.prototype.bottom = function () {
     return this.corner.y;
 };
 
+/**
+ * @returns {Point}
+ */
 Rectangle.prototype.bottomCenter = function () {
     return new Point(this.center().x, this.bottom());
 };
 
+/**
+ * @returns {Point}
+ */
 Rectangle.prototype.bottomLeft = function () {
     return new Point(this.origin.x, this.corner.y);
 };
 
+/**
+ * @returns {Point}
+ */
 Rectangle.prototype.bottomRight = function () {
     return this.corner.copy();
 };
 
+/**
+ * @return {Rectangle}
+ */
 Rectangle.prototype.boundingBox = function () {
     return this;
 };
 
+/**
+ * @returns {Point}
+ */
 Rectangle.prototype.center = function () {
     return this.origin.add(
         this.corner.subtract(this.origin).floorDivideBy(2)
     );
 };
 
+/**
+ * @returns {Array.<Point>}
+ */
 Rectangle.prototype.corners = function () {
     return [this.origin,
         this.bottomLeft(),
@@ -2447,61 +2697,104 @@ Rectangle.prototype.corners = function () {
         this.topRight()];
 };
 
+/**
+ * @returns {Point}
+ */
 Rectangle.prototype.extent = function () {
     return this.corner.subtract(this.origin);
 };
 
+/**
+ * @returns {number}
+ */
 Rectangle.prototype.height = function () {
     return this.corner.y - this.origin.y;
 };
 
+/**
+ * @returns {number}
+ */
 Rectangle.prototype.left = function () {
     return this.origin.x;
 };
 
+/**
+ * @returns {Point}
+ */
 Rectangle.prototype.leftCenter = function () {
     return new Point(this.left(), this.center().y);
 };
 
+/**
+ * @returns {number}
+ */
 Rectangle.prototype.right = function () {
     return this.corner.x;
 };
 
+/**
+ * @returns {Point}
+ */
 Rectangle.prototype.rightCenter = function () {
     return new Point(this.right(), this.center().y);
 };
 
+/**
+ * @returns {number}
+ */
 Rectangle.prototype.top = function () {
     return this.origin.y;
 };
 
+/**
+ * @returns {Point}
+ */
 Rectangle.prototype.topCenter = function () {
     return new Point(this.center().x, this.top());
 };
 
+/**
+ * @returns {Point}
+ */
 Rectangle.prototype.topLeft = function () {
     return this.origin;
 };
 
+/**
+ * @returns {Point}
+ */
 Rectangle.prototype.topRight = function () {
     return new Point(this.corner.x, this.origin.y);
 };
 
+/**
+ * @returns {number}
+ */
 Rectangle.prototype.width = function () {
     return this.corner.x - this.origin.x;
 };
 
+/**
+ * @returns {Point}
+ */
 Rectangle.prototype.position = function () {
     return this.origin;
 };
 
 // Rectangle comparison:
 
+/**
+ * @param {Rectangle} aRect
+ * @returns {boolean}
+ */
 Rectangle.prototype.eq = function (aRect) {
     return this.origin.eq(aRect.origin) &&
         this.corner.eq(aRect.corner);
 };
 
+/**
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.abs = function () {
     var newOrigin, newCorner;
 
@@ -2512,6 +2805,10 @@ Rectangle.prototype.abs = function () {
 
 // Rectangle functions:
 
+/**
+ * @param {number|Point} delta
+ * @return {Rectangle}
+ */
 Rectangle.prototype.insetBy = function (delta) {
     // delta can be either a Point or a Number
     var result = new Rectangle();
@@ -2520,6 +2817,10 @@ Rectangle.prototype.insetBy = function (delta) {
     return result;
 };
 
+/**
+ * @param {number|Point} delta
+ * @return {Rectangle}
+ */
 Rectangle.prototype.expandBy = function (delta) {
     // delta can be either a Point or a Number
     var result = new Rectangle();
@@ -2528,6 +2829,10 @@ Rectangle.prototype.expandBy = function (delta) {
     return result;
 };
 
+/**
+ * @param {number|Point} delta
+ * @return {Rectangle}
+ */
 Rectangle.prototype.growBy = function (delta) {
     // delta can be either a Point or a Number
     var result = new Rectangle();
@@ -2536,6 +2841,10 @@ Rectangle.prototype.growBy = function (delta) {
     return result;
 };
 
+/**
+ * @param {Rectangle} aRect
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.intersect = function (aRect) {
     var result = new Rectangle();
     result.origin = this.origin.max(aRect.origin);
@@ -2543,6 +2852,10 @@ Rectangle.prototype.intersect = function (aRect) {
     return result;
 };
 
+/**
+ * @param {Rectangle} aRect
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.merge = function (aRect) {
     var result = new Rectangle();
     result.origin = this.origin.min(aRect.origin);
@@ -2550,16 +2863,25 @@ Rectangle.prototype.merge = function (aRect) {
     return result;
 };
 
+/**
+ * @param {Rectangle} aRect
+ */
 Rectangle.prototype.mergeWith = function (aRect) {
     // mutates myself
     this.origin = this.origin.min(aRect.origin);
     this.corner = this.corner.max(aRect.corner);
 };
 
+/**
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.round = function () {
     return this.origin.round().corner(this.corner.round());
 };
 
+/**
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.spread = function () {
     // round me by applying floor() to my origin and ceil() to my corner
     // expand by 1 to be on the safe side, this eliminates rounding
@@ -2567,6 +2889,10 @@ Rectangle.prototype.spread = function () {
     return this.origin.floor().corner(this.corner.ceil()).expandBy(1);
 };
 
+/**
+ * @param {Rectangle} aRect
+ * @returns {Point}
+ */
 Rectangle.prototype.amountToTranslateWithin = function (aRect) {
 /*
     Answer a Point, delta, such that self + delta is forced within
@@ -2592,15 +2918,27 @@ Rectangle.prototype.amountToTranslateWithin = function (aRect) {
 
 // Rectangle testing:
 
+/**
+ * @param {Point} aPoint
+ * @returns {boolean}
+ */
 Rectangle.prototype.containsPoint = function (aPoint) {
     return this.origin.le(aPoint) && aPoint.lt(this.corner);
 };
 
+/**
+ * @param {Rectangle} aRect
+ * @returns {boolean}
+ */
 Rectangle.prototype.containsRectangle = function (aRect) {
     return aRect.origin.gt(this.origin) &&
         aRect.corner.lt(this.corner);
 };
 
+/**
+ * @param {Rectangle} aRect
+ * @returns {boolean}
+ */
 Rectangle.prototype.intersects = function (aRect) {
     var ro = aRect.origin, rc = aRect.corner;
     return (rc.x >= this.origin.x) &&
@@ -2609,6 +2947,11 @@ Rectangle.prototype.intersects = function (aRect) {
         (ro.y <= this.corner.y);
 };
 
+/**
+ * @param {Rectangle} aRect
+ * @param {number} threshold
+ * @returns {boolean}
+ */
 Rectangle.prototype.isNearTo = function (aRect, threshold) {
     var ro = aRect.origin, rc = aRect.corner, border = threshold || 0;
     return (rc.x + border >= this.origin.x) &&
@@ -2619,6 +2962,10 @@ Rectangle.prototype.isNearTo = function (aRect, threshold) {
 
 // Rectangle transforming:
 
+/**
+ * @param {number|Point} scale
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.scaleBy = function (scale) {
     // scale can be either a Point or a scalar
     var o = this.origin.multiplyBy(scale),
@@ -2626,6 +2973,10 @@ Rectangle.prototype.scaleBy = function (scale) {
     return new Rectangle(o.x, o.y, c.x, c.y);
 };
 
+/**
+ * @param {number|Point} factor
+ * @returns {Rectangle}
+ */
 Rectangle.prototype.translateBy = function (factor) {
     // factor can be either a Point or a scalar
     var o = this.origin.add(factor),
@@ -2635,10 +2986,16 @@ Rectangle.prototype.translateBy = function (factor) {
 
 // Rectangle converting:
 
+/**
+ * @returns {Array.<number>}
+ */
 Rectangle.prototype.asArray = function () {
     return [this.left(), this.top(), this.right(), this.bottom()];
 };
 
+/**
+ * @returns {Array.<number>}
+ */
 Rectangle.prototype.asArray_xywh = function () {
     return [this.left(), this.top(), this.width(), this.height()];
 };

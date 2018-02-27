@@ -3440,7 +3440,9 @@ Morph.prototype.nextSteps = function (arrayOfFunctions) {
     }
 };
 
-/** */
+/**
+ * @function
+ */
 Morph.prototype.step = nop;
 
 // Morph accessing - geometry getting:
@@ -5260,6 +5262,91 @@ Morph.prototype.overlappingImage = function (otherMorph) {
     return oImg;
 };
 
+/**
+ * @function mouseDownLeft
+ * @memberof Morph#
+ * @param {Point} pos
+ */
+
+/**
+ * @function mouseDownRight
+ * @memberof Morph#
+ * @param {Point} pos
+ */
+
+/**
+ * @function mouseClickLeft
+ * @memberof Morph#
+ * @param {Point} pos
+ */
+
+/**
+ * @function mouseClickRight
+ * @memberof Morph#
+ * @param {Point} pos
+ */
+
+/**
+ * @function mouseDoubleClick
+ * @memberof Morph#
+ * @param {Point} pos
+ */
+
+/**
+ * @function mouseEnter
+ * @memberof Morph#
+ * @param {Point} pos
+ */
+
+/**
+ * @function mouseLeave
+ * @memberof Morph#
+ * @param {Point} pos
+ */
+
+/**
+ * @function mouseEnterDragging
+ * @memberof Morph#
+ * @param {Point} pos
+ */
+
+/**
+ * @function mouseLeaveDragging
+ * @memberof Morph#
+ * @param {Point} pos
+ */
+
+/**
+ * @function mouseMove
+ * @memberof Morph#
+ * @param {Point} pos
+ * @param {String} button
+ */
+
+/**
+ * @function mouseScroll
+ * @memberof Morph#
+ * @param {Point} pos
+ */
+
+/**
+ * @function processKeyPress
+ * @memberof Morph#
+ * @param {KeyboardEvent} event
+ */
+
+/**
+ * @function processKeyDown
+ * @memberof Morph#
+ * @param {KeyboardEvent} event
+ */
+
+/**
+ * @function processKeyUp
+ * @memberof Morph#
+ * @param {KeyboardEvent} event
+ */
+
 // ShadowMorph /////////////////////////////////////////////////////////
 
 // ShadowMorph inherits from Morph:
@@ -5270,10 +5357,18 @@ ShadowMorph.uber = Morph.prototype;
 
 // ShadowMorph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ */
 function ShadowMorph() {
     this.init();
 }
 
+/**
+ * @param {Point} point
+ * @returns {Morph}
+ */
 ShadowMorph.prototype.topMorphAt = function () {
     return null;
 };
@@ -5290,11 +5385,29 @@ HandleMorph.uber = Morph.prototype;
 
 // HandleMorph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ * @param {Morph} [target]
+ * @param {number} [minX=0]
+ * @param {number} [minY=0]
+ * @param {number} [insetX=0]
+ * @param {number} [insetY=0]
+ * @param {String} [type='resize']
+ */
 function HandleMorph(target, minX, minY, insetX, insetY, type) {
     // if insetY is missing, it will be the same as insetX
     this.init(target, minX, minY, insetX, insetY, type);
 }
 
+/**
+ * @param {Morph} [target]
+ * @param {number} [minX=0]
+ * @param {number} [minY=0]
+ * @param {number} [insetX=0]
+ * @param {number} [insetY=0]
+ * @param {String} [type='resize']
+ */
 HandleMorph.prototype.init = function (
     target,
     minX,
@@ -5320,6 +5433,9 @@ HandleMorph.prototype.init = function (
 
 // HandleMorph drawing:
 
+/**
+ * @inheritdoc
+ */
 HandleMorph.prototype.drawNew = function () {
     this.normalImage = newCanvas(this.extent());
     this.highlightImage = newCanvas(this.extent());
@@ -5356,6 +5472,10 @@ HandleMorph.prototype.drawNew = function () {
     }
 };
 
+/**
+ * @param {HTMLCanvasElement} aCanvas
+ * @param {number} fract
+ */
 HandleMorph.prototype.drawCrosshairsOnCanvas = function (aCanvas, fract) {
     var ctx = aCanvas.getContext('2d'),
         r = aCanvas.width / 2;
@@ -5375,6 +5495,11 @@ HandleMorph.prototype.drawCrosshairsOnCanvas = function (aCanvas, fract) {
     ctx.stroke();
 };
 
+/**
+ * @param {HTMLCanvasElement} aCanvas
+ * @param {Color} color
+ * @param {Color} shadowColor
+ */
 HandleMorph.prototype.drawOnCanvas = function (
     aCanvas,
     color,
@@ -5468,8 +5593,12 @@ HandleMorph.prototype.drawOnCanvas = function (
 
 // HandleMorph stepping:
 
+/** */
 HandleMorph.prototype.step = null;
 
+/**
+ * @param {Point} pos
+ */
 HandleMorph.prototype.mouseDownLeft = function (pos) {
     var world = this.root(),
         offset,
@@ -5523,17 +5652,26 @@ HandleMorph.prototype.mouseDownLeft = function (pos) {
 
 // HandleMorph dragging and dropping:
 
+/**
+ * @override
+ */
 HandleMorph.prototype.rootForGrab = function () {
     return this;
 };
 
 // HandleMorph events:
 
+/**
+ * @override
+ */
 HandleMorph.prototype.mouseEnter = function () {
     this.image = this.highlightImage;
     this.changed();
 };
 
+/**
+ * @override
+ */
 HandleMorph.prototype.mouseLeave = function () {
     this.image = this.normalImage;
     this.changed();
@@ -5541,6 +5679,9 @@ HandleMorph.prototype.mouseLeave = function () {
 
 // HandleMorph menu:
 
+/**
+ * @override
+ */
 HandleMorph.prototype.attach = function () {
     var choices = this.overlappedMorphs(),
         menu = new MenuMorph(this, 'choose target:'),
@@ -5575,10 +5716,17 @@ PenMorph.uber = Morph.prototype;
 
 // PenMorph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ */
 function PenMorph() {
     this.init();
 }
 
+/**
+ * @override
+*/
 PenMorph.prototype.init = function () {
     var size = MorphicPreferences.handleSize * 4;
 
@@ -5597,6 +5745,9 @@ PenMorph.prototype.init = function () {
 
 // PenMorph updating - optimized for warping, i.e atomic recursion
 
+/**
+ * @override
+ */
 PenMorph.prototype.changed = function () {
     if (this.isWarped === false) {
         var w = this.root();
@@ -5611,6 +5762,9 @@ PenMorph.prototype.changed = function () {
 
 // PenMorph display:
 
+/**
+ * @param {number} facing
+ */
 PenMorph.prototype.drawNew = function (facing) {
     // my orientation can be overridden with the "facing" parameter to
     // implement Scratch-style rotation styles
@@ -5666,12 +5820,18 @@ PenMorph.prototype.drawNew = function (facing) {
 
 // PenMorph access:
 
+/**
+ * @param {number} degrees
+ */
 PenMorph.prototype.setHeading = function (degrees) {
     this.heading = ((+degrees % 360) + 360) % 360;
     this.drawNew();
     this.changed();
 };
 
+/**
+ * @override
+ */
 PenMorph.prototype.numericalSetters = function () {
     // for context menu demo purposes
     return [
@@ -5686,6 +5846,9 @@ PenMorph.prototype.numericalSetters = function () {
 
 // PenMorph menu:
 
+/**
+ * @override
+ */
 PenMorph.prototype.developersMenu = function () {
     var menu = PenMorph.uber.developersMenu.call(this);
     menu.addLine();
@@ -5697,6 +5860,7 @@ PenMorph.prototype.developersMenu = function () {
     return menu;
 };
 
+/** */
 PenMorph.prototype.setRotation = function () {
     var menu, dial,
     	name = this.name || this.constructor.name;
@@ -5720,6 +5884,10 @@ PenMorph.prototype.setRotation = function () {
 
 // PenMorph drawing:
 
+/**
+ * @param {Point} start
+ * @param {Point} dest
+ */
 PenMorph.prototype.drawLine = function (start, dest) {
     var context = this.parent.penTrails().getContext('2d'),
         from = start.subtract(this.parent.bounds.origin),
@@ -5745,10 +5913,16 @@ PenMorph.prototype.drawLine = function (start, dest) {
 
 // PenMorph turtle ops:
 
+/**
+ * @param {number} degrees
+ */
 PenMorph.prototype.turn = function (degrees) {
     this.setHeading(this.heading + parseFloat(degrees));
 };
 
+/**
+ * @param {number} steps
+ */
 PenMorph.prototype.forward = function (steps) {
     var start = this.center(),
         dest,
@@ -5765,14 +5939,17 @@ PenMorph.prototype.forward = function (steps) {
     this.drawLine(start, this.center());
 };
 
+/** */
 PenMorph.prototype.down = function () {
     this.isDown = true;
 };
 
+/** */
 PenMorph.prototype.up = function () {
     this.isDown = false;
 };
 
+/** */
 PenMorph.prototype.clear = function () {
     this.parent.drawNew();
     this.parent.changed();
@@ -5780,11 +5957,13 @@ PenMorph.prototype.clear = function () {
 
 // PenMorph optimization for atomic recursion:
 
+/** */
 PenMorph.prototype.startWarp = function () {
     this.wantsRedraw = false;
     this.isWarped = true;
 };
 
+/** */
 PenMorph.prototype.endWarp = function () {
     this.isWarped = false;
     if (this.wantsRedraw) {
@@ -5794,12 +5973,19 @@ PenMorph.prototype.endWarp = function () {
     this.parent.changed();
 };
 
+/**
+ * @param {Function} fun
+ */
 PenMorph.prototype.warp = function (fun) {
     this.startWarp();
     fun.call(this);
     this.endWarp();
 };
 
+/**
+ * @param {String} selector
+ * @param {Array} argsArray
+ */
 PenMorph.prototype.warpOp = function (selector, argsArray) {
     this.startWarp();
     this[selector].apply(this, argsArray);
@@ -5853,6 +6039,12 @@ ColorPaletteMorph.uber = Morph.prototype;
 
 // ColorPaletteMorph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ * @param {Object|Morph} [target]
+ * @param {Point} [sizePoint]
+ */
 function ColorPaletteMorph(target, sizePoint) {
     this.init(
         target || null,
@@ -5860,6 +6052,10 @@ function ColorPaletteMorph(target, sizePoint) {
     );
 }
 
+/**
+ * @param {Object|Morph} [target]
+ * @param {Point} [sizePoint]
+ */
 ColorPaletteMorph.prototype.init = function (target, size) {
     ColorPaletteMorph.uber.init.call(this);
     this.target = target;
@@ -5869,6 +6065,9 @@ ColorPaletteMorph.prototype.init = function (target, size) {
     this.drawNew();
 };
 
+/**
+ * @override
+ */
 ColorPaletteMorph.prototype.drawNew = function () {
     var context, ext, x, y, h, l;
 
@@ -5886,16 +6085,23 @@ ColorPaletteMorph.prototype.drawNew = function () {
     }
 };
 
+/**
+ * @override
+ */
 ColorPaletteMorph.prototype.mouseMove = function (pos) {
     this.choice = this.getPixelColor(pos);
     this.updateTarget();
 };
 
+/**
+ * @override
+ */
 ColorPaletteMorph.prototype.mouseDownLeft = function (pos) {
     this.choice = this.getPixelColor(pos);
     this.updateTarget();
 };
 
+/** */
 ColorPaletteMorph.prototype.updateTarget = function () {
     if (this.target instanceof Morph && this.choice !== null) {
         if (this.target[this.targetSetter] instanceof Function) {
@@ -5910,6 +6116,9 @@ ColorPaletteMorph.prototype.updateTarget = function () {
 
 // ColorPaletteMorph menu:
 
+/**
+ * @override
+ */
 ColorPaletteMorph.prototype.developersMenu = function () {
     var menu = ColorPaletteMorph.uber.developersMenu.call(this);
     menu.addLine();
@@ -5922,6 +6131,7 @@ ColorPaletteMorph.prototype.developersMenu = function () {
     return menu;
 };
 
+/** */
 ColorPaletteMorph.prototype.setTarget = function () {
     var choices = this.overlappedMorphs(),
         menu = new MenuMorph(this, 'choose target:'),
@@ -5942,6 +6152,7 @@ ColorPaletteMorph.prototype.setTarget = function () {
     }
 };
 
+/** */
 ColorPaletteMorph.prototype.setTargetSetter = function () {
     var choices = this.target.colorSetters(),
         menu = new MenuMorph(this, 'choose target property:'),
@@ -5971,6 +6182,12 @@ GrayPaletteMorph.uber = ColorPaletteMorph.prototype;
 
 // GrayPaletteMorph instance creation:
 
+/**
+ * @constructor
+ * @extends ColorPaletteMorph
+ * @param {Object|Morph} [target]
+ * @param {Point} [sizePoint]
+ */
 function GrayPaletteMorph(target, sizePoint) {
     this.init(
         target || null,
@@ -5978,6 +6195,9 @@ function GrayPaletteMorph(target, sizePoint) {
     );
 }
 
+/**
+ * @override
+ */
 GrayPaletteMorph.prototype.drawNew = function () {
     var context, ext, gradient;
 
@@ -6002,10 +6222,18 @@ ColorPickerMorph.uber = Morph.prototype;
 
 // ColorPickerMorph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ * @param {Color} [defaultColor]
+ */
 function ColorPickerMorph(defaultColor) {
     this.init(defaultColor || new Color(255, 255, 255));
 }
 
+/**
+ * @param {Color} [defaultColor]
+ */
 ColorPickerMorph.prototype.init = function (defaultColor) {
     this.choice = defaultColor;
     ColorPickerMorph.uber.init.call(this);
@@ -6014,11 +6242,15 @@ ColorPickerMorph.prototype.init = function (defaultColor) {
     this.drawNew();
 };
 
+/**
+ * @override
+ */
 ColorPickerMorph.prototype.drawNew = function () {
     ColorPickerMorph.uber.drawNew.call(this);
     this.buildSubmorphs();
 };
 
+/** */
 ColorPickerMorph.prototype.buildSubmorphs = function () {
     var cpal, gpal, x, y;
 
@@ -6049,10 +6281,16 @@ ColorPickerMorph.prototype.buildSubmorphs = function () {
     this.add(this.feedback);
 };
 
+/**
+ * @returns {Color}
+ */
 ColorPickerMorph.prototype.getChoice = function () {
     return this.feedback.color;
 };
 
+/**
+ * @override
+ */
 ColorPickerMorph.prototype.rootForGrab = function () {
     return this;
 };
@@ -6071,10 +6309,18 @@ BlinkerMorph.uber = Morph.prototype;
 
 // BlinkerMorph instance creation:
 
+/**
+ * @constructor
+ * @extends {Morph}
+ * @param {number} [rate=2]
+ */
 function BlinkerMorph(rate) {
     this.init(rate);
 }
 
+/**
+ * @param {number} [rate=2]
+ */
 BlinkerMorph.prototype.init = function (rate) {
     BlinkerMorph.uber.init.call(this);
     this.color = new Color(0, 0, 0);
@@ -6084,6 +6330,9 @@ BlinkerMorph.prototype.init = function (rate) {
 
 // BlinkerMorph stepping:
 
+/**
+ * @override
+ */
 BlinkerMorph.prototype.step = function () {
     this.toggleVisibility();
 };
@@ -6108,10 +6357,18 @@ CursorMorph.prototype.viewPadding = 1;
 
 // CursorMorph instance creation:
 
+/**
+ * @constructor
+ * @extends BlinkerMorph
+ * @param {StringMorph|TextMorph} aStringOrTextMorph
+ */
 function CursorMorph(aStringOrTextMorph) {
     this.init(aStringOrTextMorph);
 }
 
+/**
+ * @param {StringMorph|TextMorph} aStringOrTextMorph
+ */
 CursorMorph.prototype.init = function (aStringOrTextMorph) {
     var ls;
 
@@ -6134,6 +6391,7 @@ CursorMorph.prototype.init = function (aStringOrTextMorph) {
     this.initializeClipboardHandler();
 };
 
+/** */
 CursorMorph.prototype.initializeClipboardHandler = function () {
     // Add hidden text box for copying and pasting
     var myself = this,
@@ -6202,6 +6460,9 @@ CursorMorph.prototype.initializeClipboardHandler = function () {
 
 // CursorMorph event processing:
 
+/**
+ * @override
+ */
 CursorMorph.prototype.processKeyPress = function (event) {
     // this.inspectKeyEvent(event);
     if (this.keyDownEventUsed) {
@@ -6243,6 +6504,9 @@ CursorMorph.prototype.processKeyPress = function (event) {
     this.target.escalateEvent('reactToKeystroke', event);
 };
 
+/**
+ * @override
+ */
 CursorMorph.prototype.processKeyDown = function (event) {
     // this.inspectKeyEvent(event);
     var shift = event.shiftKey,
@@ -6343,6 +6607,9 @@ CursorMorph.prototype.gotoSlot = function (newSlot) {
 };
 */
 
+/**
+ * @param {number} slot
+ */
 CursorMorph.prototype.gotoSlot = function (slot) {
     var length = this.target.text.length,
         pos = this.target.slotPosition(slot),
@@ -6376,42 +6643,65 @@ CursorMorph.prototype.gotoSlot = function (slot) {
     }
 };
 
+/**
+ * @param {boolean} shift
+ * @param {number} [howMany=1]
+ */
 CursorMorph.prototype.goLeft = function (shift, howMany) {
     this.updateSelection(shift);
     this.gotoSlot(this.slot - (howMany || 1));
     this.updateSelection(shift);
 };
 
+/**
+ * @param {boolean} shift
+ * @param {number} [howMany=1]
+ */
 CursorMorph.prototype.goRight = function (shift, howMany) {
     this.updateSelection(shift);
     this.gotoSlot(this.slot + (howMany || 1));
     this.updateSelection(shift);
 };
 
+/**
+ * @param {boolean} shift
+ */
 CursorMorph.prototype.goUp = function (shift) {
     this.updateSelection(shift);
     this.gotoSlot(this.target.upFrom(this.slot));
     this.updateSelection(shift);
 };
 
+/**
+ * @param {boolean} shift
+ */
 CursorMorph.prototype.goDown = function (shift) {
     this.updateSelection(shift);
     this.gotoSlot(this.target.downFrom(this.slot));
     this.updateSelection(shift);
 };
 
+/**
+ * @param {boolean} shift
+ */
 CursorMorph.prototype.goHome = function (shift) {
     this.updateSelection(shift);
     this.gotoSlot(this.target.startOfLine(this.slot));
     this.updateSelection(shift);
 };
 
+/**
+ * @param {boolean} shift
+ */
 CursorMorph.prototype.goEnd = function (shift) {
     this.updateSelection(shift);
     this.gotoSlot(this.target.endOfLine(this.slot));
     this.updateSelection(shift);
 };
 
+/**
+ * @param {aPoint} aPoint
+ */
 CursorMorph.prototype.gotoPos = function (aPoint) {
     this.gotoSlot(this.target.slotAt(aPoint));
     this.show();
@@ -6419,6 +6709,9 @@ CursorMorph.prototype.gotoPos = function (aPoint) {
 
 // CursorMorph selecting:
 
+/**
+ * @param {boolean} shift
+ */
 CursorMorph.prototype.updateSelection = function (shift) {
     if (shift) {
         if (isNil(this.target.endMark) && isNil(this.target.startMark)) {
@@ -6436,6 +6729,7 @@ CursorMorph.prototype.updateSelection = function (shift) {
 
 // CursorMorph editing:
 
+/** */
 CursorMorph.prototype.accept = function () {
     var world = this.root();
     if (world) {
@@ -6444,6 +6738,7 @@ CursorMorph.prototype.accept = function () {
     this.escalateEvent('accept', this);
 };
 
+/** */
 CursorMorph.prototype.cancel = function () {
     var world = this.root();
     this.undo();
@@ -6453,6 +6748,7 @@ CursorMorph.prototype.cancel = function () {
     this.escalateEvent('cancel', this);
 };
 
+/** */
 CursorMorph.prototype.undo = function () {
     this.target.text = this.originalContents;
     this.target.changed();
@@ -6461,6 +6757,10 @@ CursorMorph.prototype.undo = function () {
     this.gotoSlot(0);
 };
 
+/**
+ * @param {String} aChar
+ * @param {boolean} [shiftKey=false]
+ */
 CursorMorph.prototype.insert = function (aChar, shiftKey) {
     var text;
     if (aChar === '\u0009') {
@@ -6488,6 +6788,10 @@ CursorMorph.prototype.insert = function (aChar, shiftKey) {
     }
 };
 
+/**
+ * @param {String} aChar
+ * @param {boolean} [shiftKey=false]
+ */
 CursorMorph.prototype.ctrl = function (aChar, shiftKey) {
     if (aChar === 64 || (aChar === 65 && shiftKey)) {
         this.insert('@');
@@ -6516,6 +6820,10 @@ CursorMorph.prototype.ctrl = function (aChar, shiftKey) {
 
 };
 
+/**
+ * @param {String} aChar
+ * @param {boolean} [shiftKey=false]
+ */
 CursorMorph.prototype.cmd = function (aChar, shiftKey) {
     if (aChar === 64 || (aChar === 65 && shiftKey)) {
         this.insert('@');
@@ -6534,6 +6842,7 @@ CursorMorph.prototype.cmd = function (aChar, shiftKey) {
     }
 };
 
+/** */
 CursorMorph.prototype.deleteRight = function () {
     var text;
     if (this.target.selection() !== '') {
@@ -6548,6 +6857,7 @@ CursorMorph.prototype.deleteRight = function () {
     }
 };
 
+/** */
 CursorMorph.prototype.deleteLeft = function () {
     var text;
     if (this.target.selection()) {
@@ -6564,6 +6874,9 @@ CursorMorph.prototype.deleteLeft = function () {
 
 // CursorMorph destroying:
 
+/**
+ * @override
+ */
 CursorMorph.prototype.destroy = function () {
     if (this.target.alignment !== this.originalAlignment) {
         this.target.alignment = this.originalAlignment;
@@ -6574,6 +6887,7 @@ CursorMorph.prototype.destroy = function () {
     CursorMorph.uber.destroy.call(this);
 };
 
+/** */
 CursorMorph.prototype.destroyClipboardHandler = function () {
     var nodes = document.body.children,
         each,
@@ -6591,6 +6905,7 @@ CursorMorph.prototype.destroyClipboardHandler = function () {
 
 // CursorMorph utilities:
 
+/** */
 CursorMorph.prototype.inspectKeyEvent = function (event) {
     // private
     this.inform(
@@ -6626,10 +6941,22 @@ BoxMorph.uber = Morph.prototype;
 
 // BoxMorph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ * @param {number} [edge=4]
+ * @param {number} [border=2]
+ * @param {Color} [borderColor]
+ */
 function BoxMorph(edge, border, borderColor) {
     this.init(edge, border, borderColor);
 }
 
+/**
+ * @param {number} [edge=4]
+ * @param {number} [border=2]
+ * @param {Color} [borderColor]
+ */
 BoxMorph.prototype.init = function (edge, border, borderColor) {
     this.edge = edge || 4;
     this.border = border || ((border === 0) ? 0 : 2);
@@ -6639,6 +6966,9 @@ BoxMorph.prototype.init = function (edge, border, borderColor) {
 
 // BoxMorph drawing:
 
+/**
+ * @override
+ */
 BoxMorph.prototype.drawNew = function () {
     var context;
 
@@ -6667,6 +6997,11 @@ BoxMorph.prototype.drawNew = function () {
     }
 };
 
+/**
+ * @param {CanvasRenderingContext2D} context
+ * @param {number} radius
+ * @param {number} inset
+*/
 BoxMorph.prototype.outlinePath = function (context, radius, inset) {
     var offset = radius + inset,
         w = this.width(),
@@ -6713,6 +7048,9 @@ BoxMorph.prototype.outlinePath = function (context, radius, inset) {
 
 // BoxMorph menus:
 
+/**
+ * @override
+ */
 BoxMorph.prototype.developersMenu = function () {
     var menu = BoxMorph.uber.developersMenu.call(this);
     menu.addLine();
@@ -6807,6 +7145,9 @@ BoxMorph.prototype.colorSetters = function () {
     return ['color', 'borderColor'];
 };
 
+/**
+ * @override
+ */
 BoxMorph.prototype.numericalSetters = function () {
     // for context menu demo purposes
     var list = BoxMorph.uber.numericalSetters.call(this);
@@ -6834,6 +7175,17 @@ SpeechBubbleMorph.uber = BoxMorph.prototype;
 
 // SpeechBubbleMorph instance creation:
 
+/**
+ * @constructor
+ * @extends BoxMorph
+ * @param {String} [contents='']
+ * @param {Color} [color]
+ * @param {number} [edge=6]
+ * @param {number} [border=1]
+ * @param {Color} [borderColor]
+ * @param {number} [padding=0]
+ * @param {boolean} [isThought=false]
+ */
 function SpeechBubbleMorph(
     contents,
     color,
@@ -6846,6 +7198,15 @@ function SpeechBubbleMorph(
     this.init(contents, color, edge, border, borderColor, padding, isThought);
 }
 
+/**
+ * @param {String} [contents='']
+ * @param {Color} [color]
+ * @param {number} [edge=6]
+ * @param {number} [border=1]
+ * @param {Color} [borderColor]
+ * @param {number} [padding=0]
+ * @param {boolean} [isThought=false]
+ */
 SpeechBubbleMorph.prototype.init = function (
     contents,
     color,
@@ -6872,6 +7233,11 @@ SpeechBubbleMorph.prototype.init = function (
 
 // SpeechBubbleMorph invoking:
 
+/**
+ * @param {WorldMorph} world
+ * @param {Point} pos
+ * @param {boolean} [isClickable=false]
+ */
 SpeechBubbleMorph.prototype.popUp = function (world, pos, isClickable) {
     this.drawNew();
     this.setPosition(pos.subtract(new Point(0, this.height())));
@@ -6893,6 +7259,9 @@ SpeechBubbleMorph.prototype.popUp = function (world, pos, isClickable) {
 
 // SpeechBubbleMorph drawing:
 
+/**
+ * @override
+ */
 SpeechBubbleMorph.prototype.drawNew = function () {
     // re-build my contents
     if (this.contentsMorph) {
@@ -6947,6 +7316,9 @@ SpeechBubbleMorph.prototype.drawNew = function () {
     ));
 };
 
+/**
+ * @override
+ */
 SpeechBubbleMorph.prototype.outlinePath = function (
     context,
     radius,
@@ -7057,6 +7429,9 @@ SpeechBubbleMorph.prototype.outlinePath = function (
     shadow doesn't become conflicted by embedded scrolling panes
 */
 
+/**
+ * @override
+ */
 SpeechBubbleMorph.prototype.shadowImage = function (off, color) {
     // fallback for Windows Chrome-Shadow bug
     var fb, img, outline, sha, ctx,
@@ -7082,6 +7457,9 @@ SpeechBubbleMorph.prototype.shadowImage = function (off, color) {
     return sha;
 };
 
+/**
+ * @override
+ */
 SpeechBubbleMorph.prototype.shadowImageBlurred = function (off, color) {
     var fb, img, sha, ctx,
         offset = off || new Point(7, 7),
@@ -7114,6 +7492,7 @@ SpeechBubbleMorph.prototype.shadowImageBlurred = function (off, color) {
 
 // SpeechBubbleMorph resizing
 
+/** */
 SpeechBubbleMorph.prototype.fixLayout = function () {
     this.removeShadow();
     this.drawNew();

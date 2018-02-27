@@ -1239,25 +1239,44 @@ enableRetinaSupport();
 
 // Global Functions ////////////////////////////////////////////////////
 
+/** */
 function nop() {
     // do explicitly nothing
     return null;
 }
 
+/**
+ * @param {String} string
+ * @returns {String}
+ */
 function localize(string) {
     // override this function with custom localizations
     return string;
 }
 
+/**
+ * @param {*} thing
+ * @returns {boolean}
+ */
 function isNil(thing) {
     return thing === undefined || thing === null;
 }
 
+/**
+ * @param {Array} list
+ * @param {*} element
+ * @returns {boolean}
+ */
 function contains(list, element) {
     // answer true if element is a member of list
     return list.indexOf(element) !== -1;
 }
 
+/**
+ * @param {Array} list
+ * @param {Function} predicate
+ * @returns {*}
+ */
 function detect(list, predicate) {
     // answer the first element of list for which predicate evaluates
     // true, otherwise answer null
@@ -1270,6 +1289,10 @@ function detect(list, predicate) {
     return null;
 }
 
+/**
+ * @param {Object} object
+ * @returns {number}
+ */
 function sizeOf(object) {
     // answer the number of own properties
     var size = 0, key;
@@ -1281,33 +1304,62 @@ function sizeOf(object) {
     return size;
 }
 
+/**
+ * @param {*} target
+ * @returns {boolean}
+ */
 function isString(target) {
     return typeof target === 'string' || target instanceof String;
 }
 
+/**
+ * @param {*} target
+ * @returns {boolean}
+ */
 function isObject(target) {
     return target !== null &&
         (typeof target === 'object' || target instanceof Object);
 }
 
+/**
+ * @param {number} degrees
+ * @returns {number}
+ */
 function radians(degrees) {
     return degrees * Math.PI / 180;
 }
 
+/**
+ * @param {number} radians
+ * @returns {number}
+ */
 function degrees(radians) {
     return radians * 180 / Math.PI;
 }
 
+/**
+ * @param {number} height
+ * @returns {number}
+ */
 function fontHeight(height) {
     var minHeight = Math.max(height, MorphicPreferences.minimumFontHeight);
     return minHeight * 1.2; // assuming 1/5 font size for ascenders
 }
 
+/**
+ * @param {String} aCharacter
+ * @returns {boolean}
+ */
 function isWordChar(aCharacter) {
     // can't use \b or \w because they ignore diacritics
     return aCharacter.match(/[A-zÀ-ÿ0-9]/);
 }
 
+/**
+ * @param {Point} [extentPoint]
+ * @param {boolean} [nonRetina=false]
+ * @returns {HTMLCanvasElement}
+ */
 function newCanvas(extentPoint, nonRetina) {
     // answer a new empty instance of Canvas, don't display anywhere
     // nonRetina - optional Boolean "false"
@@ -1323,6 +1375,9 @@ function newCanvas(extentPoint, nonRetina) {
     return canvas;
 }
 
+/**
+ * @returns {number}
+ */
 function getMinimumFontHeight() {
     // answer the height of the smallest font renderable in pixels
     var str = 'I',
@@ -1352,6 +1407,9 @@ function getMinimumFontHeight() {
     return 0;
 }
 
+/**
+ * @returns {boolean}
+ */
 function getBlurredShadowSupport() {
     // check for Chrome issue 90001
     // http://code.google.com/p/chromium/issues/detail?id=90001
@@ -1375,6 +1433,10 @@ function getBlurredShadowSupport() {
     return ctx.getImageData(0, 0, 1, 1).data[3] ? true : false;
 }
 
+/**
+ * @param {DOMElement} aDOMElement
+ * @returns {Object}
+ */
 function getDocumentPositionOf(aDOMelement) {
     // answer the absolute coordinates of a DOM element in the document
     var pos, offsetParent;
@@ -1396,6 +1458,10 @@ function getDocumentPositionOf(aDOMelement) {
     return pos;
 }
 
+/**
+ * @param {*} target
+ * @returns {Object}
+ */
 function copy(target) {
     // answer a shallow copy of target
     var value, c, property, keys, l, i;
@@ -1468,6 +1534,7 @@ function copy(target) {
     stage (high-resolution) into a sprite-costume (normal resolution).
 */
 
+/** */
 function enableRetinaSupport() {
 /*
     === contributed by Bartosz Leper ===
@@ -1709,6 +1776,9 @@ function enableRetinaSupport() {
     });
 }
 
+/**
+ * @returns {boolean}
+ */
 function isRetinaSupported () {
     var ctx = document.createElement("canvas").getContext("2d"),
         backingStorePixelRatio = ctx.webkitBackingStorePixelRatio ||
@@ -1751,10 +1821,14 @@ function isRetinaSupported () {
     );
 }
 
+/**
+ * @returns {boolean}
+ */
 function isRetinaEnabled () {
     return HTMLCanvasElement.prototype.hasOwnProperty('_isRetinaEnabled');
 }
 
+/** */
 function disableRetinaSupport() {
     // uninstalls Retina utilities. Make sure to re-create every Canvas
     // element afterwards
@@ -1775,6 +1849,11 @@ function disableRetinaSupport() {
     delete canvasProto._bak;
 }
 
+/**
+ * @param {HTMLCanvasElement} aCanvas
+ * @param {boolean} [getCopy=false]
+ * @returns {HTMLCanvasElement}
+ */
 function normalizeCanvas(aCanvas, getCopy) {
     // make sure aCanvas is non-retina, otherwise convert it in place (!)
     // or answer a normalized copy if the "getCopy" flag is <true>

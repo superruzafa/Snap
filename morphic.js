@@ -5347,11 +5347,11 @@ Morph.prototype.overlappingImage = function (otherMorph) {
  * @param {Point} pos
  */
 
- /**
-  * @function selectForEdit
-  * @memberof Morph#
-  * @returns {Morph}
-  */
+/**
+ * @function selectForEdit
+ * @memberof Morph#
+ * @returns {Morph}
+ */
 
 /**
  * @function prepareToBeGrabbed
@@ -5359,75 +5359,88 @@ Morph.prototype.overlappingImage = function (otherMorph) {
  * @param {HandMorph} handMorph
  */
 
- /**
-  * @function reactToTemplateCopy
-  * @memberof Morph#
-  */
+/**
+ * @function reactToTemplateCopy
+ * @memberof Morph#
+ */
 
- /**
-  * @function reactToDropOf
-  * @memberof Morph#
-  */
+/**
+ * @function reactToDropOf
+ * @memberof Morph#
+ * @param {Morph} aMorph
+ * @param {HandMorph} handMorph
+ */
 
- /**
-  * @function reactToGrabOf
-  * @memberof Morph#
-  * @param {Morph} grabbedMorph
-  */
+/**
+ * @function reactToGrabOf
+ * @memberof Morph#
+ * @param {Morph} grabbedMorph
+ */
 
-  /**
-  * @function justDropped
-  * @memberof Morph#
-  * @param {HandMorph} handMorph
-  */
+/**
+ * @function justDropped
+ * @memberof Morph#
+ * @param {HandMorph} handMorph
+ */
 
- /**
-  * @function droppedImage
-  * @memberof Morph#
-  * @param {HTMLCanvasElement} aCanvas
-  * @param {String} name
-  */
+/**
+ * @function droppedImage
+ * @memberof Morph#
+ * @param {HTMLCanvasElement} aCanvas
+ * @param {String} name
+ */
 
- /**
-  * @function droppedSVG
-  * @memberof Morph#
-  * @param {Image} anImage
-  * @param {String} name
-  */
+/**
+ * @function droppedSVG
+ * @memberof Morph#
+ * @param {Image} anImage
+ * @param {String} name
+ */
 
- /**
-  * @function droppedAudio
-  * @memberof Morph#
-  * @param {Audio} anAudio
-  * @param {String} name
-  */
+/**
+ * @function droppedAudio
+ * @memberof Morph#
+ * @param {Audio} anAudio
+ * @param {String} name
+ */
 
- /**
-  * @function droppedText
-  * @memberof Morph#
-  * @param {String} aString
-  * @param {String} name
-  */
+/**
+ * @function droppedText
+ * @memberof Morph#
+ * @param {String} aString
+ * @param {String} name
+ */
 
- /**
-  * @function droppedBinary
-  * @memberof Morph#
-  * @param {Array} anArrayBuffer
-  * @param {String} name
-  */
+/**
+ * @function droppedBinary
+ * @memberof Morph#
+ * @param {Array} anArrayBuffer
+ * @param {String} name
+ */
 
- /**
-  * @function nextTab
-  * @memberof Morph#
-  * @param {Morph} editField
-  */
+/**
+ * @function nextTab
+ * @memberof Morph#
+ * @param {Morph} editField
+ */
 
- /**
-  * @function previousTab
-  * @memberof Morph#
-  * @param {Morph} editField
-  */
+/**
+ * @function previousTab
+ * @memberof Morph#
+ * @param {Morph} editField
+ */
 
+/**
+ * @function reactToChoice
+ * @memberof Morph#
+ * @param {*} arg
+ */
+
+/**
+ * @function reactToKeystroke
+ * @memberof Morph#
+ * @param {KeyboardEvent} event
+ */
 // ShadowMorph /////////////////////////////////////////////////////////
 
 // ShadowMorph inherits from Morph:

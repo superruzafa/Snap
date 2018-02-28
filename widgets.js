@@ -131,6 +131,11 @@ PushButtonMorph.prototype.padding = 3;
 
 // PushButtonMorph instance creation:
 
+/**
+ * @constructor
+ * @extends TriggerMorph
+ * @param {Function|Object|String} target
+ */
 function PushButtonMorph(
     target,
     action,
@@ -149,6 +154,14 @@ function PushButtonMorph(
     );
 }
 
+/**
+ * @param {Function|Object|String} [target]
+ * @param {Function|String} [action]
+ * @param {String} [labelString]
+ * @param {String} [environment]
+ * @param {String|Function} [hint]
+ * @param {?} [template]
+ */
 PushButtonMorph.prototype.init = function (
     target,
     action,
@@ -181,6 +194,7 @@ PushButtonMorph.prototype.init = function (
 
 // PushButtonMorph layout:
 
+/** */
 PushButtonMorph.prototype.fixLayout = function () {
     // make sure I at least encompass my label
     if (this.label !== null) {
@@ -197,6 +211,9 @@ PushButtonMorph.prototype.fixLayout = function () {
 
 // PushButtonMorph events
 
+/**
+ * @override
+ */
 PushButtonMorph.prototype.mouseDownLeft = function () {
     PushButtonMorph.uber.mouseDownLeft.call(this);
     if (this.label) {
@@ -204,6 +221,9 @@ PushButtonMorph.prototype.mouseDownLeft = function () {
     }
 };
 
+/**
+ * @override
+ */
 PushButtonMorph.prototype.mouseClickLeft = function () {
     if (this.isDisabled) {return; }
     PushButtonMorph.uber.mouseClickLeft.call(this);
@@ -212,6 +232,9 @@ PushButtonMorph.prototype.mouseClickLeft = function () {
     }
 };
 
+/**
+ * @override
+ */
 PushButtonMorph.prototype.mouseLeave = function () {
     PushButtonMorph.uber.mouseLeave.call(this);
     if (this.label) {
@@ -221,8 +244,17 @@ PushButtonMorph.prototype.mouseLeave = function () {
 
 // PushButtonMorph drawing:
 
+/**
+ * @function
+ * @param {CanvasRenderingContext2D} context
+ * @param {number} radius
+ * @param {number} inset
+ */
 PushButtonMorph.prototype.outlinePath = BoxMorph.prototype.outlinePath;
 
+/**
+ * @param {CanvasRenderingContext2D} context
+ */
 PushButtonMorph.prototype.drawOutline = function (context) {
     var outlineStyle,
         isFlat = MorphicPreferences.isFlat && !this.is3D;
@@ -251,6 +283,10 @@ PushButtonMorph.prototype.drawOutline = function (context) {
     context.fill();
 };
 
+/**
+ * @param {CanvasRenderingContext2D} context
+ * @param {Color} color
+ */
 PushButtonMorph.prototype.drawBackground = function (context, color) {
     var isFlat = MorphicPreferences.isFlat && !this.is3D;
 
@@ -266,6 +302,7 @@ PushButtonMorph.prototype.drawBackground = function (context, color) {
     context.lineWidth = this.outline;
 };
 
+/** */
 PushButtonMorph.prototype.drawEdges = function (
     context,
     color,
@@ -403,6 +440,7 @@ PushButtonMorph.prototype.drawEdges = function (
     context.stroke();
 };
 
+/** */
 PushButtonMorph.prototype.createBackgrounds = function () {
     var context,
         ext = this.extent();
@@ -451,6 +489,7 @@ PushButtonMorph.prototype.createBackgrounds = function () {
     this.image = this.normalImage;
 };
 
+/** */
 PushButtonMorph.prototype.createLabel = function () {
     var shading = !MorphicPreferences.isFlat || this.is3D;
 
@@ -483,6 +522,7 @@ PushButtonMorph.prototype.createLabel = function () {
 
 // PushButtonMorph states
 
+/** */
 PushButtonMorph.prototype.disable = function () {
     this.isDisabled = true;
     this.forAllChildren(function (child) {
@@ -491,6 +531,7 @@ PushButtonMorph.prototype.disable = function () {
     this.changed();
 };
 
+/** */
 PushButtonMorph.prototype.enable = function () {
     this.isDisabled = false;
     this.forAllChildren(function (child) {
@@ -519,6 +560,21 @@ ToggleButtonMorph.prototype.contrast = 30;
 
 // ToggleButtonMorph instance creation:
 
+/**
+ * @constructor
+ * @extends PushButtonMorph
+ * @param {Array.<Color>} colors
+ * @param {Function|Object|String} target
+ * @param {Function|String} [action]
+ * @param {String} [labelString]
+ * @param {Function|String} [query]
+ * @param {String} [environment]
+ * @param {String|Function} [hint]
+ * @param {?} [template]
+ * @param {number} [minWidth]
+ * @param {boolean} [hasPreview=false]
+ * @param {boolean} [isPicture=false]
+ */
 function ToggleButtonMorph(
     colors, // color overrides, <array>: [normal, highlight, pressed]
     target,
@@ -547,6 +603,19 @@ function ToggleButtonMorph(
     );
 }
 
+/**
+ * @param {Array.<Color>} colors
+ * @param {Function|Object|String} target
+ * @param {Function|String} [action]
+ * @param {String} [labelString]
+ * @param {Function|String} [query]
+ * @param {String} [environment]
+ * @param {String|Function} [hint]
+ * @param {?} [template]
+ * @param {number} [minWidth]
+ * @param {boolean} [hasPreview=false]
+ * @param {boolean} [isPicture=false]
+ */
 ToggleButtonMorph.prototype.init = function (
     colors,
     target,
@@ -592,6 +661,9 @@ ToggleButtonMorph.prototype.init = function (
 
 // ToggleButtonMorph events
 
+/**
+ * @override
+ */
 ToggleButtonMorph.prototype.mouseEnter = function () {
     var contents = this.hint instanceof Function ? this.hint() : this.hint;
     if (!this.state) {
@@ -603,6 +675,9 @@ ToggleButtonMorph.prototype.mouseEnter = function () {
     }
 };
 
+/**
+ * @override
+ */
 ToggleButtonMorph.prototype.mouseLeave = function () {
     if (!this.state) {
         this.image = this.normalImage;
@@ -616,6 +691,9 @@ ToggleButtonMorph.prototype.mouseLeave = function () {
     }
 };
 
+/**
+ * @override
+ */
 ToggleButtonMorph.prototype.mouseDownLeft = function () {
     if (!this.state) {
         this.image = this.pressImage;
@@ -623,6 +701,9 @@ ToggleButtonMorph.prototype.mouseDownLeft = function () {
     }
 };
 
+/**
+ * @override
+ */
 ToggleButtonMorph.prototype.mouseClickLeft = function () {
     if (!this.state) {
         this.image = this.highlightImage;
@@ -633,11 +714,15 @@ ToggleButtonMorph.prototype.mouseClickLeft = function () {
 
 // ToggleButtonMorph action
 
+/**
+ * @override
+ */
 ToggleButtonMorph.prototype.trigger = function () {
     ToggleButtonMorph.uber.trigger.call(this);
     this.refresh();
 };
 
+/** */
 ToggleButtonMorph.prototype.refresh = function () {
 /*
     if query is a function:
@@ -671,6 +756,9 @@ ToggleButtonMorph.prototype.refresh = function () {
 
 // ToggleButtonMorph layout:
 
+/**
+ * @override
+ */
 ToggleButtonMorph.prototype.fixLayout = function () {
     if (this.label !== null) {
         var lw = Math.max(this.label.width(), this.labelMinExtent.x),
@@ -701,6 +789,9 @@ ToggleButtonMorph.prototype.fixLayout = function () {
 
 // ToggleButtonMorph drawing
 
+/**
+ * @override
+ */
 ToggleButtonMorph.prototype.createBackgrounds = function () {
 /*
     basically the same as inherited from PushButtonMorph, except for
@@ -758,6 +849,9 @@ ToggleButtonMorph.prototype.createBackgrounds = function () {
     this.image = this.normalImage;
 };
 
+/**
+ * @override
+ */
 ToggleButtonMorph.prototype.drawEdges = function (
     context,
     color,
@@ -805,6 +899,11 @@ ToggleButtonMorph.prototype.drawEdges = function (
     }
 };
 
+/**
+ * @param {CanvasRenderingContext2D} context
+ * @param {number} radius
+ * @param {number} inset
+ */
 ToggleButtonMorph.prototype.previewPath = function (context, radius, inset) {
     var offset = radius + inset,
         h = this.height();
@@ -829,6 +928,9 @@ ToggleButtonMorph.prototype.previewPath = function (context, radius, inset) {
     );
 };
 
+/**
+ * @override
+ */
 ToggleButtonMorph.prototype.createLabel = function () {
     var shading = !MorphicPreferences.isFlat || this.is3D,
         none = new Point();
@@ -923,11 +1025,17 @@ ToggleButtonMorph.prototype.createLabel = function () {
     hiding/showing my parent.
 */
 
+/**
+ * @override
+ */
 ToggleButtonMorph.prototype.hide = function () {
     this.isVisible = false;
     this.changed();
 };
 
+/**
+ * @override
+ */
 ToggleButtonMorph.prototype.show = function () {
     this.isVisible = true;
     this.changed();
@@ -943,6 +1051,17 @@ TabMorph.uber = ToggleButtonMorph.prototype;
 
 // TabMorph instance creation:
 
+/**
+ * @constructor
+ * @extends ToggleButtonMorph
+ * @param {Array.<Color>} colors
+ * @param {Function|Object|String} target
+ * @param {Function|String} [action]
+ * @param {String} [labelString]
+ * @param {Function|String} [query]
+ * @param {String} [environment]
+ * @param {String|Function} [hint]
+ */
 function TabMorph(
     colors, // color overrides, <array>: [normal, highlight, pressed]
     target,
@@ -965,6 +1084,7 @@ function TabMorph(
 
 // TabMorph layout:
 
+/** */
 TabMorph.prototype.fixLayout = function () {
     if (this.label !== null) {
         this.setExtent(new Point(
@@ -983,6 +1103,7 @@ TabMorph.prototype.fixLayout = function () {
 
 // TabMorph action:
 
+/** */
 TabMorph.prototype.refresh = function () {
     if (this.state) { // bring to front
         if (this.parent) {
@@ -994,6 +1115,9 @@ TabMorph.prototype.refresh = function () {
 
 // TabMorph drawing:
 
+/**
+ * @override
+ */
 TabMorph.prototype.drawBackground = function (context, color) {
     var w = this.width(),
         h = this.height(),
@@ -1009,10 +1133,16 @@ TabMorph.prototype.drawBackground = function (context, color) {
     context.fill();
 };
 
+/**
+ * @override
+ */
 TabMorph.prototype.drawOutline = function () {
     nop();
 };
 
+/**
+ * @override
+ */
 TabMorph.prototype.drawEdges = function (
     context,
     color,
@@ -1065,6 +1195,20 @@ ToggleMorph.uber = PushButtonMorph.prototype;
 
 // ToggleMorph instance creation:
 
+/**
+ * @constructor
+ * @extends PushButtonMorph
+ * @param {String} [style='checkbox']
+ * @param {Function|Object|String} target
+ * @param {Function|String} [action]
+ * @param {String} [labelString]
+ * @param {Function|String} [query]
+ * @param {String} [environment]
+ * @param {String|Function} [hint]
+ * @param {?} [template]
+ * @param {Morph|HTMLCanvasElement} [element]
+ * @param {String} [builder]
+ */
 function ToggleMorph(
     style, // 'checkbox' or 'radiobutton'
     target,
@@ -1091,6 +1235,18 @@ function ToggleMorph(
     );
 }
 
+/**
+ * @param {String} [style='checkbox']
+ * @param {Function|Object|String} target
+ * @param {Function|String} [action]
+ * @param {String} [labelString]
+ * @param {Function|String} [query]
+ * @param {String} [environment]
+ * @param {String|Function} [hint]
+ * @param {?} [template]
+ * @param {Morph|HTMLCanvasElement} [element]
+ * @param {String} [builder]
+ */
 ToggleMorph.prototype.init = function (
     style,
     target,
@@ -1133,6 +1289,9 @@ ToggleMorph.prototype.init = function (
 
 // ToggleMorph layout:
 
+/**
+ * @override
+ */
 ToggleMorph.prototype.fixLayout = function () {
     var padding = this.padding * 2 + this.outline * 2,
         y;
@@ -1178,6 +1337,9 @@ ToggleMorph.prototype.fixLayout = function () {
     }
 };
 
+/**
+ * @override
+ */
 ToggleMorph.prototype.createLabel = function () {
     var shading = !MorphicPreferences.isFlat || this.is3D;
 
@@ -1232,11 +1394,15 @@ ToggleMorph.prototype.createLabel = function () {
 
 // ToggleMorph action:
 
+/**
+ * @override
+ */
 ToggleMorph.prototype.trigger = function () {
     ToggleMorph.uber.trigger.call(this);
     this.refresh();
 };
 
+/** */
 ToggleMorph.prototype.refresh = function () {
     /*
     if query is a function:
@@ -1264,6 +1430,9 @@ ToggleMorph.prototype.refresh = function () {
 
 // ToggleMorph events
 
+/**
+ * @override
+ */
 ToggleMorph.prototype.mouseDownLeft = function () {
     PushButtonMorph.uber.mouseDownLeft.call(this);
     if (this.tick) {
@@ -1271,6 +1440,9 @@ ToggleMorph.prototype.mouseDownLeft = function () {
     }
 };
 
+/**
+ * @override
+ */
 ToggleMorph.prototype.mouseClickLeft = function () {
     PushButtonMorph.uber.mouseClickLeft.call(this);
     if (this.tick) {
@@ -1278,6 +1450,9 @@ ToggleMorph.prototype.mouseClickLeft = function () {
     }
 };
 
+/**
+ * override
+ */
 ToggleMorph.prototype.mouseLeave = function () {
     PushButtonMorph.uber.mouseLeave.call(this);
     if (this.tick) {
@@ -1293,8 +1468,14 @@ ToggleMorph.prototype.mouseLeave = function () {
     hiding/showing my parent.
 */
 
+/**
+ * @function
+ */
 ToggleMorph.prototype.hide = ToggleButtonMorph.prototype.hide;
 
+/**
+ * @function
+ */
 ToggleMorph.prototype.show = ToggleButtonMorph.prototype.show;
 
 // ToggleElementMorph /////////////////////////////////////////////////////
@@ -1321,6 +1502,18 @@ ToggleElementMorph.prototype.inactiveColor = new Color(180, 180, 180);
 
 // ToggleElementMorph instance creation:
 
+/**
+ * @constructor
+ * @extends TriggerMorph
+ * @param {Function|Object|String} target
+ * @param {Function|String} [action]
+ * @param {Morph|HTMLCanvasElement} [element]
+ * @param {Function|String} [query]
+ * @param {String} [environment]
+ * @param {String|Function} [hint]
+ * @param {String} [builder]
+ * @param {String} [labelString]
+ */
 function ToggleElementMorph(
     target,
     action,
@@ -1343,6 +1536,16 @@ function ToggleElementMorph(
     );
 }
 
+/**
+ * @param {Function|Object|String} target
+ * @param {Function|String} [action]
+ * @param {Morph|HTMLCanvasElement} [element]
+ * @param {Function|String} [query]
+ * @param {String} [environment]
+ * @param {String|Function} [hint]
+ * @param {String} [builder]
+ * @param {String} [labelString]
+ */
 ToggleElementMorph.prototype.init = function (
     target,
     action,
@@ -1375,6 +1578,9 @@ ToggleElementMorph.prototype.init = function (
 
 // ToggleElementMorph drawing:
 
+/**
+ * @override
+ */
 ToggleElementMorph.prototype.createBackgrounds = function () {
     var shading = !MorphicPreferences.isFlat || this.is3D;
 
@@ -1409,6 +1615,9 @@ ToggleElementMorph.prototype.createBackgrounds = function () {
     this.image = this.normalImage;
 };
 
+/**
+ * @override
+ */
 ToggleElementMorph.prototype.setColor = function (aColor) {
     this.element.setColor(aColor);
     this.createBackgrounds();
@@ -1417,6 +1626,9 @@ ToggleElementMorph.prototype.setColor = function (aColor) {
 
 // ToggleElementMorph layout:
 
+/**
+ * @override
+ */
 ToggleElementMorph.prototype.createLabel = function () {
     var y;
     if (this.captionString) {
@@ -1444,23 +1656,46 @@ ToggleElementMorph.prototype.createLabel = function () {
 
 // ToggleElementMorph action
 
+/**
+ * @function
+ * @override
+ */
 ToggleElementMorph.prototype.trigger
     = ToggleButtonMorph.prototype.trigger;
 
+/**
+ * @function
+ */
 ToggleElementMorph.prototype.refresh
     = ToggleButtonMorph.prototype.refresh;
 
 // ToggleElementMorph events
 
+/**
+ * @function
+ * @override
+ */
 ToggleElementMorph.prototype.mouseEnter
     = ToggleButtonMorph.prototype.mouseEnter;
 
+/**
+ * @function
+ * @override
+ */
 ToggleElementMorph.prototype.mouseLeave
     = ToggleButtonMorph.prototype.mouseLeave;
 
+/**
+ * @function
+ * @override
+ */
 ToggleElementMorph.prototype.mouseDownLeft
     = ToggleButtonMorph.prototype.mouseDownLeft;
 
+/**
+ * @function
+ * @override
+ */
 ToggleElementMorph.prototype.mouseClickLeft
     = ToggleButtonMorph.prototype.mouseClickLeft;
 
@@ -1512,10 +1747,22 @@ DialogBoxMorph.prototype.instances = {}; // prevent multiple instances
 
 // DialogBoxMorph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ * @param {Function|Object|String} [target]
+ * @param {Function|String} [action]
+ * @param {String} [environment]
+ */
 function DialogBoxMorph(target, action, environment) {
     this.init(target, action, environment);
 }
 
+/**
+ * @param {Function|Object|String} [target]
+ * @param {Function|String} [action]
+ * @param {String} [environment]
+ */
 DialogBoxMorph.prototype.init = function (target, action, environment) {
     // additional properties:
     this.is3D = false; // for "flat" design exceptions
@@ -1542,6 +1789,13 @@ DialogBoxMorph.prototype.init = function (target, action, environment) {
 };
 
 // DialogBoxMorph ops
+
+/**
+ * @param {String} title
+ * @param {String} textString
+ * @param {WorldMorph} world
+ * @param {Morph|HTMLCanvasElement} [pic]
+ */
 DialogBoxMorph.prototype.inform = function (
     title,
     textString,
@@ -1577,6 +1831,12 @@ DialogBoxMorph.prototype.inform = function (
     this.popUp(world);
 };
 
+/**
+ * @param {String} title
+ * @param {String} textString
+ * @param {WorldMorph} world
+ * @param {Morph|HTMLCanvasElement} [pic]
+ */
 DialogBoxMorph.prototype.askYesNo = function (
     title,
     textString,
@@ -1612,6 +1872,18 @@ DialogBoxMorph.prototype.askYesNo = function (
     this.popUp(world);
 };
 
+/**
+ * @param {String} title
+ * @param {String} textString
+ * @param {WorldMorph} world
+ * @param {Morph|HTMLCanvasElement} [pic]
+ * @param {Object} [choices]
+ * @param {boolean} [isReadOnly=false]
+ * @param {boolean} [isNumeric=false]
+ * @param {number} [sliderMin]
+ * @param {number} [sliderMax]
+ * @param {Function} [sliderAction]
+ */
 DialogBoxMorph.prototype.prompt = function (
     title,
     defaultString,
@@ -1713,6 +1985,13 @@ DialogBoxMorph.prototype.prompt = function (
     this.popUp(world);
 };
 
+/**
+ * @param {String} title
+ * @param {String} [defaultString='']
+ * @param {WorldMorph} world
+ * @param {Morph|HTMLCanvasElement} [pic]
+ * @param {String} [instructions]
+ */
 DialogBoxMorph.prototype.promptCode = function (
     title,
     defaultString,
@@ -1797,6 +2076,16 @@ DialogBoxMorph.prototype.promptCode = function (
     text.edit();
 };
 
+/**
+ * @param {String} title
+ * @param {Point} point
+ * @param {Point} [deflt]
+ * @param {String} xLabel
+ * @param {String} yLabel
+ * @param {WorldMorph} world
+ * @param {Morph|HTMLCanvasElement} [pic]
+ * @param {String} [msg]
+ */
 DialogBoxMorph.prototype.promptVector = function (
     title,
     point,
@@ -1904,6 +2193,18 @@ DialogBoxMorph.prototype.promptVector = function (
     this.popUp(world);
 };
 
+/**
+ * @param {String} title
+ * @param {String} purpose
+ * @param {String} tosURL
+ * @param {String} tosLabel
+ * @param {String} prvURL
+ * @param {String} prvLabel
+ * @param {String} checkBoxLabel
+ * @param {WorldMorph} world 
+ * @param {Morph|HTMLCanvasElement} [pic]
+ * @param {String} [msg]
+ */
 DialogBoxMorph.prototype.promptCredentials = function (
     title,
     purpose,
@@ -2279,6 +2580,7 @@ DialogBoxMorph.prototype.promptCredentials = function (
     this.popUp(world);
 };
 
+/** */
 DialogBoxMorph.prototype.accept = function () {
     /*
     if target is a function, use it as callback:
@@ -2316,11 +2618,18 @@ DialogBoxMorph.prototype.accept = function () {
     this.destroy();
 };
 
+/**
+ * @param {String} key
+ * @returns {DialogBoxMorph}
+ */
 DialogBoxMorph.prototype.withKey = function (key) {
     this.key = key;
     return this;
 };
 
+/**
+ * @param {WorldMorph} world
+ */
 DialogBoxMorph.prototype.popUp = function (world) {
     if (world) {
         if (this.key) {
@@ -2348,14 +2657,17 @@ DialogBoxMorph.prototype.destroy = function () {
     }
 };
 
+/** */
 DialogBoxMorph.prototype.ok = function () {
     this.accept();
 };
 
+/** */
 DialogBoxMorph.prototype.cancel = function () {
     this.destroy();
 };
 
+/** */
 DialogBoxMorph.prototype.edit = function () {
     this.children.forEach(function (c) {
         if (c.edit) {
@@ -2364,6 +2676,9 @@ DialogBoxMorph.prototype.edit = function () {
     });
 };
 
+/**
+ * @returns {String}
+ */
 DialogBoxMorph.prototype.getInput = function () {
     if (this.body instanceof InputFieldMorph) {
         return this.body.getValue();
@@ -2371,11 +2686,17 @@ DialogBoxMorph.prototype.getInput = function () {
     return null;
 };
 
+/**
+ * @override
+ */
 DialogBoxMorph.prototype.justDropped = function (hand) {
     hand.world.keyboardReceiver = this;
     this.edit();
 };
 
+/**
+ * @override
+ */
 DialogBoxMorph.prototype.destroy = function () {
     var world = this.world();
     world.keyboardReceiver = null;
@@ -2383,6 +2704,9 @@ DialogBoxMorph.prototype.destroy = function () {
     DialogBoxMorph.uber.destroy.call(this);
 };
 
+/**
+ * @param {String} string
+ */
 DialogBoxMorph.prototype.normalizeSpaces = function (string) {
     var ans = '', i, c, flag = false;
 
@@ -2403,6 +2727,7 @@ DialogBoxMorph.prototype.normalizeSpaces = function (string) {
 
 // DialogBoxMorph submorph construction
 
+/** */
 DialogBoxMorph.prototype.createLabel = function () {
     var shading = !MorphicPreferences.isFlat || this.is3D;
 
@@ -2426,6 +2751,7 @@ DialogBoxMorph.prototype.createLabel = function () {
     }
 };
 
+/** */
 DialogBoxMorph.prototype.createButtons = function () {
     if (this.buttons) {
         this.buttons.destroy();
@@ -2434,6 +2760,10 @@ DialogBoxMorph.prototype.createButtons = function () {
     this.add(this.buttons);
 };
 
+/**
+ * @param {String} [action='ok']
+ * @param {Function|String} [label='OK']
+ */
 DialogBoxMorph.prototype.addButton = function (action, label) {
     var button = new PushButtonMorph(
         this,
@@ -2454,6 +2784,9 @@ DialogBoxMorph.prototype.addButton = function (action, label) {
     return button;
 };
 
+/**
+ * @param {Morph|HTMLCanvasElement} aMorphOrCanvas
+ */
 DialogBoxMorph.prototype.setPicture = function (aMorphOrCanvas) {
     var morph;
     if (aMorphOrCanvas instanceof Morph) {
@@ -2467,6 +2800,9 @@ DialogBoxMorph.prototype.setPicture = function (aMorphOrCanvas) {
     this.addHead(morph);
 };
 
+/**
+ * @param {Morph} aMorph
+ */
 DialogBoxMorph.prototype.addHead = function (aMorph) {
     if (this.head) {
         this.head.destroy();
@@ -2475,6 +2811,9 @@ DialogBoxMorph.prototype.addHead = function (aMorph) {
     this.add(this.head);
 };
 
+/**
+ * @param {Morph} aMorph
+ */
 DialogBoxMorph.prototype.addBody = function (aMorph) {
     if (this.body) {
         this.body.destroy();
@@ -2485,9 +2824,17 @@ DialogBoxMorph.prototype.addBody = function (aMorph) {
 
 // DialogBoxMorph layout
 
+/**
+ * @override
+ */
 DialogBoxMorph.prototype.addShadow = function () {nop(); };
+
+/**
+ * @override
+ */
 DialogBoxMorph.prototype.removeShadow = function () {nop(); };
 
+/** */
 DialogBoxMorph.prototype.fixLayout = function () {
     var th = fontHeight(this.titleFontSize) + this.titlePadding * 2, w;
 
@@ -2572,6 +2919,9 @@ DialogBoxMorph.prototype.fixLayout = function () {
     conflicted by the scrolling scripts pane
 */
 
+/**
+ * @override
+ */
 DialogBoxMorph.prototype.shadowImage = function (off, color) {
     // fallback for Windows Chrome-Shadow bug
     var fb, img, outline, sha, ctx,
@@ -2597,6 +2947,9 @@ DialogBoxMorph.prototype.shadowImage = function (off, color) {
     return sha;
 };
 
+/**
+ * @override
+ */
 DialogBoxMorph.prototype.shadowImageBlurred = function (off, color) {
     var fb, img, sha, ctx,
         offset = off || new Point(7, 7),
@@ -2629,8 +2982,14 @@ DialogBoxMorph.prototype.shadowImageBlurred = function (off, color) {
 
 // DialogBoxMorph keyboard events
 
+/**
+ * @override
+ */
 DialogBoxMorph.prototype.processKeyPress = function () {nop(); };
 
+/**
+ * @override
+ */
 DialogBoxMorph.prototype.processKeyDown = function (event) {
     // this.inspectKeyEvent(event);
     switch (event.keyCode) {
@@ -2648,6 +3007,9 @@ DialogBoxMorph.prototype.processKeyDown = function (event) {
 
 // DialogBoxMorph drawing
 
+/**
+ * @override
+ */
 DialogBoxMorph.prototype.drawNew = function () {
     this.fullChanged();
     Morph.prototype.trackChanges = false;
@@ -2847,6 +3209,10 @@ DialogBoxMorph.prototype.drawNew = function () {
     this.fullChanged();
 };
 
+/**
+ * @param {CanvasRenderingContext2D} context
+ * @param {number} radius
+ */
 DialogBoxMorph.prototype.outlinePathTitle = function (context, radius) {
     var w = this.width(),
         h = Math.ceil(fontHeight(this.titleFontSize)) + this.titlePadding * 2;
@@ -2876,6 +3242,10 @@ DialogBoxMorph.prototype.outlinePathTitle = function (context, radius) {
     context.lineTo(0, h);
 };
 
+/**
+ * @param {CanvasRenderingContext2D} context
+ * @param {number} radius
+ */
 DialogBoxMorph.prototype.outlinePathBody = function (context, radius) {
     var w = this.width(),
         h = this.height(),
@@ -2920,10 +3290,20 @@ AlignmentMorph.uber = Morph.prototype;
 
 // AlignmentMorph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ * @param {String} [orientation='row']
+ * @param {number} [padding=0]
+ */
 function AlignmentMorph(orientation, padding) {
     this.init(orientation, padding);
 }
 
+/**
+ * @param {String} [orientation='row']
+ * @param {number} [padding=0]
+ */
 AlignmentMorph.prototype.init = function (orientation, padding) {
     // additional properties:
     this.orientation = orientation || 'row'; // or 'column'
@@ -2939,11 +3319,15 @@ AlignmentMorph.prototype.init = function (orientation, padding) {
 
 // AlignmentMorph displaying and layout
 
+/**
+ * @override
+ */
 AlignmentMorph.prototype.drawNew = function () {
     this.image = newCanvas(new Point(1, 1));
     this.fixLayout();
 };
 
+/** */
 AlignmentMorph.prototype.fixLayout = function () {
     var myself = this,
         last = null,
@@ -3002,10 +3386,24 @@ InputFieldMorph.prototype.contrast = 65;
 
 // InputFieldMorph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ * @param {String} [text='']
+ * @param {boolean} [isNumeric=false]
+ * @param {Object} [choiceDict]
+ * @param {boolean} [isReadOnly=false]
+ */
 function InputFieldMorph(text, isNumeric, choiceDict, isReadOnly) {
     this.init(text, isNumeric, choiceDict, isReadOnly);
 }
 
+/**
+ * @param {String} [text='']
+ * @param {boolean} [isNumeric=false]
+ * @param {Object} [choiceDict]
+ * @param {boolean} [isReadOnly=false]
+ */
 InputFieldMorph.prototype.init = function (
     text,
     isNumeric,
@@ -3040,6 +3438,9 @@ InputFieldMorph.prototype.init = function (
 
 // InputFieldMorph accessing:
 
+/**
+ * @returns {StringFieldMorph}
+ */
 InputFieldMorph.prototype.contents = function () {
     return detect(
         this.children,
@@ -3049,6 +3450,9 @@ InputFieldMorph.prototype.contents = function () {
     );
 };
 
+/**
+ * @returns {ArrowMorph}
+ */
 InputFieldMorph.prototype.arrow = function () {
     return detect(
         this.children,
@@ -3058,11 +3462,17 @@ InputFieldMorph.prototype.arrow = function () {
     );
 };
 
+/**
+ * @param {String|number} aStringOrFloat
+ */
 InputFieldMorph.prototype.setChoice = function (aStringOrFloat) {
     this.setContents(aStringOrFloat);
     this.escalateEvent('reactToChoice', aStringOrFloat);
 };
 
+/**
+ * @param {String|number} aStringOrFloat
+ */
 InputFieldMorph.prototype.setContents = function (aStringOrFloat) {
     var cnts = this.contents();
     cnts.text.text = aStringOrFloat;
@@ -3078,12 +3488,16 @@ InputFieldMorph.prototype.setContents = function (aStringOrFloat) {
     cnts.changed();
 };
 
+/** */
 InputFieldMorph.prototype.edit = function () {
     var c = this.contents();
     c.text.edit();
     c.text.selectAll();
 };
 
+/**
+ * @param {boolean} boole
+ */
 InputFieldMorph.prototype.setIsNumeric = function (bool) {
     var value;
 
@@ -3104,6 +3518,7 @@ InputFieldMorph.prototype.setIsNumeric = function (bool) {
 
 // InputFieldMorph drop-down menu:
 
+/** */
 InputFieldMorph.prototype.dropDownMenu = function () {
     var choices = this.choices,
         key,
@@ -3147,6 +3562,7 @@ InputFieldMorph.prototype.dropDownMenu = function () {
 
 // InputFieldMorph layout:
 
+/** */
 InputFieldMorph.prototype.fixLayout = function () {
     var contents = this.contents(),
         arrow = this.arrow();
@@ -3192,6 +3608,9 @@ InputFieldMorph.prototype.fixLayout = function () {
 
 // InputFieldMorph events:
 
+/**
+ * @override
+ */
 InputFieldMorph.prototype.mouseClickLeft = function (pos) {
     if (this.arrow().bounds.containsPoint(pos)) {
         this.dropDownMenu();
@@ -3204,6 +3623,9 @@ InputFieldMorph.prototype.mouseClickLeft = function (pos) {
 
 // InputFieldMorph retrieving:
 
+/**
+ * @return {number|String}
+ */
 InputFieldMorph.prototype.getValue = function () {
 /*
     answer my content's text string. If I am numerical convert that
@@ -3221,11 +3643,18 @@ InputFieldMorph.prototype.getValue = function () {
     return this.normalizeSpaces(contents.string());
 };
 
+/**
+ * @function
+ * @param {String} string
+ */
 InputFieldMorph.prototype.normalizeSpaces
     = DialogBoxMorph.prototype.normalizeSpaces;
 
 // InputFieldMorph drawing:
 
+/**
+ * @override
+ */
 InputFieldMorph.prototype.drawNew = function () {
     var context, borderColor;
 
@@ -3262,6 +3691,9 @@ InputFieldMorph.prototype.drawNew = function () {
     this.drawRectBorder(context);
 };
 
+/**
+ * @param {CanvasRenderingContext2D} context
+ */
 InputFieldMorph.prototype.drawRectBorder = function (context) {
     var shift = this.edge * 0.5,
         gradient;
@@ -3353,10 +3785,24 @@ PianoMenuMorph.uber = MenuMorph.prototype;
 
 // PianoMenuMorph instance creation:
 
+/**
+ * @constructor
+ * @extends MenuMorph
+ * @param {Function|Object|String} target
+ * @param {String} environment
+ * @param {number} fontSize
+ * @param {number} soundType
+ */
 function PianoMenuMorph(target, environment, fontSize, soundType) {
     this.init(target, environment, fontSize, soundType);
 }
 
+/**
+ * @param {Function|Object|String} target
+ * @param {String} environment
+ * @param {number} fontSize
+ * @param {number} soundType
+ */
 PianoMenuMorph.prototype.init = function (
     target,
     environment,
@@ -3401,6 +3847,9 @@ PianoMenuMorph.prototype.init = function (
     this.drawNew();
 };
 
+/**
+ * @override
+ */
 PianoMenuMorph.prototype.drawNew = function () {
     var myself = this,
         item,
@@ -3475,6 +3924,9 @@ PianoMenuMorph.prototype.drawNew = function () {
 
 // PianoMenuMorph keyboard selecting a key:
 
+/**
+ * @override
+ */
 PianoMenuMorph.prototype.select = function(aPianoKeyItem) {
     this.unselectAllItems();
     aPianoKeyItem.mouseEnter();
@@ -3483,6 +3935,9 @@ PianoMenuMorph.prototype.select = function(aPianoKeyItem) {
     this.hasFocus = true;
 };
 
+/**
+ * @override
+ */
 PianoMenuMorph.prototype.unselectAllItems = function () {
     this.children.forEach(function (item) {
         if (item instanceof MenuItemMorph) {
@@ -3492,6 +3947,9 @@ PianoMenuMorph.prototype.unselectAllItems = function () {
     this.changed();
 };
 
+/**
+ * @param {number} midiNum
+ */
 PianoMenuMorph.prototype.selectKey = function (midiNum) {
     var key;
     if (isNil(midiNum)) {
@@ -3512,6 +3970,9 @@ PianoMenuMorph.prototype.selectKey = function (midiNum) {
 
 // PianoMenuMorph keyboard navigation & entry:
 
+/**
+ * @override
+ */
 PianoMenuMorph.prototype.processKeyDown = function (event) {
     // console.log(event.keyCode);
     switch (event.keyCode) {
@@ -3570,6 +4031,9 @@ PianoMenuMorph.prototype.processKeyDown = function (event) {
     }
 };
 
+/**
+ * @override
+ */
 PianoMenuMorph.prototype.selectUp = function () {
     var next = 48;
     if (this.selection) {
@@ -3581,6 +4045,9 @@ PianoMenuMorph.prototype.selectUp = function () {
     this.selectKey(next);
 };
 
+/**
+ * @override
+ */
 PianoMenuMorph.prototype.selectDown = function () {
     var next = 48;
     if (this.selection) {
@@ -3592,6 +4059,9 @@ PianoMenuMorph.prototype.selectDown = function () {
     this.selectKey(next);
 };
 
+/**
+ * @override
+ */
 PianoMenuMorph.prototype.destroy = function () {
     this.children.forEach(function (key) {
         if (key.note) {
@@ -3608,6 +4078,22 @@ PianoKeyMorph.prototype = new MenuItemMorph();
 PianoKeyMorph.prototype.constructor = PianoKeyMorph;
 PianoKeyMorph.uber = MenuItemMorph.prototype;
 
+/**
+ * @constructor
+ * @extends MenuItemMorph
+ * @param {Function|Object|String} [target]
+ * @param {Function|String} [action]
+ * @param {String|Morph|HTMLCanvasElement|Array} [labelString]
+ * @param {number} [fontSize]
+ * @param {String} [fontStyle]
+ * @param {String} [environment]
+ * @param {String|Function} [hint]
+ * @param {Color} [color]
+ * @param {boolean} [bold=false]
+ * @param {boolean} [italic=false]
+ * @param {Function} [doubleClickAction]
+ * @param {String|Morph|HTMLCanvasElement|Array} [label]
+ */
 function PianoKeyMorph(
     target,
     action,
@@ -3639,6 +4125,20 @@ function PianoKeyMorph(
     this.feedback = label;
 }
 
+/**
+ * @param {Function|Object|String} [target]
+ * @param {Function|String} [action]
+ * @param {String|Morph|HTMLCanvasElement|Array} [labelString]
+ * @param {number} [fontSize]
+ * @param {String} [fontStyle]
+ * @param {String} [environment]
+ * @param {String|Function} [hint]
+ * @param {Color} [color]
+ * @param {boolean} [bold=false]
+ * @param {boolean} [italic=false]
+ * @param {Function} [doubleClickAction]
+ * @param {String|Morph|HTMLCanvasElement|Array} [label]
+ */
 PianoKeyMorph.prototype.init = function (
     target,
     action,
@@ -3672,6 +4172,9 @@ PianoKeyMorph.prototype.init = function (
     );
 };
 
+/**
+ * @override
+ */
 PianoKeyMorph.prototype.createLabel = function () {
     var icon;
     if (this.label !== null) {
@@ -3688,6 +4191,9 @@ PianoKeyMorph.prototype.createLabel = function () {
     this.add(this.label);
 };
 
+/**
+ * @override
+ */
 PianoKeyMorph.prototype.mouseEnter = function () {
     var piano = this.parentThatIsA(PianoMenuMorph),
         soundType = piano ? piano.soundType : 1,
@@ -3714,6 +4220,9 @@ PianoKeyMorph.prototype.mouseEnter = function () {
     );
 };
 
+/**
+ * @override
+ */
 PianoKeyMorph.prototype.mouseLeave = function () {
     this.note.stop();
     this.label.children[0].show();

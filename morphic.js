@@ -5280,13 +5280,6 @@ Morph.prototype.overlappingImage = function (otherMorph) {
  * @param {KeyboardEvent} event
  */
 
- /**
- * @function escalateEvent
- * @memberof Morph#
- * @param {String} functionName
- * @param {Event} arg
- */
-
 /**
  * @function mouseDownLeft
  * @memberof Morph#
@@ -5382,12 +5375,6 @@ Morph.prototype.overlappingImage = function (otherMorph) {
   * @param {Morph} grabbedMorph
   */
 
- /**
-  * @function wantsDropOf
-  * @memberof Morph#
-  * @param {Morph} aMorph
-  */
-
   /**
   * @function justDropped
   * @memberof Morph#
@@ -5460,8 +5447,7 @@ function ShadowMorph() {
 }
 
 /**
- * @param {Point} point
- * @returns {Morph}
+ * @override
  */
 ShadowMorph.prototype.topMorphAt = function () {
     return null;

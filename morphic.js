@@ -6998,7 +6998,9 @@ CursorMorph.prototype.destroyClipboardHandler = function () {
 
 // CursorMorph utilities:
 
-/** */
+/**
+ * @param {KeyboardEvent} event
+ */
 CursorMorph.prototype.inspectKeyEvent = function (event) {
     // private
     this.inform(

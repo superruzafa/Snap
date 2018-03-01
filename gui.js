@@ -202,10 +202,18 @@ IDE_Morph.prototype.setDefaultDesign();
 
 // IDE_Morph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ * @param {boolean} isAutoFill
+ */
 function IDE_Morph(isAutoFill) {
     this.init(isAutoFill);
 }
 
+/**
+ * @param {boolean} isAutoFill
+ */
 IDE_Morph.prototype.init = function (isAutoFill) {
     // global font setting
     MorphicPreferences.globalFontFamily = 'Helvetica, Arial';
@@ -269,6 +277,9 @@ IDE_Morph.prototype.init = function (isAutoFill) {
     this.color = this.backgroundColor;
 };
 
+/**
+ * @param {WorldMorph} world
+ */
 IDE_Morph.prototype.openIn = function (world) {
     var hash, myself = this, urlLanguage = null;
 
@@ -530,6 +541,7 @@ IDE_Morph.prototype.openIn = function (world) {
 
 // IDE_Morph construction
 
+/** */
 IDE_Morph.prototype.buildPanes = function () {
     this.createLogo();
     this.createControlBar();
@@ -542,6 +554,7 @@ IDE_Morph.prototype.buildPanes = function () {
     this.createCorral();
 };
 
+/** */
 IDE_Morph.prototype.createLogo = function () {
     var myself = this;
 
@@ -589,6 +602,7 @@ IDE_Morph.prototype.createLogo = function () {
     this.add(this.logo);
 };
 
+/** */
 IDE_Morph.prototype.createControlBar = function () {
     // assumes the logo has already been created
     var padding = 5,
@@ -1004,6 +1018,7 @@ IDE_Morph.prototype.createControlBar = function () {
     };
 };
 
+/** */
 IDE_Morph.prototype.createCategories = function () {
     var myself = this;
 
@@ -1096,6 +1111,9 @@ IDE_Morph.prototype.createCategories = function () {
     this.add(this.categories);
 };
 
+/**
+ * @param {boolean} forSearching
+ */
 IDE_Morph.prototype.createPalette = function (forSearching) {
     // assumes that the logo pane has already been created
     // needs the categories pane for layout
@@ -1174,6 +1192,7 @@ IDE_Morph.prototype.createPalette = function (forSearching) {
     return this.palette;
 };
 
+/** */
 IDE_Morph.prototype.createPaletteHandle = function () {
     // assumes that the palette has already been created
     if (this.paletteHandle) {this.paletteHandle.destroy(); }
@@ -1181,6 +1200,7 @@ IDE_Morph.prototype.createPaletteHandle = function () {
     this.add(this.paletteHandle);
 };
 
+/** */
 IDE_Morph.prototype.createStage = function () {
     // assumes that the logo pane has already been created
     if (this.stage) {this.stage.destroy(); }
@@ -1198,6 +1218,7 @@ IDE_Morph.prototype.createStage = function () {
     this.add(this.stage);
 };
 
+/** */
 IDE_Morph.prototype.createStageHandle = function () {
     // assumes that the stage has already been created
     if (this.stageHandle) {this.stageHandle.destroy(); }
@@ -1205,6 +1226,7 @@ IDE_Morph.prototype.createStageHandle = function () {
     this.add(this.stageHandle);
 };
 
+/** */
 IDE_Morph.prototype.createSpriteBar = function () {
     // assumes that the categories pane has already been created
     var rotationStyleButtons = [],
@@ -1431,6 +1453,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
     };
 };
 
+/** */
 IDE_Morph.prototype.createSpriteEditor = function () {
     // assumes that the logo pane and the stage have already been created
     var scripts = this.currentSprite.scripts,
@@ -1499,6 +1522,7 @@ IDE_Morph.prototype.createSpriteEditor = function () {
     }
 };
 
+/** */
 IDE_Morph.prototype.createCorralBar = function () {
     // assumes the stage has already been created
     var padding = 5,
@@ -1608,6 +1632,7 @@ IDE_Morph.prototype.createCorralBar = function () {
     }
 };
 
+/** */
 IDE_Morph.prototype.createCorral = function () {
     // assumes the corral bar has already been created
     var frame, template, padding = 5, myself = this;
@@ -1715,6 +1740,9 @@ IDE_Morph.prototype.createCorral = function () {
 
 // IDE_Morph layout
 
+/**
+ * @param {String} situation
+ */
 IDE_Morph.prototype.fixLayout = function (situation) {
     // situation is a string, i.e.
     // 'selectSprite' or 'refreshPalette' or 'tabEditor'
@@ -1822,6 +1850,9 @@ IDE_Morph.prototype.fixLayout = function (situation) {
     this.changed();
 };
 
+/**
+ * @param {String} string
+ */
 IDE_Morph.prototype.setProjectName = function (string) {
     this.projectName = string.replace(/['"]/g, ''); // filter quotation marks
     this.hasChangedMedia = true;
@@ -1830,6 +1861,9 @@ IDE_Morph.prototype.setProjectName = function (string) {
 
 // IDE_Morph resizing
 
+/**
+ * @override
+ */
 IDE_Morph.prototype.setExtent = function (point) {
     var padding = new Point(430, 110),
         minExt,
@@ -1875,6 +1909,9 @@ IDE_Morph.prototype.setExtent = function (point) {
 
 // IDE_Morph events
 
+/**
+ * @param {Rectangle} rect
+ */
 IDE_Morph.prototype.reactToWorldResize = function (rect) {
     if (this.isAutoFill) {
         this.setPosition(rect.origin);
@@ -1886,6 +1923,9 @@ IDE_Morph.prototype.reactToWorldResize = function (rect) {
     }
 };
 
+/**
+ * @override
+ */
 IDE_Morph.prototype.droppedImage = function (aCanvas, name) {
     var costume = new Costume(
         aCanvas,
@@ -1912,6 +1952,9 @@ IDE_Morph.prototype.droppedImage = function (aCanvas, name) {
     this.hasChangedMedia = true;
 };
 
+/**
+ * @override
+ */
 IDE_Morph.prototype.droppedSVG = function (anImage, name) {
     var costume = new SVG_Costume(anImage, name.split('.')[0]);
     this.currentSprite.addCostume(costume);
@@ -1920,12 +1963,18 @@ IDE_Morph.prototype.droppedSVG = function (anImage, name) {
     this.hasChangedMedia = true;
 };
 
+/**
+ * @override
+ */
 IDE_Morph.prototype.droppedAudio = function (anAudio, name) {
     this.currentSprite.addSound(anAudio, name.split('.')[0]); // up to period
     this.spriteBar.tabBar.tabTo('sounds');
     this.hasChangedMedia = true;
 };
 
+/**
+ * @override
+ */
 IDE_Morph.prototype.droppedText = function (aString, name) {
     var lbl = name ? name.split('.')[0] : '';
     if (aString.indexOf('<project') === 0) {
@@ -1950,6 +1999,9 @@ IDE_Morph.prototype.droppedText = function (aString, name) {
     }
 };
 
+/**
+ * @override
+ */
 IDE_Morph.prototype.droppedBinary = function (anArrayBuffer, name) {
     // dynamically load ypr->Snap!
     var ypr = document.getElementById('ypr'),
@@ -1980,6 +2032,9 @@ IDE_Morph.prototype.droppedBinary = function (anArrayBuffer, name) {
 
 // IDE_Morph button actions
 
+/**
+ * @param {boolean} [shouldIgnorePosition=false]
+ */
 IDE_Morph.prototype.refreshPalette = function (shouldIgnorePosition) {
     var oldTop = this.palette.contents.top();
 
@@ -1990,6 +2045,7 @@ IDE_Morph.prototype.refreshPalette = function (shouldIgnorePosition) {
     }
 };
 
+/** */
 IDE_Morph.prototype.pressStart = function () {
     if (this.world().currentKey === 16) { // shiftClicked
         this.toggleFastTracking();
@@ -2000,6 +2056,7 @@ IDE_Morph.prototype.pressStart = function () {
     }
 };
 
+/** */
 IDE_Morph.prototype.toggleFastTracking = function () {
     if (this.stage.isFastTracked) {
         this.stopFastTracking();
@@ -2008,6 +2065,7 @@ IDE_Morph.prototype.toggleFastTracking = function () {
     }
 };
 
+/** */
 IDE_Morph.prototype.toggleVariableFrameRate = function () {
     if (StageMorph.prototype.frameRate) {
         StageMorph.prototype.frameRate = 0;
@@ -2018,12 +2076,14 @@ IDE_Morph.prototype.toggleVariableFrameRate = function () {
     }
 };
 
+/** */
 IDE_Morph.prototype.toggleSingleStepping = function () {
     this.stage.threads.toggleSingleStepping();
     this.controlBar.steppingButton.refresh();
     this.controlBar.refreshSlider();
 };
 
+/** */
 IDE_Morph.prototype.toggleCameraSupport = function () {
     CamSnapshotDialogMorph.prototype.enableCamera =
         !CamSnapshotDialogMorph.prototype.enableCamera;
@@ -2032,6 +2092,7 @@ IDE_Morph.prototype.toggleCameraSupport = function () {
     this.fixLayout();
 };
 
+/** */
 IDE_Morph.prototype.startFastTracking = function () {
     this.stage.isFastTracked = true;
     this.stage.fps = 0;
@@ -2040,6 +2101,7 @@ IDE_Morph.prototype.startFastTracking = function () {
     this.controlBar.startButton.fixLayout();
 };
 
+/** */
 IDE_Morph.prototype.stopFastTracking = function () {
     this.stage.isFastTracked = false;
     this.stage.fps = this.stage.frameRate;
@@ -2048,10 +2110,12 @@ IDE_Morph.prototype.stopFastTracking = function () {
     this.controlBar.startButton.fixLayout();
 };
 
+/** */
 IDE_Morph.prototype.runScripts = function () {
     this.stage.fireGreenFlagEvent();
 };
 
+/** */
 IDE_Morph.prototype.togglePauseResume = function () {
     if (this.stage.threads.isPaused()) {
         this.stage.threads.resumeAll(this.stage);
@@ -2061,11 +2125,15 @@ IDE_Morph.prototype.togglePauseResume = function () {
     this.controlBar.pauseButton.refresh();
 };
 
+/**
+ * @returns {boolean}
+ */
 IDE_Morph.prototype.isPaused = function () {
     if (!this.stage) {return false; }
     return this.stage.threads.isPaused();
 };
 
+/** */
 IDE_Morph.prototype.stopAllScripts = function () {
     if (this.stage.enableCustomHatBlocks) {
         this.stage.threads.pauseCustomHatBlocks =
@@ -2077,6 +2145,7 @@ IDE_Morph.prototype.stopAllScripts = function () {
     this.stage.fireStopAllEvent();
 };
 
+/** */
 IDE_Morph.prototype.selectSprite = function (sprite) {
     if (this.currentSprite && this.currentSprite.scripts.focus) {
         this.currentSprite.scripts.focus.stopEditing();
@@ -2092,6 +2161,7 @@ IDE_Morph.prototype.selectSprite = function (sprite) {
 
 // IDE_Morph retina display support
 
+/** */
 IDE_Morph.prototype.toggleRetina = function () {
     if (isRetinaEnabled()) {
         disableRetinaSupport();
@@ -2107,18 +2177,21 @@ IDE_Morph.prototype.toggleRetina = function () {
 
 // IDE_Morph skins
 
+/** */
 IDE_Morph.prototype.defaultDesign = function () {
     this.setDefaultDesign();
     this.refreshIDE();
     this.removeSetting('design');
 };
 
+/** */
 IDE_Morph.prototype.flatDesign = function () {
     this.setFlatDesign();
     this.refreshIDE();
     this.saveSetting('design', 'flat');
 };
 
+/** */
 IDE_Morph.prototype.refreshIDE = function () {
     var projectData;
 
@@ -2143,6 +2216,7 @@ IDE_Morph.prototype.refreshIDE = function () {
 
 // IDE_Morph settings persistance
 
+/** */
 IDE_Morph.prototype.applySavedSettings = function () {
     var design = this.getSetting('design'),
         zoom = this.getSetting('zoom'),
@@ -2228,6 +2302,10 @@ IDE_Morph.prototype.applySavedSettings = function () {
     }
 };
 
+/**
+ * @param {String} key
+ * @param {?} value
+ */
 IDE_Morph.prototype.saveSetting = function (key, value) {
     if (!this.savingPreferences) {
         return;
@@ -2237,6 +2315,10 @@ IDE_Morph.prototype.saveSetting = function (key, value) {
     }
 };
 
+/**
+ * @param {String} key
+ * @returns {?}
+ */
 IDE_Morph.prototype.getSetting = function (key) {
     if (this.hasLocalStorage()) {
         return localStorage['-snap-setting-' + key];
@@ -2244,12 +2326,18 @@ IDE_Morph.prototype.getSetting = function (key) {
     return null;
 };
 
+/**
+ * @param {String} key
+ */
 IDE_Morph.prototype.removeSetting = function (key) {
     if (this.hasLocalStorage()) {
         delete localStorage['-snap-setting-' + key];
     }
 };
 
+/**
+ * @returns {boolean}
+ */
 IDE_Morph.prototype.hasLocalStorage = function () {
 	// checks whether localStorage is available,
     // this kludgy try/catch mechanism is needed
@@ -2264,6 +2352,7 @@ IDE_Morph.prototype.hasLocalStorage = function () {
 
 // IDE_Morph sprite list access
 
+/** */
 IDE_Morph.prototype.addNewSprite = function () {
     var sprite = new SpriteMorph(this.globalVariables),
         rnd = Process.prototype.reportRandom;
@@ -2284,6 +2373,7 @@ IDE_Morph.prototype.addNewSprite = function () {
     this.selectSprite(sprite);
 };
 
+/** */
 IDE_Morph.prototype.paintNewSprite = function () {
     var sprite = new SpriteMorph(this.globalVariables),
         cos = new Costume(),
@@ -2307,6 +2397,7 @@ IDE_Morph.prototype.paintNewSprite = function () {
     );
 };
 
+/** */
 IDE_Morph.prototype.newCamSprite = function () {
     var sprite = new SpriteMorph(this.globalVariables),
         camDialog,
@@ -2332,6 +2423,7 @@ IDE_Morph.prototype.newCamSprite = function () {
     camDialog.popUp(this.world());
 };
 
+/** */
 IDE_Morph.prototype.recordNewSound = function () {
     var soundRecorder,
         myself = this;
@@ -2351,6 +2443,9 @@ IDE_Morph.prototype.recordNewSound = function () {
     soundRecorder.popUp(this.world());
 };
 
+/**
+ * @param {SpriteMorph} sprite
+ */
 IDE_Morph.prototype.duplicateSprite = function (sprite) {
     var duplicate = sprite.fullCopy();
     duplicate.setPosition(this.world().hand.position());
@@ -2359,6 +2454,9 @@ IDE_Morph.prototype.duplicateSprite = function (sprite) {
     this.selectSprite(duplicate);
 };
 
+/**
+ * @param {SpriteMorph} sprite
+ */
 IDE_Morph.prototype.instantiateSprite = function (sprite) {
     var instance = sprite.fullCopy(true),
         hats = instance.allHatBlocksFor('__clone__init__');
@@ -2372,6 +2470,9 @@ IDE_Morph.prototype.instantiateSprite = function (sprite) {
     this.selectSprite(instance);
 };
 
+/**
+ * @param {SpriteMorph} sprite
+ */
 IDE_Morph.prototype.removeSprite = function (sprite) {
     var idx, myself = this;
     sprite.parts.slice().forEach(function (part) {
@@ -2401,6 +2502,9 @@ IDE_Morph.prototype.removeSprite = function (sprite) {
     this.selectSprite(this.currentSprite);
 };
 
+/**
+ * @param {String} name
+ */
 IDE_Morph.prototype.newSoundName = function (name) {
     var lastSound =
             this.currentSprite.sounds.at(
@@ -2416,6 +2520,11 @@ IDE_Morph.prototype.newSoundName = function (name) {
     );
 };
 
+/**
+ * @param {String} name
+ * @param {boolean} [ignoredSprite]
+ * @returns {String}
+ */
 IDE_Morph.prototype.newSpriteName = function (name, ignoredSprite) {
     var all = this.sprites.asArray().concat(this.stage).filter(
             function (each) {return each !== ignoredSprite; }
@@ -2425,6 +2534,11 @@ IDE_Morph.prototype.newSpriteName = function (name, ignoredSprite) {
     return this.newName(name, all);
 };
 
+/**
+ * @param {String} name
+ * @param {?} elements
+ * @returns {String}
+ */
 IDE_Morph.prototype.newName = function (name, elements) {
     var ix = name.indexOf('('),
         stem = (ix < 0) ? name : name.substring(0, ix),
@@ -2440,6 +2554,10 @@ IDE_Morph.prototype.newName = function (name, elements) {
 
 // IDE_Morph deleting scripts
 
+/**
+ * @param {?} aBlock
+ * @param {boolean} justThis
+ */
 IDE_Morph.prototype.removeBlock = function (aBlock, justThis) {
     this.stage.threads.stopAllForBlock(aBlock);
     aBlock.destroy(justThis);
@@ -2447,12 +2565,16 @@ IDE_Morph.prototype.removeBlock = function (aBlock, justThis) {
 
 // IDE_Morph menus
 
+/**
+ * @override
+ */
 IDE_Morph.prototype.userMenu = function () {
     var menu = new MenuMorph(this);
     // menu.addItem('help', 'nop');
     return menu;
 };
 
+/** */
 IDE_Morph.prototype.snapMenu = function () {
     var menu,
         myself = this,
@@ -2505,6 +2627,7 @@ IDE_Morph.prototype.snapMenu = function () {
     menu.popup(world, this.logo.bottomLeft());
 };
 
+/** */
 IDE_Morph.prototype.cloudMenu = function () {
     var menu,
         myself = this,
@@ -2642,6 +2765,7 @@ IDE_Morph.prototype.cloudMenu = function () {
     menu.popup(world, pos);
 };
 
+/** */
 IDE_Morph.prototype.settingsMenu = function () {
     var menu,
         stage = this.stage,
@@ -3068,6 +3192,7 @@ IDE_Morph.prototype.settingsMenu = function () {
     menu.popup(world, pos);
 };
 
+/** */
 IDE_Morph.prototype.projectMenu = function () {
     var menu,
         myself = this,
@@ -3239,6 +3364,10 @@ IDE_Morph.prototype.projectMenu = function () {
     menu.popup(world, pos);
 };
 
+/**
+ * @param {...String} arguments
+ * @returns {String}
+ */
 IDE_Morph.prototype.resourceURL = function () {
     // Take in variadic inputs that represent an a nested folder structure.
     // Method can be easily overridden if running in a custom location.
@@ -3247,6 +3376,11 @@ IDE_Morph.prototype.resourceURL = function () {
     return args.join('/');
 };
 
+/**
+ * @param {String} dirname
+ * @param {Function} [callback]
+ * @returns {Array.<Object>}
+ */
 IDE_Morph.prototype.getMediaList = function (dirname, callback) {
     // Invoke the given callback with a list of files in a directory
     // based on the contents file.
@@ -3277,6 +3411,10 @@ IDE_Morph.prototype.getMediaList = function (dirname, callback) {
     }
 };
 
+/**
+ * @param {String} text
+ * @returns {Array.<Object>}
+ */
 IDE_Morph.prototype.parseResourceFile = function (text) {
     // A Resource File lists all the files that could be loaded in a submenu
     // Examples are libraries/LIBRARIES, Costumes/COSTUMES, etc
@@ -3304,6 +3442,9 @@ IDE_Morph.prototype.parseResourceFile = function (text) {
     return items;
 };
 
+/**
+ * @param {String} folderName
+ */
 IDE_Morph.prototype.importMedia = function (folderName) {
     // open a dialog box letting the user browse available "built-in"
     // costumes, backgrounds or sounds
@@ -3319,6 +3460,10 @@ IDE_Morph.prototype.importMedia = function (folderName) {
 
 };
 
+/**
+ * @param {String} folderName
+ * @param {Array.<String>} items
+ */
 IDE_Morph.prototype.popupMediaImportDialog = function (folderName, items) {
     // private - this gets called by importMedia() and creates
     // the actual dialog
@@ -3474,6 +3619,7 @@ IDE_Morph.prototype.popupMediaImportDialog = function (folderName, items) {
 
 // IDE_Morph menu actions
 
+/** */
 IDE_Morph.prototype.aboutSnap = function () {
     var dlg, aboutTxt, noticeTxt, creditsTxt, versions = '', translations,
         module, btn1, btn2, btn3, btn4, licenseBtn, translatorsBtn,
@@ -3636,6 +3782,7 @@ IDE_Morph.prototype.aboutSnap = function () {
     dlg.drawNew();
 };
 
+/** */
 IDE_Morph.prototype.editProjectNotes = function () {
     var dialog = new DialogBoxMorph().withKey('projectNotes'),
         frame = new ScrollFrameMorph(),
@@ -3689,6 +3836,7 @@ IDE_Morph.prototype.editProjectNotes = function () {
     text.edit();
 };
 
+/** */
 IDE_Morph.prototype.newProject = function () {
     this.source = SnapCloud.username ? 'cloud' : 'local';
     if (this.stage) {
@@ -3718,6 +3866,7 @@ IDE_Morph.prototype.newProject = function () {
     this.fixLayout();
 };
 
+/** */
 IDE_Morph.prototype.save = function () {
     if (this.source === 'examples') {
         this.source = 'local'; // cannot save to examples
@@ -3733,6 +3882,9 @@ IDE_Morph.prototype.save = function () {
     }
 };
 
+/**
+ * @param {String} name
+ */
 IDE_Morph.prototype.saveProject = function (name) {
     var myself = this;
     this.nextSteps([
@@ -3746,6 +3898,10 @@ IDE_Morph.prototype.saveProject = function (name) {
 };
 
 // Serialize a project and save to the browser.
+
+/**
+ * @param {String} name
+ */
 IDE_Morph.prototype.rawSaveProject = function (name) {
     var str;
     if (name) {
@@ -3768,7 +3924,10 @@ IDE_Morph.prototype.rawSaveProject = function (name) {
     }
 };
 
-
+/**
+ * @param {String} name
+ * @param {boolean} plain
+ */
 IDE_Morph.prototype.exportProject = function (name, plain) {
     // Export project XML, saving a file to disk
     // newWindow requests displaying the project in a new tab.
@@ -3794,6 +3953,7 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
     }
 };
 
+/** */
 IDE_Morph.prototype.exportGlobalBlocks = function () {
     if (this.stage.globalBlocks.length > 0) {
         new BlockExportDialogMorph(
@@ -3809,6 +3969,7 @@ IDE_Morph.prototype.exportGlobalBlocks = function () {
     }
 };
 
+/** */
 IDE_Morph.prototype.removeUnusedBlocks = function () {
     var targets = this.sprites.asArray().concat([this.stage]),
         globalBlocks = this.stage.globalBlocks,
@@ -3847,6 +4008,9 @@ IDE_Morph.prototype.removeUnusedBlocks = function () {
     }
 };
 
+/**
+ * @param {?} sprite
+ */
 IDE_Morph.prototype.exportSprite = function (sprite) {
     var str = this.serializer.serialize(sprite.allParts());
     str = '<sprites app="'
@@ -3859,6 +4023,7 @@ IDE_Morph.prototype.exportSprite = function (sprite) {
     this.saveXMLAs(str, sprite.name);
 };
 
+/** */
 IDE_Morph.prototype.exportScriptsPicture = function () {
     var pics = [],
         pic,
@@ -3908,6 +4073,9 @@ IDE_Morph.prototype.exportScriptsPicture = function () {
     this.saveCanvasAs(pic, this.projectName || localize('Untitled'));
 };
 
+/**
+ * @param {boolean} [useDropShadows=false]
+ */
 IDE_Morph.prototype.exportProjectSummary = function (useDropShadows) {
     var html, head, meta, css, body, pname, notes, toc, globalVars,
         stage = this.stage;
@@ -4189,6 +4357,9 @@ IDE_Morph.prototype.exportProjectSummary = function (useDropShadows) {
     );
 };
 
+/**
+ * @param {String} str
+ */
 IDE_Morph.prototype.openProjectString = function (str) {
     var msg,
         myself = this;
@@ -4206,6 +4377,9 @@ IDE_Morph.prototype.openProjectString = function (str) {
     ]);
 };
 
+/**
+ * @param {String} str
+ */
 IDE_Morph.prototype.rawOpenProjectString = function (str) {
     this.toggleAppMode(false);
     this.spriteBar.tabBar.tabTo('scripts');
@@ -4234,6 +4408,9 @@ IDE_Morph.prototype.rawOpenProjectString = function (str) {
     this.stopFastTracking();
 };
 
+/**
+ * @param {String} str
+ */
 IDE_Morph.prototype.openCloudDataString = function (str) {
     var msg,
         myself = this,
@@ -4252,6 +4429,9 @@ IDE_Morph.prototype.openCloudDataString = function (str) {
     ]);
 };
 
+/**
+ * @param {String} str
+ */
 IDE_Morph.prototype.rawOpenCloudDataString = function (str) {
     var model;
     StageMorph.prototype.hiddenPrimitives = {};
@@ -4289,6 +4469,11 @@ IDE_Morph.prototype.rawOpenCloudDataString = function (str) {
     this.stopFastTracking();
 };
 
+/**
+ * @param {String} str
+ * @param {String} name
+ * @param {boolean} silently
+ */
 IDE_Morph.prototype.openBlocksString = function (str, name, silently) {
     var msg,
         myself = this;
@@ -4306,6 +4491,11 @@ IDE_Morph.prototype.openBlocksString = function (str, name, silently) {
     ]);
 };
 
+/**
+ * @param {String} str
+ * @param {String} name
+ * @param {boolean} silently
+ */
 IDE_Morph.prototype.rawOpenBlocksString = function (str, name, silently) {
     // name is optional (string), so is silently (bool)
     var blocks,
@@ -4336,6 +4526,9 @@ IDE_Morph.prototype.rawOpenBlocksString = function (str, name, silently) {
     }
 };
 
+/**
+ * @param {String} str
+ */
 IDE_Morph.prototype.openSpritesString = function (str) {
     var msg,
         myself = this;
@@ -4353,6 +4546,9 @@ IDE_Morph.prototype.openSpritesString = function (str) {
     ]);
 };
 
+/**
+ * @param {String} str
+ */
 IDE_Morph.prototype.rawOpenSpritesString = function (str) {
     if (Process.prototype.isCatchingErrors) {
         try {
@@ -4365,6 +4561,9 @@ IDE_Morph.prototype.rawOpenSpritesString = function (str) {
     }
 };
 
+/**
+ * @param {String} str
+ */
 IDE_Morph.prototype.openMediaString = function (str) {
     if (Process.prototype.isCatchingErrors) {
         try {
@@ -4378,6 +4577,9 @@ IDE_Morph.prototype.openMediaString = function (str) {
     this.showMessage('Imported Media Module.', 2);
 };
 
+/**
+ * @param {String} str
+ */
 IDE_Morph.prototype.openScriptString = function (str) {
     var msg,
         myself = this;
@@ -4395,6 +4597,9 @@ IDE_Morph.prototype.openScriptString = function (str) {
     ]);
 };
 
+/**
+ * @param {String} str
+ */
 IDE_Morph.prototype.rawOpenScriptString = function (str) {
     var xml,
         script,
@@ -4427,6 +4632,9 @@ IDE_Morph.prototype.rawOpenScriptString = function (str) {
     );
 };
 
+/**
+ * @param {String} name
+ */
 IDE_Morph.prototype.openProject = function (name) {
     var str;
     if (name) {
@@ -4438,11 +4646,19 @@ IDE_Morph.prototype.openProject = function (name) {
     }
 };
 
+/**
+ * @param {String} str
+ */
 IDE_Morph.prototype.setURL = function (str) {
     // Set the URL to a project's XML contents
     location.hash = this.projectsInURLs ? str : '';
 };
 
+/**
+ * @param {?} contents
+ * @param {String} fileType
+ * @param {String} fileName
+ */
 IDE_Morph.prototype.saveFileAs = function (
     contents,
     fileType,
@@ -4502,6 +4718,11 @@ IDE_Morph.prototype.saveFileAs = function (
     }
 };
 
+/**
+ * 
+ * @param {HTMLCanvasElement} canvas
+ * @param {String} fileName
+ */
 IDE_Morph.prototype.saveCanvasAs = function (canvas, fileName) {
     // Export a Canvas object as a PNG image
     // Note: This commented out due to poor browser support.
@@ -4519,11 +4740,16 @@ IDE_Morph.prototype.saveCanvasAs = function (canvas, fileName) {
     this.saveFileAs(canvas.toDataURL(), 'image/png', fileName);
 };
 
+/**
+ * @param {?} xml
+ * @param {String} fileName
+ */
 IDE_Morph.prototype.saveXMLAs = function(xml, fileName) {
     // wrapper to saving XML files with a proper type tag.
     this.saveFileAs(xml, 'text/xml;chartset=utf-8', fileName);
 };
 
+/** */
 IDE_Morph.prototype.switchToUserMode = function () {
     var world = this.world();
 
@@ -4558,6 +4784,7 @@ IDE_Morph.prototype.switchToUserMode = function () {
 
 };
 
+/** */
 IDE_Morph.prototype.switchToDevMode = function () {
     var world = this.world();
 
@@ -4581,6 +4808,9 @@ IDE_Morph.prototype.switchToDevMode = function () {
     );
 };
 
+/**
+ * @param {?} [category]
+ */
 IDE_Morph.prototype.flushBlocksCache = function (category) {
     // if no category is specified, the whole cache gets flushed
     if (category) {
@@ -4601,6 +4831,9 @@ IDE_Morph.prototype.flushBlocksCache = function (category) {
     this.flushPaletteCache(category);
 };
 
+/**
+ * @param {?} [category]
+ */
 IDE_Morph.prototype.flushPaletteCache = function (category) {
     // if no category is specified, the whole cache gets flushed
     if (category) {
@@ -4620,6 +4853,7 @@ IDE_Morph.prototype.flushPaletteCache = function (category) {
     }
 };
 
+/** */
 IDE_Morph.prototype.toggleZebraColoring = function () {
     var scripts = [];
 
@@ -4646,6 +4880,7 @@ IDE_Morph.prototype.toggleZebraColoring = function () {
     });
 };
 
+/** */
 IDE_Morph.prototype.toggleDynamicInputLabels = function () {
     var projectData;
     SyntaxElementMorph.prototype.dynamicInputLabels =
@@ -4666,10 +4901,12 @@ IDE_Morph.prototype.toggleDynamicInputLabels = function () {
     this.openProjectString(projectData);
 };
 
+/** */
 IDE_Morph.prototype.toggleBlurredShadows = function () {
     window.useBlurredShadows = !useBlurredShadows;
 };
 
+/** */
 IDE_Morph.prototype.toggleLongFormInputDialog = function () {
     InputSlotDialogMorph.prototype.isLaunchingExpanded =
         !InputSlotDialogMorph.prototype.isLaunchingExpanded;
@@ -4680,6 +4917,7 @@ IDE_Morph.prototype.toggleLongFormInputDialog = function () {
     }
 };
 
+/** */
 IDE_Morph.prototype.togglePlainPrototypeLabels = function () {
     BlockLabelPlaceHolderMorph.prototype.plainLabel =
         !BlockLabelPlaceHolderMorph.prototype.plainLabel;
@@ -4690,26 +4928,31 @@ IDE_Morph.prototype.togglePlainPrototypeLabels = function () {
     }
 };
 
+/** */
 IDE_Morph.prototype.togglePreferEmptySlotDrops = function () {
     ScriptsMorph.prototype.isPreferringEmptySlots =
         !ScriptsMorph.prototype.isPreferringEmptySlots;
 };
 
+/** */
 IDE_Morph.prototype.toggleVirtualKeyboard = function () {
     MorphicPreferences.useVirtualKeyboard =
         !MorphicPreferences.useVirtualKeyboard;
 };
 
+/** */
 IDE_Morph.prototype.toggleInputSliders = function () {
     MorphicPreferences.useSliderForInput =
         !MorphicPreferences.useSliderForInput;
 };
 
+/** */
 IDE_Morph.prototype.toggleSliderExecute = function () {
     ArgMorph.prototype.executeOnSliderEdit =
         !ArgMorph.prototype.executeOnSliderEdit;
 };
 
+/** */
 IDE_Morph.prototype.setEmbedMode = function () {
     var myself = this;
     this.embedOverlay = new Morph();
@@ -4732,6 +4975,9 @@ IDE_Morph.prototype.setEmbedMode = function () {
     this.fixLayout();
 };
 
+/**
+ * @param {?} appMode
+ */
 IDE_Morph.prototype.toggleAppMode = function (appMode) {
     var world = this.world(),
         elements = [
@@ -4810,6 +5056,10 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
     this.setExtent(this.world().extent()); // resume trackChanges
 };
 
+/**
+ * @param {boolean} [isSmall]
+ * @param {number} [forcedRatio]
+ */
 IDE_Morph.prototype.toggleStageSize = function (isSmall, forcedRatio) {
     var myself = this,
         smallRatio = forcedRatio || 0.5,
@@ -4864,6 +5114,9 @@ IDE_Morph.prototype.toggleStageSize = function (isSmall, forcedRatio) {
     }
 };
 
+/**
+ * @param {number} newWidth
+ */
 IDE_Morph.prototype.setPaletteWidth = function (newWidth) {
     var msecs = this.isAnimating ? 100 : 0,
         world = this.world(),
@@ -4882,6 +5135,7 @@ IDE_Morph.prototype.setPaletteWidth = function (newWidth) {
     ));
 };
 
+/** */
 IDE_Morph.prototype.createNewProject = function () {
     var myself = this;
     this.confirm(
@@ -4891,10 +5145,12 @@ IDE_Morph.prototype.createNewProject = function () {
     );
 };
 
+/** */
 IDE_Morph.prototype.openProjectsBrowser = function () {
     new ProjectDialogMorph(this, 'open').popUp();
 };
 
+/** */
 IDE_Morph.prototype.saveProjectsBrowser = function () {
     if (this.source === 'examples') {
         this.source = 'local'; // cannot save to examples
@@ -4904,6 +5160,7 @@ IDE_Morph.prototype.saveProjectsBrowser = function () {
 
 // IDE_Morph localization
 
+/** */
 IDE_Morph.prototype.languageMenu = function () {
     var menu = new MenuMorph(this),
         world = this.world(),
@@ -4922,6 +5179,10 @@ IDE_Morph.prototype.languageMenu = function () {
     menu.popup(world, pos);
 };
 
+/**
+ * @param {String} lang
+ * @param {Function} callback
+ */
 IDE_Morph.prototype.setLanguage = function (lang, callback) {
     var translation = document.getElementById('language'),
         src = this.resourceURL('lang-' + lang + '.js'),
@@ -4942,6 +5203,10 @@ IDE_Morph.prototype.setLanguage = function (lang, callback) {
     translation.src = src;
 };
 
+/**
+ * @param {String} lang
+ * @param {Function} callback
+ */
 IDE_Morph.prototype.reflectLanguage = function (lang, callback) {
     var projectData,
         urlBar = location.hash;
@@ -4974,6 +5239,7 @@ IDE_Morph.prototype.reflectLanguage = function (lang, callback) {
 
 // IDE_Morph blocks scaling
 
+/** */
 IDE_Morph.prototype.userSetBlocksScale = function () {
     var myself = this,
         scrpt,
@@ -5057,6 +5323,9 @@ IDE_Morph.prototype.userSetBlocksScale = function () {
     );
 };
 
+/**
+ * @param {number} num
+ */
 IDE_Morph.prototype.setBlocksScale = function (num) {
     var projectData;
     if (Process.prototype.isCatchingErrors) {
@@ -5081,6 +5350,7 @@ IDE_Morph.prototype.setBlocksScale = function (num) {
 
 // IDE_Morph stage size manipulation
 
+/** */
 IDE_Morph.prototype.userSetStageSize = function () {
     new DialogBoxMorph(
         this,
@@ -5098,6 +5368,9 @@ IDE_Morph.prototype.userSetStageSize = function () {
     );
 };
 
+/**
+ * @param {Point} aPoint
+ */
 IDE_Morph.prototype.setStageExtent = function (aPoint) {
     var myself = this,
         world = this.world(),
@@ -5139,6 +5412,7 @@ IDE_Morph.prototype.setStageExtent = function (aPoint) {
 
 // IDE_Morph dragging threshold (internal feature)
 
+/** */
 IDE_Morph.prototype.userSetDragThreshold = function () {
     new DialogBoxMorph(
         this,
@@ -5162,6 +5436,7 @@ IDE_Morph.prototype.userSetDragThreshold = function () {
 
 // IDE_Morph cloud interface
 
+/** */
 IDE_Morph.prototype.initializeCloud = function () {
     var myself = this,
         world = this.world();
@@ -5212,6 +5487,7 @@ IDE_Morph.prototype.initializeCloud = function () {
     );
 };
 
+/** */
 IDE_Morph.prototype.createCloudAccount = function () {
     var myself = this,
         world = this.world();
@@ -5250,6 +5526,7 @@ IDE_Morph.prototype.createCloudAccount = function () {
     );
 };
 
+/** */
 IDE_Morph.prototype.resetCloudPassword = function () {
     var myself = this,
         world = this.world();
@@ -5287,6 +5564,7 @@ IDE_Morph.prototype.resetCloudPassword = function () {
     );
 };
 
+/** */
 IDE_Morph.prototype.resendVerification = function () {
     var myself = this,
         world = this.world();
@@ -5324,6 +5602,7 @@ IDE_Morph.prototype.resendVerification = function () {
     );
 };
 
+/** */
 IDE_Morph.prototype.changeCloudPassword = function () {
     var myself = this,
         world = this.world();
@@ -5354,6 +5633,7 @@ IDE_Morph.prototype.changeCloudPassword = function () {
     );
 };
 
+/** */
 IDE_Morph.prototype.logout = function () {
     var myself = this;
     SnapCloud.logout(
@@ -5366,6 +5646,9 @@ IDE_Morph.prototype.logout = function () {
     );
 };
 
+/**
+ * @param {String} name
+ */
 IDE_Morph.prototype.saveProjectToCloud = function (name) {
     var myself = this;
     if (name) {
@@ -5379,6 +5662,9 @@ IDE_Morph.prototype.saveProjectToCloud = function (name) {
     }
 };
 
+/**
+ * @param {String} name
+ */
 IDE_Morph.prototype.exportProjectMedia = function (name) {
     var menu, media;
     this.serializer.isCollectingMedia = true;
@@ -5404,6 +5690,9 @@ IDE_Morph.prototype.exportProjectMedia = function (name) {
     // this.hasChangedMedia = false;
 };
 
+/**
+ * @param {String} name
+ */
 IDE_Morph.prototype.exportProjectNoMedia = function (name) {
     var menu, str;
     this.serializer.isCollectingMedia = true;
@@ -5432,6 +5721,9 @@ IDE_Morph.prototype.exportProjectNoMedia = function (name) {
     this.serializer.flushMedia();
 };
 
+/**
+ * @param {String} name
+ */
 IDE_Morph.prototype.exportProjectAsCloudData = function (name) {
     var menu, str, media, dta;
     this.serializer.isCollectingMedia = true;
@@ -5465,6 +5757,7 @@ IDE_Morph.prototype.exportProjectAsCloudData = function (name) {
     // this.hasChangedMedia = false;
 };
 
+/** */
 IDE_Morph.prototype.cloudAcknowledge = function () {
     var myself = this;
     return function (responseText, url) {
@@ -5480,6 +5773,7 @@ IDE_Morph.prototype.cloudAcknowledge = function () {
     };
 };
 
+/** */
 IDE_Morph.prototype.cloudResponse = function () {
     var myself = this;
     return function (responseText, url) {
@@ -5499,6 +5793,9 @@ IDE_Morph.prototype.cloudResponse = function () {
     };
 };
 
+/**
+ * @returns {Function}
+ */
 IDE_Morph.prototype.cloudError = function () {
     var myself = this;
 
@@ -5545,6 +5842,11 @@ IDE_Morph.prototype.cloudError = function () {
     };
 };
 
+/**
+ * @param {number} height
+ * @param {Color} color
+ * @returns {SymbolMorph}
+ */
 IDE_Morph.prototype.cloudIcon = function (height, color) {
     var clr = color || DialogBoxMorph.prototype.titleBarColor,
         isFlat = MorphicPreferences.isFlat,
@@ -5561,6 +5863,7 @@ IDE_Morph.prototype.cloudIcon = function (height, color) {
     return icon;
 };
 
+/** */
 IDE_Morph.prototype.setCloudURL = function () {
     new DialogBoxMorph(
         null,
@@ -5582,6 +5885,10 @@ IDE_Morph.prototype.setCloudURL = function () {
 
 // IDE_Morph HTTP data fetching
 
+/**
+ * @param {String} url
+ * @param {Function} callback
+ */
 IDE_Morph.prototype.getURL = function (url, callback) {
     // fetch the contents of a url and pass it into the specified callback.
     // If no callback is specified synchronously fetch and return it
@@ -5624,6 +5931,11 @@ IDE_Morph.prototype.getURL = function (url, callback) {
 
 // IDE_Morph user dialog shortcuts
 
+/**
+ * @param {String} message
+ * @param {number} secs
+ * @returns {MenuMorph}
+ */
 IDE_Morph.prototype.showMessage = function (message, secs) {
     var m = new MenuMorph(null, message),
         intervalHandle;
@@ -5637,6 +5949,9 @@ IDE_Morph.prototype.showMessage = function (message, secs) {
     return m;
 };
 
+/**
+ * @override
+ */
 IDE_Morph.prototype.inform = function (title, message) {
     new DialogBoxMorph().inform(
         title,
@@ -5645,6 +5960,11 @@ IDE_Morph.prototype.inform = function (title, message) {
     );
 };
 
+/**
+ * @param {String} message
+ * @param {String} title
+ * @param {?} action
+ */
 IDE_Morph.prototype.confirm = function (message, title, action) {
     new DialogBoxMorph(null, action).askYesNo(
         title,
@@ -5653,6 +5973,9 @@ IDE_Morph.prototype.confirm = function (message, title, action) {
     );
 };
 
+/**
+ * @override
+ */
 IDE_Morph.prototype.prompt = function (message, callback, choices, key) {
     (new DialogBoxMorph(null, callback)).withKey(key).prompt(
         message,
@@ -5673,10 +5996,20 @@ ProjectDialogMorph.uber = DialogBoxMorph.prototype;
 
 // ProjectDialogMorph instance creation:
 
+/**
+ * @constructor
+ * @extends DialogBoxMorph
+ * @param {IDE_Morph} ide
+ * @param {String} label
+ */
 function ProjectDialogMorph(ide, label) {
     this.init(ide, label);
 }
 
+/**
+ * @param {IDE_Morph} ide
+ * @param {String} label
+ */
 ProjectDialogMorph.prototype.init = function (ide, task) {
     var myself = this;
 
@@ -5719,6 +6052,7 @@ ProjectDialogMorph.prototype.init = function (ide, task) {
     };
 };
 
+/** */
 ProjectDialogMorph.prototype.buildContents = function () {
     var thumbnail, notification;
 
@@ -5860,6 +6194,9 @@ ProjectDialogMorph.prototype.buildContents = function () {
 
 };
 
+/**
+ * @override
+ */
 ProjectDialogMorph.prototype.popUp = function (wrrld) {
     var world = wrrld || this.ide.world();
     if (world) {
@@ -5876,6 +6213,11 @@ ProjectDialogMorph.prototype.popUp = function (wrrld) {
 
 // ProjectDialogMorph source buttons
 
+/**
+ * @param {?} source
+ * @param {String} label
+ * @param {String} symbol
+ */
 ProjectDialogMorph.prototype.addSourceButton = function (
     source,
     label,
@@ -5963,6 +6305,7 @@ ProjectDialogMorph.prototype.addSourceButton = function (
 
 // ProjectDialogMorph list field control
 
+/** */
 ProjectDialogMorph.prototype.fixListFieldItemColors = function () {
     // remember to always fixLayout() afterwards for the changes
     // to take effect
@@ -5977,6 +6320,7 @@ ProjectDialogMorph.prototype.fixListFieldItemColors = function () {
 
 // ProjectDialogMorph filter field
 
+/** */
 ProjectDialogMorph.prototype.buildFilterField = function () {
     var myself = this;
 
@@ -6017,6 +6361,9 @@ ProjectDialogMorph.prototype.buildFilterField = function () {
 
 // ProjectDialogMorph ops
 
+/**
+ * @param {?} source
+ */
 ProjectDialogMorph.prototype.setSource = function (source) {
     var myself = this,
         msg;
@@ -6140,6 +6487,9 @@ ProjectDialogMorph.prototype.setSource = function (source) {
     }
 };
 
+/**
+ * @returns {Array.<Object>}
+ */
 ProjectDialogMorph.prototype.getLocalProjectList = function () {
     var stored, name, dta,
         projects = [];
@@ -6161,10 +6511,16 @@ ProjectDialogMorph.prototype.getLocalProjectList = function () {
     return projects;
 };
 
+/**
+ * @returns {Array.<Object>}
+ */
 ProjectDialogMorph.prototype.getExamplesProjectList = function () {
     return this.ide.getMediaList('Examples');
 };
 
+/**
+ * @param {?} pl
+ */
 ProjectDialogMorph.prototype.installCloudProjectList = function (pl) {
     var myself = this;
     this.projectList = pl[0] ? pl : [];
@@ -6268,6 +6624,7 @@ ProjectDialogMorph.prototype.installCloudProjectList = function (pl) {
     }
 };
 
+/** */
 ProjectDialogMorph.prototype.clearDetails = function () {
     this.notesText.text = '';
     this.notesText.drawNew();
@@ -6277,6 +6634,7 @@ ProjectDialogMorph.prototype.clearDetails = function () {
     this.preview.drawNew();
 };
 
+/** */
 ProjectDialogMorph.prototype.openProject = function () {
     var proj = this.listField.selected,
         src;
@@ -6295,6 +6653,9 @@ ProjectDialogMorph.prototype.openProject = function () {
     }
 };
 
+/**
+ * @param {?} project
+ */
 ProjectDialogMorph.prototype.openCloudProject = function (project) {
     var myself = this;
     myself.ide.nextSteps([
@@ -6307,6 +6668,9 @@ ProjectDialogMorph.prototype.openCloudProject = function (project) {
     ]);
 };
 
+/**
+ * @param {?} proj
+ */
 ProjectDialogMorph.prototype.rawOpenCloudProject = function (proj) {
     var myself = this;
     SnapCloud.getProject(
@@ -6331,6 +6695,7 @@ ProjectDialogMorph.prototype.rawOpenCloudProject = function (proj) {
     this.destroy();
 };
 
+/** */
 ProjectDialogMorph.prototype.saveProject = function () {
     var name = this.nameField.contents().text.text,
         notes = this.notesText.text,
@@ -6384,6 +6749,7 @@ ProjectDialogMorph.prototype.saveProject = function () {
     }
 };
 
+/** */
 ProjectDialogMorph.prototype.saveCloudProject = function () {
     var myself = this;
     this.ide.showMessage('Saving project\nto the cloud...');
@@ -6398,6 +6764,7 @@ ProjectDialogMorph.prototype.saveCloudProject = function () {
     this.destroy();
 };
 
+/** */
 ProjectDialogMorph.prototype.deleteProject = function () {
     var myself = this,
         proj,
@@ -6446,6 +6813,7 @@ ProjectDialogMorph.prototype.deleteProject = function () {
     }
 };
 
+/** */
 ProjectDialogMorph.prototype.shareProject = function () {
     var myself = this,
         ide = this.ide,
@@ -6495,6 +6863,7 @@ ProjectDialogMorph.prototype.shareProject = function () {
     }
 };
 
+/** */
 ProjectDialogMorph.prototype.unshareProject = function () {
     var myself = this,
         ide = this.ide,
@@ -6538,6 +6907,7 @@ ProjectDialogMorph.prototype.unshareProject = function () {
     }
 };
 
+/** */
 ProjectDialogMorph.prototype.publishProject = function () {
     var myself = this,
         ide = this.ide,
@@ -6585,6 +6955,7 @@ ProjectDialogMorph.prototype.publishProject = function () {
     }
 };
 
+/** */
 ProjectDialogMorph.prototype.unpublishProject = function () {
     var myself = this,
         proj = this.listField.selected,
@@ -6621,6 +6992,9 @@ ProjectDialogMorph.prototype.unpublishProject = function () {
     }
 };
 
+/**
+ * @override
+ */
 ProjectDialogMorph.prototype.edit = function () {
     if (this.nameField) {
         this.nameField.edit();
@@ -6631,6 +7005,9 @@ ProjectDialogMorph.prototype.edit = function () {
 
 // ProjectDialogMorph layout
 
+/**
+ * @override
+ */
 ProjectDialogMorph.prototype.fixLayout = function () {
     var th = fontHeight(this.titleFontSize) + this.titlePadding * 2,
         thin = this.padding / 2,
@@ -6716,10 +7093,20 @@ LibraryImportDialogMorph.uber = DialogBoxMorph.prototype;
 
 // LibraryImportDialogMorph instance creation:
 
+/**
+ * @constructor
+ * @extends DialogBoxMorph
+ * @param {IDE_Morph} ide
+ * @param {?} librariesData
+ */
 function LibraryImportDialogMorph(ide, librariesData) {
     this.init(ide, librariesData);
 }
 
+/**
+ * @param {IDE_Morph} ide
+ * @param {?} librariesData
+ */
 LibraryImportDialogMorph.prototype.init = function (ide, librariesData) {
     // initialize inherited properties:
     LibraryImportDialogMorph.uber.init.call(
@@ -6750,6 +7137,7 @@ LibraryImportDialogMorph.prototype.init = function (ide, librariesData) {
     this.buildContents();
 };
 
+/** */
 LibraryImportDialogMorph.prototype.buildContents = function () {
     this.addBody(new Morph());
     this.body.color = this.color;
@@ -6765,6 +7153,7 @@ LibraryImportDialogMorph.prototype.buildContents = function () {
     this.fixLayout();
 };
 
+/** */
 LibraryImportDialogMorph.prototype.initializePalette = function () {
     // I will display a scrolling list of blocks.
     if (this.palette) {this.palette.destroy(); }
@@ -6783,6 +7172,7 @@ LibraryImportDialogMorph.prototype.initializePalette = function () {
     this.body.add(this.palette);
 };
 
+/** */
 LibraryImportDialogMorph.prototype.initializeLibraryDescription = function () {
     if (this.notesField) {this.notesField.destroy(); }
 
@@ -6809,6 +7199,7 @@ LibraryImportDialogMorph.prototype.initializeLibraryDescription = function () {
     this.body.add(this.notesField);
 };
 
+/** */
 LibraryImportDialogMorph.prototype.installLibrariesList = function () {
     var myself = this;
 
@@ -6834,7 +7225,7 @@ LibraryImportDialogMorph.prototype.installLibrariesList = function () {
     this.listField.action = function (item) {
         if (isNil(item)) {return; }
 
-        myself.notesText.text = item.description || '';
+        myself.notesText.text = localize(item.description || '');
         myself.notesText.drawNew();
         myself.notesField.contents.adjustBounds();
 
@@ -6863,6 +7254,7 @@ LibraryImportDialogMorph.prototype.installLibrariesList = function () {
     this.fixLayout();
 };
 
+/** */
 LibraryImportDialogMorph.prototype.popUp = function () {
     var world = this.ide.world();
     if (world) {
@@ -6877,12 +7269,19 @@ LibraryImportDialogMorph.prototype.popUp = function () {
     }
 };
 
+/**
+ * @function
+ */
 LibraryImportDialogMorph.prototype.fixListFieldItemColors =
     ProjectDialogMorph.prototype.fixListFieldItemColors;
 
+/**
+ * @function
+ */
 LibraryImportDialogMorph.prototype.clearDetails =
     ProjectDialogMorph.prototype.clearDetails;
 
+/** */
 LibraryImportDialogMorph.prototype.fixLayout = function () {
     var titleHeight = fontHeight(this.titleFontSize) + this.titlePadding * 2,
         thin = this.padding / 2,
@@ -6944,18 +7343,32 @@ LibraryImportDialogMorph.prototype.fixLayout = function () {
 };
 
 // Library Cache Utilities.
+
+/**
+ * @param {String} key
+ * @returns {boolean}
+ */
 LibraryImportDialogMorph.prototype.hasCached = function (key) {
     return this.libraryCache.hasOwnProperty(key);
 };
 
+/**
+ * @param {String} key
+ * @param {?} blocks
+ */
 LibraryImportDialogMorph.prototype.cacheLibrary = function (key, blocks) {
     this.libraryCache[key] = blocks ;
 };
 
+/**
+ * @param {String} key
+ * @returns {?}
+ */
 LibraryImportDialogMorph.prototype.cachedLibrary = function (key) {
     return this.libraryCache[key];
 };
 
+/** */
 LibraryImportDialogMorph.prototype.importLibrary = function () {
     var blocks,
         ide = this.ide,
@@ -6983,6 +7396,9 @@ LibraryImportDialogMorph.prototype.importLibrary = function () {
     this.destroy();
 };
 
+/**
+ * @param {?} libraryKey
+ */
 LibraryImportDialogMorph.prototype.displayBlocks = function (libraryKey) {
     var x, y, blockImage, previousCategory, blockContainer,
         myself = this,
@@ -7021,6 +7437,9 @@ LibraryImportDialogMorph.prototype.displayBlocks = function (libraryKey) {
     this.fixLayout();
 };
 
+/**
+ * @param {String} msgText
+ */
 LibraryImportDialogMorph.prototype.showMessage = function (msgText) {
     var msg = new MenuMorph(null, msgText);
     this.initializePalette();
@@ -7052,10 +7471,20 @@ SpriteIconMorph.prototype.fontSize = 9;
 
 // SpriteIconMorph instance creation:
 
+/**
+ * @constructor
+ * @extends ToggleButtonMorph
+ * @param {SpriteMorph} aSprite
+ * @param {?} aTemplate
+ */
 function SpriteIconMorph(aSprite, aTemplate) {
     this.init(aSprite, aTemplate);
 }
 
+/**
+ * @param {?} aSprite
+ * @param {?} aTemplate
+ */
 SpriteIconMorph.prototype.init = function (aSprite, aTemplate) {
     var colors, action, query, hover, myself = this;
 
@@ -7120,6 +7549,7 @@ SpriteIconMorph.prototype.init = function (aSprite, aTemplate) {
     this.fps = 1;
 };
 
+/** */
 SpriteIconMorph.prototype.createThumbnail = function () {
     if (this.thumbnail) {
         this.thumbnail.destroy();
@@ -7136,6 +7566,9 @@ SpriteIconMorph.prototype.createThumbnail = function () {
     this.add(this.thumbnail);
 };
 
+/**
+ * @override
+ */
 SpriteIconMorph.prototype.createLabel = function () {
     var txt;
 
@@ -7163,6 +7596,7 @@ SpriteIconMorph.prototype.createLabel = function () {
     this.add(this.label);
 };
 
+/** */
 SpriteIconMorph.prototype.createRotationButton = function () {
     var button, myself = this;
 
@@ -7205,6 +7639,9 @@ SpriteIconMorph.prototype.createRotationButton = function () {
 
 // SpriteIconMorph stepping
 
+/**
+ * @override
+ */
 SpriteIconMorph.prototype.step = function () {
     if (this.version !== this.object.version) {
         this.createThumbnail();
@@ -7217,6 +7654,7 @@ SpriteIconMorph.prototype.step = function () {
 
 // SpriteIconMorph layout
 
+/** */
 SpriteIconMorph.prototype.fixLayout = function () {
     if (!this.thumbnail || !this.label) {return null; }
 
@@ -7259,6 +7697,9 @@ SpriteIconMorph.prototype.fixLayout = function () {
 
 // SpriteIconMorph menu
 
+/**
+ * @override
+ */
 SpriteIconMorph.prototype.userMenu = function () {
     var menu = new MenuMorph(this),
         myself = this;
@@ -7321,6 +7762,7 @@ SpriteIconMorph.prototype.userMenu = function () {
     return menu;
 };
 
+/** */
 SpriteIconMorph.prototype.duplicateSprite = function () {
     var ide = this.parentThatIsA(IDE_Morph);
     if (ide) {
@@ -7328,6 +7770,7 @@ SpriteIconMorph.prototype.duplicateSprite = function () {
     }
 };
 
+/** */
 SpriteIconMorph.prototype.instantiateSprite = function () {
     var ide = this.parentThatIsA(IDE_Morph);
     if (ide) {
@@ -7335,6 +7778,7 @@ SpriteIconMorph.prototype.instantiateSprite = function () {
     }
 };
 
+/** */
 SpriteIconMorph.prototype.removeSprite = function () {
     var ide = this.parentThatIsA(IDE_Morph);
     if (ide) {
@@ -7342,24 +7786,31 @@ SpriteIconMorph.prototype.removeSprite = function () {
     }
 };
 
+/** */
 SpriteIconMorph.prototype.exportSprite = function () {
     this.object.exportSprite();
 };
 
+/** */
 SpriteIconMorph.prototype.chooseExemplar = function () {
     this.object.chooseExemplar();
 };
 
+/** */
 SpriteIconMorph.prototype.releaseSprite = function () {
     this.object.release();
 };
 
+/** */
 SpriteIconMorph.prototype.showSpriteOnStage = function () {
     this.object.showOnStage();
 };
 
 // SpriteIconMorph events
 
+/**
+ * @override
+ */
 SpriteIconMorph.prototype.mouseDoubleClick = function () {
 	if (this.object instanceof SpriteMorph) {
     	this.object.flash();
@@ -7368,6 +7819,9 @@ SpriteIconMorph.prototype.mouseDoubleClick = function () {
 
 // SpriteIconMorph drawing
 
+/**
+ * @override
+ */
 SpriteIconMorph.prototype.createBackgrounds = function () {
 //    only draw the edges if I am selected
     var context,
@@ -7405,6 +7859,9 @@ SpriteIconMorph.prototype.createBackgrounds = function () {
 
 // SpriteIconMorph drag & drop
 
+/**
+ * @override
+ */
 SpriteIconMorph.prototype.prepareToBeGrabbed = function () {
     var ide = this.parentThatIsA(IDE_Morph),
         idx;
@@ -7418,10 +7875,16 @@ SpriteIconMorph.prototype.prepareToBeGrabbed = function () {
     }
 };
 
+/**
+ * @override
+ */
 SpriteIconMorph.prototype.justDropped = function () {
     this.alpha = 1;
 };
 
+/**
+ * @override
+ */
 SpriteIconMorph.prototype.wantsDropOf = function (morph) {
     // allow scripts & media to be copied from one sprite to another
     // by drag & drop
@@ -7430,6 +7893,9 @@ SpriteIconMorph.prototype.wantsDropOf = function (morph) {
         || (morph instanceof SoundIconMorph);
 };
 
+/**
+ * @override
+ */
 SpriteIconMorph.prototype.reactToDropOf = function (morph, hand) {
     if (morph instanceof BlockMorph) {
         this.copyStack(morph);
@@ -7442,6 +7908,9 @@ SpriteIconMorph.prototype.reactToDropOf = function (morph, hand) {
     morph.slideBackTo(hand.grabOrigin);
 };
 
+/**
+ * @param {?} block
+ */
 SpriteIconMorph.prototype.copyStack = function (block) {
     var sprite = this.object,
     	dup = block.fullCopy(),
@@ -7468,6 +7937,9 @@ SpriteIconMorph.prototype.copyStack = function (block) {
     });
 };
 
+/**
+ * @param {Costume} costume
+ */
 SpriteIconMorph.prototype.copyCostume = function (costume) {
     var dup = costume.copy();
     dup.name = this.object.newCostumeName(dup.name);
@@ -7475,6 +7947,9 @@ SpriteIconMorph.prototype.copyCostume = function (costume) {
     this.object.wearCostume(dup);
 };
 
+/**
+ * @param {Sound} sound
+ */
 SpriteIconMorph.prototype.copySound = function (sound) {
     var dup = sound.copy();
     this.object.addSound(dup.audio, dup.name);
@@ -7506,10 +7981,20 @@ CostumeIconMorph.prototype.fontSize = 9;
 
 // CostumeIconMorph instance creation:
 
+/**
+ * @constructor
+ * @extends ToggleButtonMorph
+ * @param {Costume} aCostume
+ * @param {*} aTemplate
+ */
 function CostumeIconMorph(aCostume, aTemplate) {
     this.init(aCostume, aTemplate);
 }
 
+/**
+ * @param {Costume} aCostume
+ * @param {*} aTemplate
+ */
 CostumeIconMorph.prototype.init = function (aCostume, aTemplate) {
     var colors, action, query, myself = this;
 
@@ -7572,6 +8057,7 @@ CostumeIconMorph.prototype.init = function (aCostume, aTemplate) {
     this.fps = 1;
 };
 
+/** */
 CostumeIconMorph.prototype.createThumbnail = function () {
     var txt;
     SpriteIconMorph.prototype.createThumbnail.call(this);
@@ -7592,21 +8078,35 @@ CostumeIconMorph.prototype.createThumbnail = function () {
     }
 };
 
+/**
+ * @function
+ * @override
+ */
 CostumeIconMorph.prototype.createLabel
     = SpriteIconMorph.prototype.createLabel;
 
 // CostumeIconMorph stepping
 
+/**
+ * @function
+ * @override
+ */
 CostumeIconMorph.prototype.step
     = SpriteIconMorph.prototype.step;
 
 // CostumeIconMorph layout
 
+/**
+ * @function
+ */
 CostumeIconMorph.prototype.fixLayout
     = SpriteIconMorph.prototype.fixLayout;
 
 // CostumeIconMorph menu
 
+/**
+ * @override
+ */
 CostumeIconMorph.prototype.userMenu = function () {
     var menu = new MenuMorph(this);
     if (!(this.object instanceof Costume)) {return null; }
@@ -7628,6 +8128,7 @@ CostumeIconMorph.prototype.userMenu = function () {
     return menu;
 };
 
+/** */
 CostumeIconMorph.prototype.editCostume = function () {
     this.disinherit();
     if (this.object instanceof SVG_Costume) {
@@ -7641,12 +8142,14 @@ CostumeIconMorph.prototype.editCostume = function () {
     }
 };
 
+/** */
 CostumeIconMorph.prototype.editRotationPointOnly = function () {
     var ide = this.parentThatIsA(IDE_Morph);
     this.object.editRotationPointOnly(this.world());
     ide.hasChangedMedia = true;
 };
 
+/** */
 CostumeIconMorph.prototype.renameCostume = function () {
     this.disinherit();
     var costume = this.object,
@@ -7672,6 +8175,7 @@ CostumeIconMorph.prototype.renameCostume = function () {
     );
 };
 
+/** */
 CostumeIconMorph.prototype.duplicateCostume = function () {
     var wardrobe = this.parentThatIsA(WardrobeMorph),
         ide = this.parentThatIsA(IDE_Morph),
@@ -7684,6 +8188,7 @@ CostumeIconMorph.prototype.duplicateCostume = function () {
     }
 };
 
+/** */
 CostumeIconMorph.prototype.removeCostume = function () {
     var wardrobe = this.parentThatIsA(WardrobeMorph),
         idx = this.parent.children.indexOf(this),
@@ -7695,6 +8200,7 @@ CostumeIconMorph.prototype.removeCostume = function () {
     }
 };
 
+/** */
 CostumeIconMorph.prototype.exportCostume = function () {
     var ide = this.parentThatIsA(IDE_Morph);
     if (this.object instanceof SVG_Costume) {
@@ -7707,11 +8213,16 @@ CostumeIconMorph.prototype.exportCostume = function () {
 
 // CostumeIconMorph drawing
 
+/**
+ * @function
+ * @override
+ */
 CostumeIconMorph.prototype.createBackgrounds
     = SpriteIconMorph.prototype.createBackgrounds;
 
 // CostumeIconMorph inheritance
 
+/** */
 CostumeIconMorph.prototype.disinherit = function () {
     var wardrobe = this.parentThatIsA(WardrobeMorph),
         idx = this.parent.children.indexOf(this);
@@ -7723,6 +8234,9 @@ CostumeIconMorph.prototype.disinherit = function () {
 
 // CostumeIconMorph drag & drop
 
+/**
+ * @override
+ */
 CostumeIconMorph.prototype.prepareToBeGrabbed = function () {
     this.disinherit();
     this.mouseClickLeft(); // select me
@@ -7753,10 +8267,20 @@ TurtleIconMorph.prototype.fontSize = 9;
 
 // TurtleIconMorph instance creation:
 
+/**
+ * @constructor
+ * @extends ToggleButtonMorph
+ * @param {?} aSpriteOrStage
+ * @param {?} aTemplate
+ */
 function TurtleIconMorph(aSpriteOrStage, aTemplate) {
     this.init(aSpriteOrStage, aTemplate);
 }
 
+/**
+ * @param {?} aSpriteOrStage
+ * @param {?} aTemplate
+ */
 TurtleIconMorph.prototype.init = function (aSpriteOrStage, aTemplate) {
     var colors, action, query, myself = this;
 
@@ -7818,6 +8342,7 @@ TurtleIconMorph.prototype.init = function (aSpriteOrStage, aTemplate) {
     this.fixLayout();
 };
 
+/** */
 TurtleIconMorph.prototype.createThumbnail = function () {
     var isFlat = MorphicPreferences.isFlat;
 
@@ -7844,6 +8369,9 @@ TurtleIconMorph.prototype.createThumbnail = function () {
     this.add(this.thumbnail);
 };
 
+/**
+ * @override
+ */
 TurtleIconMorph.prototype.createLabel = function () {
     var txt;
 
@@ -7875,16 +8403,26 @@ TurtleIconMorph.prototype.createLabel = function () {
 
 // TurtleIconMorph layout
 
+/**
+ * @function
+ */
 TurtleIconMorph.prototype.fixLayout
     = SpriteIconMorph.prototype.fixLayout;
 
 // TurtleIconMorph drawing
 
+/**
+ * @function
+ * @override
+ */
 TurtleIconMorph.prototype.createBackgrounds
     = SpriteIconMorph.prototype.createBackgrounds;
 
 // TurtleIconMorph user menu
 
+/**
+ * @override
+ */
 TurtleIconMorph.prototype.userMenu = function () {
     var myself = this,
         menu = new MenuMorph(this, 'pen'),
@@ -7932,10 +8470,20 @@ WardrobeMorph.uber = ScrollFrameMorph.prototype;
 
 // WardrobeMorph instance creation:
 
+/**
+ * @constructor
+ * @extends ScrollFrameMorph
+ * @param {SpriteMorph} aSprite
+ * @param {?} sliderColor
+ */
 function WardrobeMorph(aSprite, sliderColor) {
     this.init(aSprite, sliderColor);
 }
 
+/**
+ * @param {SpriteMorph} aSprite
+ * @param {?} sliderColor
+ */
 WardrobeMorph.prototype.init = function (aSprite, sliderColor) {
     // additional properties
     this.sprite = aSprite || new SpriteMorph();
@@ -7952,6 +8500,7 @@ WardrobeMorph.prototype.init = function (aSprite, sliderColor) {
 
 // Wardrobe updating
 
+/** */
 WardrobeMorph.prototype.updateList = function () {
     var myself = this,
         x = this.left() + 5,
@@ -8074,6 +8623,7 @@ WardrobeMorph.prototype.updateList = function () {
     this.updateSelection();
 };
 
+/** */
 WardrobeMorph.prototype.updateSelection = function () {
     this.contents.children.forEach(function (morph) {
         if (morph.refresh) {morph.refresh(); }
@@ -8083,6 +8633,9 @@ WardrobeMorph.prototype.updateSelection = function () {
 
 // Wardrobe stepping
 
+/**
+ * @override
+ */
 WardrobeMorph.prototype.step = function () {
     if (this.costumesVersion !== this.sprite.costumes.lastChanged) {
         this.updateList();
@@ -8094,12 +8647,16 @@ WardrobeMorph.prototype.step = function () {
 
 // Wardrobe ops
 
+/**
+ * @param {number} idx
+ */
 WardrobeMorph.prototype.removeCostumeAt = function (idx) {
     this.sprite.shadowAttribute('costumes');
     this.sprite.costumes.remove(idx);
     this.updateList();
 };
 
+/** */
 WardrobeMorph.prototype.paintNew = function () {
     var cos = new Costume(
             newCanvas(null, true),
@@ -8117,6 +8674,7 @@ WardrobeMorph.prototype.paintNew = function () {
     });
 };
 
+/** */
 WardrobeMorph.prototype.newFromCam = function () {
     var camDialog,
         ide = this.parentThatIsA(IDE_Morph),
@@ -8138,10 +8696,16 @@ WardrobeMorph.prototype.newFromCam = function () {
 
 // Wardrobe drag & drop
 
+/**
+ * @override
+ */
 WardrobeMorph.prototype.wantsDropOf = function (morph) {
     return morph instanceof CostumeIconMorph;
 };
 
+/**
+ * @override
+ */
 WardrobeMorph.prototype.reactToDropOf = function (icon) {
     var idx = 0,
         costume = icon.object,
@@ -8182,10 +8746,20 @@ SoundIconMorph.prototype.fontSize = 9;
 
 // SoundIconMorph instance creation:
 
+/**
+ * @constructor
+ * @extends ToggleButtonMorph
+ * @param {Sound} aSound
+ * @param {?} aTemplate
+ */
 function SoundIconMorph(aSound, aTemplate) {
     this.init(aSound, aTemplate);
 }
 
+/**
+ * @param {Sound} aSound
+ * @param {?} aTemplate
+ */
 SoundIconMorph.prototype.init = function (aSound, aTemplate) {
     var colors, action, query;
 
@@ -8233,6 +8807,7 @@ SoundIconMorph.prototype.init = function (aSound, aTemplate) {
     this.fps = 1;
 };
 
+/** */
 SoundIconMorph.prototype.createThumbnail = function () {
     var label;
     if (this.thumbnail) {
@@ -8267,6 +8842,7 @@ SoundIconMorph.prototype.createThumbnail = function () {
     this.button.setCenter(new Point(40, 40));
 };
 
+/** */
 SoundIconMorph.prototype.createInfo = function () {
     var dur = Math.round(this.object.audio.duration || 0),
         mod = dur % 60;
@@ -8276,6 +8852,7 @@ SoundIconMorph.prototype.createInfo = function () {
             + mod.toString();
 };
 
+/** */
 SoundIconMorph.prototype.toggleAudioPlaying = function () {
     var myself = this;
     if (!this.object.previewAudio) {
@@ -8297,11 +8874,16 @@ SoundIconMorph.prototype.toggleAudioPlaying = function () {
     this.button.createLabel();
 };
 
+/** */
 SoundIconMorph.prototype.audioHasEnded = function () {
     this.button.trigger();
     this.button.mouseLeave();
 };
 
+/**
+ * @function
+ * @override
+ */
 SoundIconMorph.prototype.createLabel
     = SpriteIconMorph.prototype.createLabel;
 
@@ -8314,11 +8896,17 @@ SoundIconMorph.prototype.step
 
 // SoundIconMorph layout
 
+/**
+ * @function
+ */
 SoundIconMorph.prototype.fixLayout
     = SpriteIconMorph.prototype.fixLayout;
 
 // SoundIconMorph menu
 
+/**
+ * @override
+ */
 SoundIconMorph.prototype.userMenu = function () {
     var menu = new MenuMorph(this);
     if (!(this.object instanceof Sound)) { return null; }
@@ -8327,7 +8915,7 @@ SoundIconMorph.prototype.userMenu = function () {
     return menu;
 };
 
-
+/** */
 SoundIconMorph.prototype.renameSound = function () {
     var sound = this.object,
         ide = this.parentThatIsA(IDE_Morph),
@@ -8351,20 +8939,30 @@ SoundIconMorph.prototype.renameSound = function () {
     );
 };
 
+/** */
 SoundIconMorph.prototype.removeSound = function () {
     var jukebox = this.parentThatIsA(JukeboxMorph),
         idx = this.parent.children.indexOf(this + 1);
     jukebox.removeSound(idx);
 };
 
+/**
+ * @function
+ * @override
+ */
 SoundIconMorph.prototype.createBackgrounds
     = SpriteIconMorph.prototype.createBackgrounds;
 
+/**
+ * @function
+ * @override
+ */
 SoundIconMorph.prototype.createLabel
     = SpriteIconMorph.prototype.createLabel;
 
 // SoundIconMorph inheritance
 
+/** */
 SoundIconMorph.prototype.disinherit = function () {
     var jukebox = this.parentThatIsA(JukeboxMorph),
         idx = this.parent.children.indexOf(this);
@@ -8376,6 +8974,9 @@ SoundIconMorph.prototype.disinherit = function () {
 
 // SoundIconMorph drag & drop
 
+/**
+ * @override
+ */
 SoundIconMorph.prototype.prepareToBeGrabbed = function () {
     this.disinherit();
     this.removeSound();
@@ -8393,10 +8994,20 @@ JukeboxMorph.prototype = new ScrollFrameMorph();
 JukeboxMorph.prototype.constructor = JukeboxMorph;
 JukeboxMorph.uber = ScrollFrameMorph.prototype;
 
+/**
+ * @constructor
+ * @extends ScrollFrameMorph
+ * @param {?} aSprite
+ * @param {?} sliderColor
+ */
 function JukeboxMorph(aSprite, sliderColor) {
     this.init(aSprite, sliderColor);
 }
 
+/**
+ * @param {?} aSprite
+ * @param {?} sliderColor
+ */
 JukeboxMorph.prototype.init = function (aSprite, sliderColor) {
     // additional properties
     this.sprite = aSprite || new SpriteMorph();
@@ -8414,6 +9025,7 @@ JukeboxMorph.prototype.init = function (aSprite, sliderColor) {
 
 // Jukebox updating
 
+/** */
 JukeboxMorph.prototype.updateList = function () {
     var myself = this,
         x = this.left() + 5,
@@ -8485,6 +9097,7 @@ JukeboxMorph.prototype.updateList = function () {
     this.updateSelection();
 };
 
+/** */
 JukeboxMorph.prototype.updateSelection = function () {
     this.contents.children.forEach(function (morph) {
         if (morph.refresh) {morph.refresh(); }
@@ -8494,6 +9107,9 @@ JukeboxMorph.prototype.updateSelection = function () {
 
 // Jukebox stepping
 
+/**
+ * @override
+ */
 JukeboxMorph.prototype.step = function () {
     if (this.soundsVersion !== this.sprite.sounds.lastChanged) {
         this.updateList();
@@ -8505,6 +9121,7 @@ JukeboxMorph.prototype.step = function () {
 
 // Jukebox ops
 
+/** */
 JukeboxMorph.prototype.removeSound = function (idx) {
     this.sprite.sounds.remove(idx);
     this.updateList();
@@ -8512,10 +9129,16 @@ JukeboxMorph.prototype.removeSound = function (idx) {
 
 // Jukebox drag & drop
 
+/**
+ * @override
+ */
 JukeboxMorph.prototype.wantsDropOf = function (morph) {
     return morph instanceof SoundIconMorph;
 };
 
+/**
+ * @override
+ */
 JukeboxMorph.prototype.reactToDropOf = function (icon) {
     var idx = 0,
         costume = icon.object,
@@ -8545,10 +9168,18 @@ StageHandleMorph.uber = Morph.prototype;
 
 // StageHandleMorph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ * @param {?} target
+ */
 function StageHandleMorph(target) {
     this.init(target);
 }
 
+/**
+ * @param {?} target
+ */
 StageHandleMorph.prototype.init = function (target) {
     this.target = target || null;
     HandleMorph.uber.init.call(this);
@@ -8561,6 +9192,9 @@ StageHandleMorph.prototype.init = function (target) {
 
 // StageHandleMorph drawing:
 
+/**
+ * @override
+ */
 StageHandleMorph.prototype.drawNew = function () {
     this.normalImage = newCanvas(this.extent());
     this.highlightImage = newCanvas(this.extent());
@@ -8578,6 +9212,11 @@ StageHandleMorph.prototype.drawNew = function () {
     this.fixLayout();
 };
 
+/**
+ * @param {Canvas} aCanvas
+ * @param {Color} color
+ * @param {Color} shadowColor
+ */
 StageHandleMorph.prototype.drawOnCanvas = function (
     aCanvas,
     color,
@@ -8626,6 +9265,7 @@ StageHandleMorph.prototype.drawOnCanvas = function (
 
 // StageHandleMorph layout:
 
+/** */
 StageHandleMorph.prototype.fixLayout = function () {
     if (!this.target) {return; }
     var ide = this.target.parentThatIsA(IDE_Morph);
@@ -8636,8 +9276,15 @@ StageHandleMorph.prototype.fixLayout = function () {
 
 // StageHandleMorph stepping:
 
+/**
+ * @function
+ * @override
+ */
 StageHandleMorph.prototype.step = null;
 
+/**
+ * @override
+ */
 StageHandleMorph.prototype.mouseDownLeft = function (pos) {
     var world = this.world(),
         offset = this.right() - pos.x,
@@ -8667,16 +9314,25 @@ StageHandleMorph.prototype.mouseDownLeft = function (pos) {
 
 // StageHandleMorph events:
 
+/**
+ * @override
+ */
 StageHandleMorph.prototype.mouseEnter = function () {
     this.image = this.highlightImage;
     this.changed();
 };
 
+/**
+ * @override
+ */
 StageHandleMorph.prototype.mouseLeave = function () {
     this.image = this.normalImage;
     this.changed();
 };
 
+/**
+ * @override
+ */
 StageHandleMorph.prototype.mouseDoubleClick = function () {
     this.target.parentThatIsA(IDE_Morph).toggleStageSize(true, 1);
 };
@@ -8694,10 +9350,18 @@ PaletteHandleMorph.uber = Morph.prototype;
 
 // PaletteHandleMorph instance creation:
 
+/**
+ * @constructor
+ * @extends Morph
+ * @param {?} target
+ */
 function PaletteHandleMorph(target) {
     this.init(target);
 }
 
+/**
+ * @param {?} target
+ */
 PaletteHandleMorph.prototype.init = function (target) {
     this.target = target || null;
     HandleMorph.uber.init.call(this);
@@ -8710,14 +9374,25 @@ PaletteHandleMorph.prototype.init = function (target) {
 
 // PaletteHandleMorph drawing:
 
+/**
+ * @function
+ * @override
+ */
 PaletteHandleMorph.prototype.drawNew =
     StageHandleMorph.prototype.drawNew;
 
+/**
+ * @function
+ * @param {Canvas} aCanvas
+ * @param {Color} color
+ * @param {Color} shadowColor
+ */
 PaletteHandleMorph.prototype.drawOnCanvas =
     StageHandleMorph.prototype.drawOnCanvas;
 
 // PaletteHandleMorph layout:
 
+/** */
 PaletteHandleMorph.prototype.fixLayout = function () {
     if (!this.target) {return; }
     var ide = this.target.parentThatIsA(IDE_Morph);
@@ -8728,8 +9403,15 @@ PaletteHandleMorph.prototype.fixLayout = function () {
 
 // PaletteHandleMorph stepping:
 
+/**
+ * @function
+ * @override
+ */
 PaletteHandleMorph.prototype.step = null;
 
+/**
+ * @override
+ */
 PaletteHandleMorph.prototype.mouseDownLeft = function (pos) {
     var world = this.world(),
         offset = this.right() - pos.x,
@@ -8756,12 +9438,24 @@ PaletteHandleMorph.prototype.mouseDownLeft = function (pos) {
 
 // PaletteHandleMorph events:
 
+/**
+ * @function
+ * @override
+ */
 PaletteHandleMorph.prototype.mouseEnter
     = StageHandleMorph.prototype.mouseEnter;
 
+/**
+ * @function
+ * @override
+ */
 PaletteHandleMorph.prototype.mouseLeave
     = StageHandleMorph.prototype.mouseLeave;
 
+/**
+ * @function
+ * @override
+ */
 PaletteHandleMorph.prototype.mouseDoubleClick = function () {
     this.target.parentThatIsA(IDE_Morph).setPaletteWidth(200);
 };
@@ -8797,10 +9491,24 @@ CamSnapshotDialogMorph.prototype.notSupportedMessage =
 
 // CamSnapshotDialogMorph instance creation
 
+/**
+ * @constructor
+ * @extends DialogBoxMorph
+ * @param {IDE_Morph} ide
+ * @param {*} sprite
+ * @param {Function} [onCancel]
+ * @param {Function} [onAccept]
+ */
 function CamSnapshotDialogMorph(ide, sprite, onCancel, onAccept) {
     this.init(ide, sprite, onCancel, onAccept);
 }
 
+/**
+ * @param {IDE_Morph} ide
+ * @param {*} sprite
+ * @param {Function} [onCancel]
+ * @param {Function} [onAccept]
+ */
 CamSnapshotDialogMorph.prototype.init = function (
     ide,
     sprite,
@@ -8821,6 +9529,7 @@ CamSnapshotDialogMorph.prototype.init = function (
     this.buildContents();
 };
 
+/** */
 CamSnapshotDialogMorph.prototype.buildContents = function () {
     var myself = this,
         stage = this.sprite.parentThatIsA(StageMorph);
@@ -8913,6 +9622,9 @@ CamSnapshotDialogMorph.prototype.buildContents = function () {
     this.drawNew();
 };
 
+/**
+ * @override
+ */
 CamSnapshotDialogMorph.prototype.ok = function () {
     this.accept(
         new Costume(
@@ -8922,16 +9634,21 @@ CamSnapshotDialogMorph.prototype.ok = function () {
     );
 };
 
+/** */
 CamSnapshotDialogMorph.prototype.disable = function () {
     CamSnapshotDialogMorph.prototype.enabled = false;
     document.dispatchEvent(new Event('cameraDisabled'));
 };
 
+/**
+ * @override
+ */
 CamSnapshotDialogMorph.prototype.destroy = function () {
     this.oncancel.call(this);
     this.close();
 };
 
+/** */
 CamSnapshotDialogMorph.prototype.close = function () {
     if (this.videoElement && this.videoElement.stream) {
         this.videoElement.stream.getTracks()[0].stop();

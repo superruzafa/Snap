@@ -68,6 +68,11 @@ var Process;
 var Context;
 var VariableFrame;
 
+/**
+ * @param {*} a
+ * @param {*} b
+ * @returns {boolean}
+ */
 function snapEquals(a, b) {
     if (a instanceof List || (b instanceof List)) {
         if (a instanceof List && (b instanceof List)) {
@@ -106,6 +111,15 @@ function snapEquals(a, b) {
     return x === y;
 }
 
+/**
+ * @param {BlockMorph|Context} action
+ * @param {List} [contextArgs]
+ * @param {?} [receiver]
+ * @param {number} [timeout]
+ * @param {String}[timeoutErrorMsg='a synchronous Snap! script has timed out']
+ * @param {boolean} [suppressErrors=false]
+ * @returns {?}
+ */
 function invoke(
     action, // a BlockMorph or a Context, a reified ("ringified") block
     contextArgs, // optional List of arguments for the context, or null
@@ -175,6 +189,9 @@ function invoke(
 
 // ThreadManager ///////////////////////////////////////////////////////
 
+/**
+ * @constructor
+ */
 function ThreadManager() {
     this.processes = [];
     this.wantsToPause = false; // single stepping support
@@ -182,6 +199,11 @@ function ThreadManager() {
 
 ThreadManager.prototype.pauseCustomHatBlocks = false;
 
+/**
+ * @param {?} block
+ * @param {?} receiver
+ * @returns {?}
+ */
 ThreadManager.prototype.toggleProcess = function (block, receiver) {
     var active = this.findProcess(block, receiver);
     if (active) {
@@ -191,6 +213,16 @@ ThreadManager.prototype.toggleProcess = function (block, receiver) {
     }
 };
 
+/**
+ * @param {?} block
+ * @param {?} receiver
+ * @param {boolean} isThreadSafe
+ * @param {boolean} exportResult
+ * @param {Function} callback
+ * @param {boolean} isClicked
+ * @param {?} rightAway
+ * @returns {Process}
+ */
 ThreadManager.prototype.startProcess = function (
     block,
     receiver,
@@ -234,6 +266,9 @@ ThreadManager.prototype.startProcess = function (
     return newProc;
 };
 
+/**
+ * @param {?} [excpt]
+ */
 ThreadManager.prototype.stopAll = function (excpt) {
     // excpt is optional
     this.processes.forEach(function (proc) {
@@ -243,6 +278,10 @@ ThreadManager.prototype.stopAll = function (excpt) {
     });
 };
 
+/**
+ * @param {?} rcvr
+ * @param {?} excpt
+ */
 ThreadManager.prototype.stopAllForReceiver = function (rcvr, excpt) {
     // excpt is optional
     this.processes.forEach(function (proc) {
@@ -255,12 +294,19 @@ ThreadManager.prototype.stopAllForReceiver = function (rcvr, excpt) {
     });
 };
 
+/**
+ * @param {?} aTopBlock
+ */
 ThreadManager.prototype.stopAllForBlock = function (aTopBlock) {
     this.processesForBlock(aTopBlock, true).forEach(function (proc) {
         proc.stop();
     });
 };
 
+/**
+ * @param {?} block
+ * @param {?} receiver
+ */
 ThreadManager.prototype.stopProcess = function (block, receiver) {
     var active = this.findProcess(block, receiver);
     if (active) {
@@ -268,6 +314,9 @@ ThreadManager.prototype.stopProcess = function (block, receiver) {
     }
 };
 
+/**
+ * @param {?} stage
+ */
 ThreadManager.prototype.pauseAll = function (stage) {
     this.processes.forEach(function (proc) {
         proc.pause();
@@ -277,11 +326,17 @@ ThreadManager.prototype.pauseAll = function (stage) {
     }
 };
 
+/**
+ * @returns {boolean}
+ */
 ThreadManager.prototype.isPaused = function () {
     return detect(this.processes, function (proc) {return proc.isPaused; })
         !== null;
 };
 
+/**
+ * @param {?} stage
+ */
 ThreadManager.prototype.resumeAll = function (stage) {
     this.processes.forEach(function (proc) {
         proc.resume();
@@ -291,6 +346,7 @@ ThreadManager.prototype.resumeAll = function (stage) {
     }
 };
 
+/** */
 ThreadManager.prototype.step = function () {
     // run each process until it gives up control, skipping processes
     // for sprites that are currently picked up, then filter out any
@@ -323,6 +379,7 @@ ThreadManager.prototype.step = function () {
     this.removeTerminatedProcesses();
 };
 
+/** */
 ThreadManager.prototype.removeTerminatedProcesses = function () {
     // and un-highlight their scripts
     var remaining = [],
@@ -383,6 +440,11 @@ ThreadManager.prototype.removeTerminatedProcesses = function () {
     this.processes = remaining;
 };
 
+/**
+ * @param {?} block
+ * @param {?} receiver
+ * @returns {Process}
+ */
 ThreadManager.prototype.findProcess = function (block, receiver) {
     var top = block.topBlock();
     return detect(
@@ -393,6 +455,11 @@ ThreadManager.prototype.findProcess = function (block, receiver) {
     );
 };
 
+/**
+ * @param {?} block
+ * @param {boolean} [only=false]
+ * @returns {Array.<Process>}
+ */
 ThreadManager.prototype.processesForBlock = function (block, only) {
     var top = only ? block : block.topBlock();
     return this.processes.filter(function (each) {
@@ -402,6 +469,11 @@ ThreadManager.prototype.processesForBlock = function (block, only) {
     });
 };
 
+/**
+ * @param {?} block
+ * @param {?} receiver
+ * @param {boolean} stopIt
+ */
 ThreadManager.prototype.doWhen = function (block, receiver, stopIt) {
     if (this.pauseCustomHatBlocks) {return; }
     if ((!block) || this.findProcess(block, receiver)) {
@@ -444,6 +516,7 @@ ThreadManager.prototype.doWhen = function (block, receiver, stopIt) {
     }
 };
 
+/** */
 ThreadManager.prototype.toggleSingleStepping = function () {
     Process.prototype.enableSingleStepping =
         !Process.prototype.enableSingleStepping;
@@ -531,6 +604,13 @@ Process.prototype.enableCompiling = false; // experimental
 Process.prototype.flashTime = 0; // experimental
 // Process.prototype.enableJS = false;
 
+/**
+ * @constructor
+ * @param {?} topBlock
+ * @param {?} receiver
+ * @param {Function} [onComplete]
+ * @param {boolean} [yieldFirst]
+ */
 function Process(topBlock, receiver, onComplete, yieldFirst) {
     this.topBlock = topBlock || null;
     this.receiver = receiver;
@@ -573,12 +653,18 @@ function Process(topBlock, receiver, onComplete, yieldFirst) {
 
 // Process accessing
 
+/**
+ * @returns {boolean}
+ */
 Process.prototype.isRunning = function () {
     return (this.context !== null) && (!this.readyToTerminate);
 };
 
 // Process entry points
 
+/**
+ * @param {number} deadline
+ */
 Process.prototype.runStep = function (deadline) {
     // a step is an an uninterruptable 'atom', it can consist
     // of several contexts, even of several blocks
@@ -632,6 +718,7 @@ Process.prototype.runStep = function (deadline) {
     }
 };
 
+/** */
 Process.prototype.stop = function () {
     this.readyToYield = true;
     this.readyToTerminate = true;
@@ -641,6 +728,7 @@ Process.prototype.stop = function () {
     }
 };
 
+/** */
 Process.prototype.pause = function () {
     if (this.readyToTerminate) {
         return;
@@ -652,6 +740,7 @@ Process.prototype.pause = function () {
     }
 };
 
+/** */
 Process.prototype.resume = function () {
     if (!this.enableSingleStepping) {
         this.unflash();
@@ -660,6 +749,7 @@ Process.prototype.resume = function () {
     this.pauseOffset = null;
 };
 
+/** */
 Process.prototype.pauseStep = function () {
     this.lastYield = Date.now();
     if (this.context && this.context.startTime) {
@@ -669,6 +759,7 @@ Process.prototype.pauseStep = function () {
 
 // Process evaluation
 
+/** */
 Process.prototype.evaluateContext = function () {
     var exp = this.context.expression;
     this.frameCount += 1;
@@ -696,6 +787,10 @@ Process.prototype.evaluateContext = function () {
     this.popContext(); // default: just ignore it
 };
 
+/**
+ * @param {?} block
+ * @param {number} argCount
+ */
 Process.prototype.evaluateBlock = function (block, argCount) {
     var rcvr, inputs,
     	selector = block.selector;
@@ -740,11 +835,18 @@ Process.prototype.evaluateBlock = function (block, argCount) {
 // with only explicit formal parameters (no empty input slots)
 // ** highly experimental and heavily under construction **
 
+/**
+ * @param {?} context
+ */
 Process.prototype.reportCompiled = function (context) {
 	this.assertType(context, ['reporter', 'predicate']);
 	return this.compileFunction(context.expression, context.inputs);
 };
 
+/**
+ * @param {?} block
+ * @param {Array.<?>} parameters
+ */
 Process.prototype.compileFunction = function (block, parameters) {
 	// first test for unbound variables
  	block.allChildren().forEach(function (morph) {
@@ -763,6 +865,10 @@ Process.prototype.compileFunction = function (block, parameters) {
     );
 };
 
+/**
+ * @param {?} block
+ * @returns {String}
+ */
 Process.prototype.compileExpression = function (block) {
     var selector = block.selector,
 		inputs = block.inputs(),
@@ -789,11 +895,19 @@ Process.prototype.compileExpression = function (block) {
     }
 };
 
+/**
+ * @param {String} operator
+ * @param {Array.<?>} inputs
+ * @returns {String}
+ */
 Process.prototype.compileInfix = function (operator, inputs) {
 	return '(' + this.compileInput(inputs[0]) + ' ' + operator + ' ' +
  	   this.compileInput(inputs[1]) +')';
 };
 
+/**
+ * @param {Array.<?>} array
+ */
 Process.prototype.compileInputs = function (array) {
     var args = '',
         myself = this;
@@ -807,6 +921,10 @@ Process.prototype.compileInputs = function (array) {
     return args;
 };
 
+/**
+ * @param {?} inp
+ * @returns {String}
+ */
 Process.prototype.compileInput = function (inp) {
      var value, type;
 
@@ -860,6 +978,9 @@ Process.prototype.compileInput = function (inp) {
 
 // Process: Special Forms Blocks Primitives
 
+/**
+ * @param {?} block
+ */
 Process.prototype.reportOr = function (block) {
     var inputs = this.context.inputs;
 
@@ -878,6 +999,9 @@ Process.prototype.reportOr = function (block) {
     }
 };
 
+/**
+ * @param {?} block
+ */
 Process.prototype.reportAnd = function (block) {
     var inputs = this.context.inputs;
 
@@ -896,6 +1020,9 @@ Process.prototype.reportAnd = function (block) {
     }
 };
 
+/**
+ * @param {?} block
+ */
 Process.prototype.doReport = function (block) {
     var outer = this.context.outerContext;
     if (this.flashContext()) {return; } // flash the block here, special form
@@ -931,6 +1058,10 @@ Process.prototype.doReport = function (block) {
 
 // Process: Non-Block evaluation
 
+/**
+ * @param {?} multiSlot
+ * @param {number} argCount
+ */
 Process.prototype.evaluateMultiSlot = function (multiSlot, argCount) {
     // first evaluate all subslots, then return a list of their values
     var inputs = this.context.inputs,
@@ -957,6 +1088,9 @@ Process.prototype.evaluateMultiSlot = function (multiSlot, argCount) {
     }
 };
 
+/**
+ * @param {?} argLabel
+ */
 Process.prototype.evaluateArgLabel = function (argLabel) {
     // perform the ID function on an ArgLabelMorph element
     var inputs = this.context.inputs;
@@ -968,6 +1102,9 @@ Process.prototype.evaluateArgLabel = function (argLabel) {
     }
 };
 
+/**
+ * @param {?} input
+ */
 Process.prototype.evaluateInput = function (input) {
     // evaluate the input unless it is bound to an implicit parameter
     var ans;
@@ -998,6 +1135,9 @@ Process.prototype.evaluateInput = function (input) {
     this.popContext();
 };
 
+/**
+ * @param {Array.<?>} arr
+ */
 Process.prototype.evaluateSequence = function (arr) {
     var pc = this.context.pc,
         outer = this.context.outerContext,
@@ -1043,6 +1183,9 @@ Process.prototype.evaluateSequence = function (arr) {
 };
 */
 
+/**
+ * @param {?} element
+ */
 Process.prototype.evaluateNextInput = function (element) {
     var nxt = this.context.inputs.length,
         args = element.inputs(),
@@ -1072,6 +1215,7 @@ Process.prototype.evaluateNextInput = function (element) {
     }
 };
 
+/** */
 Process.prototype.doYield = function () {
     this.popContext();
     if (!this.isAtomic) {
@@ -1079,12 +1223,17 @@ Process.prototype.doYield = function () {
     }
 };
 
+/** */
 Process.prototype.expectReport = function () {
     this.handleError(new Error("reporter didn't report"));
 };
 
 // Process Exception Handling
 
+/**
+ * @param {Error} error
+ * @param {?} element
+ */
 Process.prototype.handleError = function (error, element) {
     var m = element;
     this.stop();
@@ -1101,12 +1250,19 @@ Process.prototype.handleError = function (error, element) {
     );
 };
 
+/** */
 Process.prototype.errorObsolete = function () {
     throw new Error('a custom block definition is missing');
 };
 
 // Process Lambda primitives
 
+/**
+ * @param {?} topBlock
+ * @param {?} parameterNames
+ * @param {boolean} isCustomBlock
+ * @returns {Context}
+ */
 Process.prototype.reify = function (topBlock, parameterNames, isCustomBlock) {
     var context = new Context(
             null,
@@ -1149,22 +1305,47 @@ Process.prototype.reify = function (topBlock, parameterNames, isCustomBlock) {
     return context;
 };
 
+/**
+ * @param {?} parameterNames
+ * @param {?} topBlock
+ * @returns {Context}
+ */
 Process.prototype.reportScript = function (parameterNames, topBlock) {
     return this.reify(topBlock, parameterNames);
 };
 
+/**
+ * @param {?} parameterNames
+ * @param {?} topBlock
+ * @returns {Context}
+ */
 Process.prototype.reifyScript = function (topBlock, parameterNames) {
     return this.reify(topBlock, parameterNames);
 };
 
+/**
+ * @param {?} parameterNames
+ * @param {?} topBlock
+ * @returns {Context}
+ */
 Process.prototype.reifyReporter = function (topBlock, parameterNames) {
     return this.reify(topBlock, parameterNames);
 };
 
+/**
+ * @param {?} parameterNames
+ * @param {?} topBlock
+ * @returns {Context}
+ */
 Process.prototype.reifyPredicate = function (topBlock, parameterNames) {
     return this.reify(topBlock, parameterNames);
 };
 
+/**
+ * @param {?} parmNames
+ * @param {?} body
+ * @returns {*}
+ */
 Process.prototype.reportJSFunction = function (parmNames, body) {
     return Function.apply(
         null,
@@ -1172,10 +1353,20 @@ Process.prototype.reportJSFunction = function (parmNames, body) {
     );
 };
 
+/**
+ * @param {?} context
+ * @param {?} args
+ */
 Process.prototype.doRun = function (context, args) {
     return this.evaluate(context, args, true);
 };
 
+/**
+ * @param {Function|Context} context
+ * @param {?} args
+ * @param {boolean} isCommand
+ * @returns {*}
+ */
 Process.prototype.evaluate = function (
     context,
     args,
@@ -1288,6 +1479,10 @@ Process.prototype.evaluate = function (
     }
 };
 
+/**
+ * @param {?} context
+ * @param {?} args
+ */
 Process.prototype.fork = function (context, args) {
     var proc = new Process(),
         stage = this.homeContext.receiver.parentThatIsA(StageMorph);
@@ -1298,6 +1493,11 @@ Process.prototype.fork = function (context, args) {
     stage.threads.processes.push(proc);
 };
 
+/**
+ * @param {?} context
+ * @param {?} args
+ * @param {boolean} ignoreExit
+ */
 Process.prototype.initializeFor = function (context, args, ignoreExit) {
     // used by Process.fork() and global invoke()
     if (context.isContinuation) {
@@ -1390,6 +1590,7 @@ Process.prototype.initializeFor = function (context, args, ignoreExit) {
 
 // Process stopping blocks primitives
 
+/** */
 Process.prototype.doStopBlock = function () {
     var target = this.context.expression.exitTag;
     if (isNil(target)) {
@@ -1406,6 +1607,7 @@ Process.prototype.doStopBlock = function () {
     this.pushContext();
 };
 
+/** */
 Process.prototype.doStopCustomBlock = function () {
     // fallback solution for "report" blocks inside
     // custom command definitions and untagged "stop" blocks
@@ -1420,6 +1622,10 @@ Process.prototype.doStopCustomBlock = function () {
 
 // Process continuations primitives
 
+/**
+ * @param {?} aContext
+ * @param {boolean} isReporter
+ */
 Process.prototype.doCallCC = function (aContext, isReporter) {
     this.evaluate(
         aContext,
@@ -1428,10 +1634,17 @@ Process.prototype.doCallCC = function (aContext, isReporter) {
     );
 };
 
+/**
+ * @param {?} aContext
+ */
 Process.prototype.reportCallCC = function (aContext) {
     this.doCallCC(aContext, true);
 };
 
+/**
+ * @param {?} aContext
+ * @param {?} args
+ */
 Process.prototype.runContinuation = function (aContext, args) {
     var parms = args.asArray();
 
@@ -1455,6 +1668,7 @@ Process.prototype.runContinuation = function (aContext, args) {
 
 // Process custom block primitives
 
+/** */
 Process.prototype.evaluateCustomBlock = function () {
     var caller = this.context.parentContext,
         block = this.context.expression,
@@ -1560,6 +1774,9 @@ Process.prototype.evaluateCustomBlock = function () {
 
 // Process variables primitives
 
+/**
+ * @param {?} varNames
+ */
 Process.prototype.doDeclareVariables = function (varNames) {
     var varFrame = this.context.outerContext.variables;
     varNames.asArray().forEach(function (name) {
@@ -1567,6 +1784,10 @@ Process.prototype.doDeclareVariables = function (varNames) {
     });
 };
 
+/**
+ * @param {?} varName
+ * @param {?} value
+ */
 Process.prototype.doSetVar = function (varName, value) {
     var varFrame = this.context.variables,
         name = varName,
@@ -1587,6 +1808,10 @@ Process.prototype.doSetVar = function (varName, value) {
     varFrame.setVar(name, value, this.blockReceiver());
 };
 
+/**
+ * @param {?} varName
+ * @param {?} value
+ */
 Process.prototype.doChangeVar = function (varName, value) {
     var varFrame = this.context.variables,
         name = varName;
@@ -1604,6 +1829,9 @@ Process.prototype.doChangeVar = function (varName, value) {
     varFrame.changeVar(name, value, this.blockReceiver());
 };
 
+/**
+ * @returns {?}
+ */
 Process.prototype.reportGetVar = function () {
     // assumes a getter block whose blockSpec is a variable name
     return this.context.variables.getVar(
@@ -1611,6 +1839,9 @@ Process.prototype.reportGetVar = function () {
     );
 };
 
+/**
+ * @param {?} varName
+ */
 Process.prototype.doShowVar = function (varName) {
     var varFrame = this.context.variables,
         stage,
@@ -1675,6 +1906,9 @@ Process.prototype.doShowVar = function (varName) {
     }
 };
 
+/**
+ * @param {?} varName
+ */
 Process.prototype.doHideVar = function (varName) {
     // if no varName is specified delete all watchers on temporaries
     var varFrame = this.context.variables,
@@ -1718,6 +1952,7 @@ Process.prototype.doHideVar = function (varName) {
     }
 };
 
+/** */
 Process.prototype.doRemoveTemporaries = function () {
     var stage;
     if (this.homeContext.receiver) {
@@ -1734,6 +1969,10 @@ Process.prototype.doRemoveTemporaries = function () {
 
 // Process hiding and showing primitives primitives :-)
 
+/**
+ * @param {?} aBlock
+ * @param {boolean} hideIt
+ */
 Process.prototype.doChangePrimitiveVisibility = function (aBlock, hideIt) {
     var ide = this.homeContext.receiver.parentThatIsA(IDE_Morph),
         dict,
@@ -1761,6 +2000,10 @@ Process.prototype.doChangePrimitiveVisibility = function (aBlock, hideIt) {
 
 // Process sprite inheritance primitives
 
+/**
+ * @param {?} attrName
+ * @returns {?}
+ */
 Process.prototype.doDeleteAttr = function (attrName) {
     var name = attrName,
         rcvr = this.blockReceiver();
@@ -1791,6 +2034,11 @@ Process.prototype.doDeleteAttr = function (attrName) {
 
 // experimental message passing primitives
 
+/**
+ * @param {?} sprite
+ * @param {?} context
+ * @param {?} args
+ */
 Process.prototype.doTellTo = function (sprite, context, args) {
     this.doRun(
         this.reportAttributeOf(context, sprite),
@@ -1798,6 +2046,11 @@ Process.prototype.doTellTo = function (sprite, context, args) {
     );
 };
 
+/**
+ * @param {?} sprite
+ * @param {?} context
+ * @param {?} args
+ */
 Process.prototype.reportAskFor = function (sprite, context, args) {
     this.evaluate(
         this.reportAttributeOf(context, sprite),
@@ -1807,20 +2060,35 @@ Process.prototype.reportAskFor = function (sprite, context, args) {
 
 // Process lists primitives
 
+/**
+ * @returns {?}
+ */
 Process.prototype.reportNewList = function (elements) {
     return elements;
 };
 
+/**
+ * @param {?} car
+ * @param {?} cdr
+ * @returns List
+ */
 Process.prototype.reportCONS = function (car, cdr) {
     this.assertType(cdr, 'list');
     return new List().cons(car, cdr);
 };
 
+/**
+ * @param {?} list
+ */
 Process.prototype.reportCDR = function (list) {
     this.assertType(list, 'list');
     return list.cdr();
 };
 
+/**
+ * @param {?} element
+ * @param {?} list
+ */
 Process.prototype.doAddToList = function (element, list) {
     this.assertType(list, 'list');
     if (list.type) {
@@ -1829,6 +2097,10 @@ Process.prototype.doAddToList = function (element, list) {
     list.add(element);
 };
 
+/**
+ * @param {?} index
+ * @param {?} list
+ */
 Process.prototype.doDeleteFromList = function (index, list) {
     var idx = index;
     this.assertType(list, 'list');
@@ -1846,6 +2118,11 @@ Process.prototype.doDeleteFromList = function (index, list) {
     list.remove(idx);
 };
 
+/**
+ * @param {?} element
+ * @param {?} index
+ * @param {?} list
+ */
 Process.prototype.doInsertInList = function (element, index, list) {
     var idx = index;
     this.assertType(list, 'list');
@@ -1864,6 +2141,11 @@ Process.prototype.doInsertInList = function (element, index, list) {
     list.add(element, idx);
 };
 
+/**
+ * @param {?} index
+ * @param {?} list
+ * @param {?} element
+ */
 Process.prototype.doReplaceInList = function (index, list, element) {
     var idx = index;
     this.assertType(list, 'list');
@@ -1882,6 +2164,11 @@ Process.prototype.doReplaceInList = function (index, list, element) {
     list.put(element, idx);
 };
 
+/**
+ * @param {?} index
+ * @param {?} list
+ * @returns {?}
+ */
 Process.prototype.reportListItem = function (index, list) {
     var idx = index;
     this.assertType(list, 'list');
@@ -1897,16 +2184,28 @@ Process.prototype.reportListItem = function (index, list) {
     return list.at(idx);
 };
 
+/**
+ * @param {?} list
+ * @returns {number}
+ */
 Process.prototype.reportListLength = function (list) {
     this.assertType(list, 'list');
     return list.length();
 };
 
+/**
+ * @param {?} list
+ * @param {?} element
+ * @returns {boolean}
+ */
 Process.prototype.reportListContainsItem = function (list, element) {
     this.assertType(list, 'list');
     return list.contains(element);
 };
 
+/**
+ * @param {?} list
+ */
 Process.prototype.doShowTable = function (list) {
     // experimental
     this.assertType(list, 'list');
@@ -1915,6 +2214,7 @@ Process.prototype.doShowTable = function (list) {
 
 // Process conditionals primitives
 
+/** */
 Process.prototype.doIf = function () {
     var args = this.context.inputs,
         outer = this.context.outerContext, // for tail call elimination
@@ -1930,6 +2230,7 @@ Process.prototype.doIf = function () {
     this.pushContext();
 };
 
+/** */
 Process.prototype.doIfElse = function () {
     var args = this.context.inputs,
         outer = this.context.outerContext, // for tail call elimination
@@ -1956,10 +2257,12 @@ Process.prototype.doIfElse = function () {
 
 // Process process related primitives
 
+/** */
 Process.prototype.doStop = function () {
     this.stop();
 };
 
+/** */
 Process.prototype.doStopAll = function () {
     var stage, ide;
     if (this.homeContext.receiver) {
@@ -1981,6 +2284,9 @@ Process.prototype.doStopAll = function () {
     }
 };
 
+/**
+ * @param {?} choice
+ */
 Process.prototype.doStopThis = function (choice) {
     switch (this.inputOption(choice)) {
     case 'all':
@@ -1997,6 +2303,9 @@ Process.prototype.doStopThis = function (choice) {
     }
 };
 
+/**
+ * @param {?} choice
+ */
 Process.prototype.doStopOthers = function (choice) {
     var stage;
     if (this.homeContext.receiver) {
@@ -2019,6 +2328,9 @@ Process.prototype.doStopOthers = function (choice) {
     }
 };
 
+/**
+ * @param {?} body
+ */
 Process.prototype.doWarp = function (body) {
     // execute my contents block atomically (more or less)
     var outer = this.context.outerContext, // for tail call elimination
@@ -2049,6 +2361,7 @@ Process.prototype.doWarp = function (body) {
     this.pushContext();
 };
 
+/** */
 Process.prototype.doStopWarping = function () {
     var stage;
     this.popContext();
@@ -2065,6 +2378,9 @@ Process.prototype.doStopWarping = function () {
     }
 };
 
+/**
+ * @returns {boolean}
+ */
 Process.prototype.reportIsFastTracking = function () {
     var ide;
     if (this.homeContext.receiver) {
@@ -2076,6 +2392,9 @@ Process.prototype.reportIsFastTracking = function () {
     return false;
 };
 
+/**
+ * @param {boolean} bool
+ */
 Process.prototype.doSetFastTracking = function (bool) {
     var ide;
     if (!this.reportIsA(bool, 'Boolean')) {
@@ -2093,6 +2412,7 @@ Process.prototype.doSetFastTracking = function (bool) {
     }
 };
 
+/** */
 Process.prototype.doPauseAll = function () {
     var stage, ide;
     if (this.homeContext.receiver) {
@@ -2107,6 +2427,9 @@ Process.prototype.doPauseAll = function () {
 
 // Process loop primitives
 
+/**
+ * @param {?} body
+ */
 Process.prototype.doForever = function (body) {
     this.context.inputs = []; // force re-evaluation of C-slot
     this.pushContext('doYield');
@@ -2116,6 +2439,10 @@ Process.prototype.doForever = function (body) {
     this.pushContext();
 };
 
+/**
+ * @param {number} counter
+ * @param {?} body
+ */
 Process.prototype.doRepeat = function (counter, body) {
     var block = this.context.expression,
         outer = this.context.outerContext, // for tail call elimination
@@ -2135,6 +2462,10 @@ Process.prototype.doRepeat = function (counter, body) {
     this.pushContext();
 };
 
+/**
+ * @param {?} goalCondition
+ * @param {?} body
+ */
 Process.prototype.doUntil = function (goalCondition, body) {
     if (goalCondition) {
         this.popContext();
@@ -2149,6 +2480,9 @@ Process.prototype.doUntil = function (goalCondition, body) {
     this.pushContext();
 };
 
+/**
+ * @param {?} goalCondition
+ */
 Process.prototype.doWaitUntil = function (goalCondition) {
     if (goalCondition) {
         this.popContext();
@@ -2160,6 +2494,10 @@ Process.prototype.doWaitUntil = function (goalCondition) {
     this.pushContext();
 };
 
+/**
+ * @param {?} reporter
+ * @param {?} list
+ */
 Process.prototype.reportMap = function (reporter, list) {
     // answer a new list containing the results of the reporter applied
     // to each value of the given list. Distinguish between linked and
@@ -2218,6 +2556,11 @@ Process.prototype.reportMap = function (reporter, list) {
     }
 };
 
+/**
+ * @param {?} upvar
+ * @param {?} list
+ * @param {?} script
+ */
 Process.prototype.doForEach = function (upvar, list, script) {
     // perform a script for each element of a list, assigning the
     // current iteration's element to a variable with the name
@@ -2241,6 +2584,9 @@ Process.prototype.doForEach = function (upvar, list, script) {
 
 // Process interpolated primitives
 
+/**
+ * @param {number} secs
+ */
 Process.prototype.doWait = function (secs) {
     if (!this.context.startTime) {
         this.context.startTime = Date.now();
@@ -2257,6 +2603,11 @@ Process.prototype.doWait = function (secs) {
     this.pushContext();
 };
 
+/**
+ * @param {number} secs
+ * @param {?} endX
+ * @param {?} endY
+ */
 Process.prototype.doGlide = function (secs, endX, endY) {
     if (!this.context.startTime) {
         this.context.startTime = Date.now();
@@ -2281,6 +2632,10 @@ Process.prototype.doGlide = function (secs, endX, endY) {
     this.pushContext();
 };
 
+/**
+ * @param {?} data
+ * @param {number} secs
+ */
 Process.prototype.doSayFor = function (data, secs) {
     if (!this.context.startTime) {
         this.context.startTime = Date.now();
@@ -2294,6 +2649,10 @@ Process.prototype.doSayFor = function (data, secs) {
     this.pushContext();
 };
 
+/**
+ * @param {?} data
+ * @param {number} secs
+ */
 Process.prototype.doThinkFor = function (data, secs) {
     if (!this.context.startTime) {
         this.context.startTime = Date.now();
@@ -2307,6 +2666,9 @@ Process.prototype.doThinkFor = function (data, secs) {
     this.pushContext();
 };
 
+/**
+ * @returns {?}
+ */
 Process.prototype.blockReceiver = function () {
     return this.context ? this.context.receiver || this.homeContext.receiver
             : this.homeContext.receiver || this.receiver;
@@ -2314,6 +2676,9 @@ Process.prototype.blockReceiver = function () {
 
 // Process sound primitives (interpolated)
 
+/**
+ * @param {?} name
+ */
 Process.prototype.doPlaySoundUntilDone = function (name) {
     var sprite = this.blockReceiver();
     if (this.context.activeAudio === null) {
@@ -2327,6 +2692,7 @@ Process.prototype.doPlaySoundUntilDone = function (name) {
     this.pushContext();
 };
 
+/** */
 Process.prototype.doStopAllSounds = function () {
     var stage = this.homeContext.receiver.parentThatIsA(StageMorph);
     if (stage) {
@@ -2344,6 +2710,9 @@ Process.prototype.doStopAllSounds = function () {
 
 // Process user prompting primitives (interpolated)
 
+/**
+ * @param {?} data
+ */
 Process.prototype.doAsk = function (data) {
     var stage = this.homeContext.receiver.parentThatIsA(StageMorph),
         rcvr = this.blockReceiver(),
@@ -2389,12 +2758,19 @@ Process.prototype.doAsk = function (data) {
     this.pushContext();
 };
 
+/**
+ * @returns {?}
+ */
 Process.prototype.reportLastAnswer = function () {
     return this.homeContext.receiver.parentThatIsA(StageMorph).lastAnswer;
 };
 
 // Process URI retrieval (interpolated)
 
+/**
+ * @param {String} url
+ * @returns {?}
+ */
 Process.prototype.reportURL = function (url) {
     var response;
     if (!this.httpRequest) {
@@ -2421,6 +2797,10 @@ Process.prototype.reportURL = function (url) {
 
 // Process event messages primitives
 
+/**
+ * @param {?} message
+ * @returns {?}
+ */
 Process.prototype.doBroadcast = function (message) {
     // messages are user-defined events, and by default global, same as in
     // Scratch. An experimental feature, messages can be sent to a single
@@ -2478,6 +2858,9 @@ Process.prototype.doBroadcast = function (message) {
     return procs;
 };
 
+/**
+ * @param {?} message
+ */
 Process.prototype.doBroadcastAndWait = function (message) {
     if (!this.context.activeSends) {
         this.context.activeSends = this.doBroadcast(message);
@@ -2498,6 +2881,9 @@ Process.prototype.doBroadcastAndWait = function (message) {
     this.pushContext();
 };
 
+/**
+ * @returns {?}
+ */
 Process.prototype.getLastMessage = function () {
     var stage;
     if (this.homeContext.receiver) {
@@ -2511,10 +2897,20 @@ Process.prototype.getLastMessage = function () {
 
 // Process type inference
 
+/**
+ * @param {?} thing
+ * @param {String} typeString
+ * @returns {boolean}
+ */
 Process.prototype.reportIsA = function (thing, typeString) {
     return this.reportTypeOf(thing) === this.inputOption(typeString);
 };
 
+/**
+ * @param {?} thing
+ * @param {String} typeString
+ * @returns {boolean}
+ */
 Process.prototype.assertType = function (thing, typeString) {
     // make sure "thing" is a particular type or any of a number of types
     // and raise an error if not
@@ -2527,12 +2923,19 @@ Process.prototype.assertType = function (thing, typeString) {
     throw new Error('expecting ' + typeString + ' but getting ' + thingType);
 };
 
+/**
+ * @param {?} thing
+ */
 Process.prototype.assertAlive = function (thing) {
     if (thing && thing.isCorpse) {
         throw new Error('cannot operate on a deleted sprite');
     }
 };
 
+/**
+ * @param {?} thing
+ * @returns {String}
+ */
 Process.prototype.reportTypeOf = function (thing) {
     // answer a string denoting the argument's type
     var exp;
@@ -2601,28 +3004,58 @@ Process.prototype.reportTypeOf = function (thing) {
 
 // Process math primtives
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @returns {number}
+ */
 Process.prototype.reportSum = function (a, b) {
     return +a + (+b);
 };
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @returns {number}
+ */
 Process.prototype.reportDifference = function (a, b) {
     return +a - +b;
 };
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @returns {number}
+ */
 Process.prototype.reportProduct = function (a, b) {
     return +a * +b;
 };
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @returns {number}
+ */
 Process.prototype.reportQuotient = function (a, b) {
     return +a / +b;
 };
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @returns {number}
+ */
 Process.prototype.reportModulus = function (a, b) {
     var x = +a,
         y = +b;
     return ((x % y) + y) % y;
 };
 
+/**
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
+ */
 Process.prototype.reportRandom = function (min, max) {
     var floor = +min,
         ceil = +max;
@@ -2632,6 +3065,11 @@ Process.prototype.reportRandom = function (min, max) {
     return Math.floor(Math.random() * (ceil - floor + 1)) + floor;
 };
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @returns {boolean}
+ */
 Process.prototype.reportLessThan = function (a, b) {
     var x = +a,
         y = +b;
@@ -2642,10 +3080,19 @@ Process.prototype.reportLessThan = function (a, b) {
     return x < y;
 };
 
+/**
+ * @param {boolean} bool
+ * @returns {boolean}
+ */
 Process.prototype.reportNot = function (bool) {
     return !bool;
 };
 
+/**
+ * @param {number} a
+ * @param {number} b
+ * @returns {boolean}
+ */
 Process.prototype.reportGreaterThan = function (a, b) {
     var x = +a,
         y = +b;
@@ -2656,10 +3103,20 @@ Process.prototype.reportGreaterThan = function (a, b) {
     return x > y;
 };
 
+/**
+ * @param {*} a
+ * @param {*} b
+ * @returns {boolean}
+ */
 Process.prototype.reportEquals = function (a, b) {
     return snapEquals(a, b);
 };
 
+/**
+ * @param {*} a
+ * @param {*} b
+ * @returns {boolean}
+ */
 Process.prototype.reportIsIdentical = function (a, b) {
     var tag = 'idTag';
     if (this.isImmutable(a) || this.isImmutable(b)) {
@@ -2685,6 +3142,10 @@ Process.prototype.reportIsIdentical = function (a, b) {
     return false;
 };
 
+/**
+ * @param {?} obj
+ * @returns {boolean}
+ */
 Process.prototype.isImmutable = function (obj) {
     // private
     var type = this.reportTypeOf(obj);
@@ -2695,14 +3156,26 @@ Process.prototype.isImmutable = function (obj) {
         type === 'undefined';
 };
 
+/**
+ * @param {boolean} bool
+ * @returns {boolean}
+ */
 Process.prototype.reportBoolean = function (bool) {
     return bool;
 };
 
+/**
+ * @param {number} n
+ * @returns {number}
+ */
 Process.prototype.reportRound = function (n) {
     return Math.round(+n);
 };
 
+/**
+ * @param {?} fname
+ * @param {number} n
+ */
 Process.prototype.reportMonadic = function (fname, n) {
     var x = +n,
         result = 0;
@@ -2756,6 +3229,11 @@ Process.prototype.reportMonadic = function (fname, n) {
     return result;
 };
 
+/**
+ * @param {?} fname
+ * @param {String} string
+ * @returns {String}
+ */
 Process.prototype.reportTextFunction = function (fname, string) {
     var x = (isNil(string) ? '' : string).toString(),
         result = '';
@@ -2788,12 +3266,21 @@ Process.prototype.reportTextFunction = function (fname, string) {
     return result;
 };
 
+/**
+ * @param {String} a
+ * @param {String} b
+ * @returns {String}
+ */
 Process.prototype.reportJoin = function (a, b) {
     var x = (isNil(a) ? '' : a).toString(),
         y = (isNil(b) ? '' : b).toString();
     return x.concat(y);
 };
 
+/**
+ * @param {?} aList
+ * @returns {String}
+ */
 Process.prototype.reportJoinWords = function (aList) {
     if (aList instanceof List) {
         return aList.asText();
@@ -2803,6 +3290,11 @@ Process.prototype.reportJoinWords = function (aList) {
 
 // Process string ops
 
+/**
+ * @param {number} idx
+ * @param {?} string
+ * @returns {String}
+ */
 Process.prototype.reportLetter = function (idx, string) {
     if (string instanceof List) { // catch a common user error
         return '';
@@ -2812,6 +3304,10 @@ Process.prototype.reportLetter = function (idx, string) {
     return str[i - 1] || '';
 };
 
+/**
+ * @param {?} data
+ * @returns {number}
+ */
 Process.prototype.reportStringSize = function (data) {
     if (data instanceof List) { // catch a common user error
         return data.length();
@@ -2820,6 +3316,10 @@ Process.prototype.reportStringSize = function (data) {
     return isNil(data) ? 0 : data.toString().length;
 };
 
+/**
+ * @param {?} string
+ * @returns {String}
+ */
 Process.prototype.reportUnicode = function (string) {
     var str = isNil(string) ? '\u0000' : string.toString();
 
@@ -2829,6 +3329,10 @@ Process.prototype.reportUnicode = function (string) {
     return str.charCodeAt(0);
 };
 
+/**
+ * @param {number} num
+ * @returns {String}
+ */
 Process.prototype.reportUnicodeAsLetter = function (num) {
     var code = +(num || 0);
 
@@ -2838,6 +3342,11 @@ Process.prototype.reportUnicodeAsLetter = function (num) {
     return String.fromCharCode(code);
 };
 
+/**
+ * @param {?} string
+ * @param {?} delimiter
+ * @returns {List}
+ */
 Process.prototype.reportTextSplit = function (string, delimiter) {
     var types = ['text', 'number'],
         strType = this.reportTypeOf(string),
@@ -2878,6 +3387,10 @@ Process.prototype.reportTextSplit = function (string, delimiter) {
     return new List(str.split(del));
 };
 
+/**
+ * @param {String} string
+ * @returns {List}
+ */
 Process.prototype.parseCSV = function (string) {
     // parse a single row of CSV data into a one-dimensional list
     // this assumes that the whole csv data has already been split
@@ -2916,6 +3429,9 @@ Process.prototype.parseCSV = function (string) {
 
 // Process debugging
 
+/**
+ * @param {?} data
+ */
 Process.prototype.alert = function (data) {
     // debugging primitives only work in dev mode, otherwise they're nop
     var world;
@@ -2927,6 +3443,9 @@ Process.prototype.alert = function (data) {
     }
 };
 
+/**
+ * @param {?} data
+ */
 Process.prototype.log = function (data) {
     // debugging primitives only work in dev mode, otherwise they're nop
     var world;
@@ -2940,6 +3459,12 @@ Process.prototype.log = function (data) {
 
 // Process motion primitives
 
+/**
+ * @param {?} name
+ * @param {?} thisObj
+ * @param {?} stageObj
+ * @returns {?}
+ */
 Process.prototype.getOtherObject = function (name, thisObj, stageObj) {
     // private, find the sprite indicated by the given name
     // either onstage or in the World's hand
@@ -2974,6 +3499,12 @@ Process.prototype.getOtherObject = function (name, thisObj, stageObj) {
     return thatObj;
 };
 
+/**
+ * @param {?} name
+ * @param {?} thisObj
+ * @param {?} stageObj
+ * @returns {?}
+ */
 Process.prototype.getObjectsNamed = function (name, thisObj, stageObj) {
     // private, find all sprites and their clones indicated
     // by the given name either onstage or in the World's hand
@@ -2999,6 +3530,9 @@ Process.prototype.getObjectsNamed = function (name, thisObj, stageObj) {
     return those;
 };
 
+/**
+ * @param {?} name
+ */
 Process.prototype.doFaceTowards = function (name) {
     var thisObj = this.blockReceiver(),
         thatObj;
@@ -3025,6 +3559,9 @@ Process.prototype.doFaceTowards = function (name) {
     }
 };
 
+/**
+ * @param {?} name
+ */
 Process.prototype.doGotoObject = function (name) {
     var thisObj = this.blockReceiver(),
         thatObj;
@@ -3053,6 +3590,9 @@ Process.prototype.doGotoObject = function (name) {
 
 // Process temporary cloning (Scratch-style)
 
+/**
+ * @param {?} name
+ */
 Process.prototype.createClone = function (name) {
     var thisObj = this.blockReceiver(),
         thatObj;
@@ -3070,6 +3610,10 @@ Process.prototype.createClone = function (name) {
     }
 };
 
+/**
+ * @param {?} name
+ * @returns {?}
+ */
 Process.prototype.newClone = function (name) {
     var thisObj = this.blockReceiver(),
         thatObj;
@@ -3088,6 +3632,10 @@ Process.prototype.newClone = function (name) {
 
 // Process sensing primitives
 
+/**
+ * @param {?} name
+ * @returns {boolean}
+ */
 Process.prototype.reportTouchingObject = function (name) {
     var thisObj = this.blockReceiver();
 
@@ -3097,6 +3645,11 @@ Process.prototype.reportTouchingObject = function (name) {
     return false;
 };
 
+/**
+ * @param {?} thisObj
+ * @param {?} name
+ * @returns {?}
+ */
 Process.prototype.objectTouchingObject = function (thisObj, name) {
     // helper function for reportTouchingObject()
     // also check for temparary clones, as in Scratch 2.0,
@@ -3151,6 +3704,10 @@ Process.prototype.objectTouchingObject = function (thisObj, name) {
     );
 };
 
+/**
+ * @param {Color} aColor
+ * @returns {boolean}
+ */
 Process.prototype.reportTouchingColor = function (aColor) {
     // also check for any parts (subsprites)
     var thisObj = this.blockReceiver(),
@@ -3172,6 +3729,11 @@ Process.prototype.reportTouchingColor = function (aColor) {
     return false;
 };
 
+/**
+ * @param {Color} color1
+ * @param {Color} color2
+ * @returns {boolean}
+ */
 Process.prototype.reportColorIsTouchingColor = function (color1, color2) {
     // also check for any parts (subsprites)
     var thisObj = this.blockReceiver(),
@@ -3197,6 +3759,12 @@ Process.prototype.reportColorIsTouchingColor = function (color1, color2) {
     return false;
 };
 
+/**
+ *
+ * @param {?} relation
+ * @param {?} name
+ * @returns {number}
+ */
 Process.prototype.reportRelationTo = function (relation, name) {
 	var rel = this.inputOption(relation);
  	if (rel === 'distance') {
@@ -3208,6 +3776,10 @@ Process.prototype.reportRelationTo = function (relation, name) {
     return 0;
 };
 
+/**
+ * @param {?} name
+ * @returns {number}
+ */
 Process.prototype.reportDistanceTo = function (name) {
     var thisObj = this.blockReceiver(),
         thatObj,
@@ -3234,6 +3806,10 @@ Process.prototype.reportDistanceTo = function (name) {
     return 0;
 };
 
+/**
+ * @param {?} name
+ * @returns {number}
+ */
 Process.prototype.reportDirectionTo = function (name) {
     var thisObj = this.blockReceiver(),
         thatObj;
@@ -3260,6 +3836,11 @@ Process.prototype.reportDirectionTo = function (name) {
     return 0;
 };
 
+/**
+ * @param {?} attribute
+ * @param {?} name
+ * @returns {?}
+ */
 Process.prototype.reportAttributeOf = function (attribute, name) {
     var thisObj = this.blockReceiver(),
         thatObj,
@@ -3312,6 +3893,10 @@ Process.prototype.reportAttributeOf = function (attribute, name) {
     return '';
 };
 
+/**
+ * @param {?} query
+ * @returns {?}
+ */
 Process.prototype.reportGet = function (query) {
     // experimental, answer a reference to a first-class member
     // or a list of first-class members
@@ -3391,6 +3976,10 @@ Process.prototype.reportGet = function (query) {
     return '';
 };
 
+/**
+ * @param {?} attribute
+ * @param {?} value
+ */
 Process.prototype.doSet = function (attribute, value) {
     // experimental, manipulate sprites' attributes
     var name, rcvr;
@@ -3463,6 +4052,11 @@ Process.prototype.doSet = function (attribute, value) {
     }
 };
 
+/**
+ * @param {?} context
+ * @param {?} otherObj
+ * @returns {?}
+ */
 Process.prototype.reportContextFor = function (context, otherObj) {
     // Private - return a copy of the context
     // and bind it to another receiver
@@ -3477,6 +4071,9 @@ Process.prototype.reportContextFor = function (context, otherObj) {
     return result;
 };
 
+/**
+ * @returns {number}
+ */
 Process.prototype.reportMouseX = function () {
     var stage, world;
     if (this.homeContext.receiver) {
@@ -3492,6 +4089,9 @@ Process.prototype.reportMouseX = function () {
     return 0;
 };
 
+/**
+ * @returns {number}
+ */
 Process.prototype.reportMouseY = function () {
     var stage, world;
     if (this.homeContext.receiver) {
@@ -3507,6 +4107,9 @@ Process.prototype.reportMouseY = function () {
     return 0;
 };
 
+/**
+ * @returns {boolean}
+ */
 Process.prototype.reportMouseDown = function () {
     var world;
     if (this.homeContext.receiver) {
@@ -3518,6 +4121,9 @@ Process.prototype.reportMouseDown = function () {
     return false;
 };
 
+/**
+ * @returns {boolean}
+ */
 Process.prototype.reportKeyPressed = function (keyString) {
     var stage;
     if (this.homeContext.receiver) {
@@ -3532,6 +4138,7 @@ Process.prototype.reportKeyPressed = function (keyString) {
     return false;
 };
 
+/** */
 Process.prototype.doResetTimer = function () {
     var stage;
     if (this.homeContext.receiver) {
@@ -3542,6 +4149,9 @@ Process.prototype.doResetTimer = function () {
     }
 };
 
+/**
+ * @returns {number}
+ */
 Process.prototype.reportTimer = function () {
     var stage;
     if (this.homeContext.receiver) {
@@ -3554,6 +4164,11 @@ Process.prototype.reportTimer = function () {
 };
 
 // Process Dates and times in Snap
+
+/**
+ * @param {?} datefn
+ * @returns {number}
+ */
 Process.prototype.reportDate = function (datefn) {
     var currDate, func, result,
         inputFn = this.inputOption(datefn),
@@ -3588,6 +4203,12 @@ Process.prototype.reportDate = function (datefn) {
     blocks - not needed to run or debug Snap
 */
 
+/**
+ * @param {?} aContext
+ * @param {?} anOption
+ * @param {?} aString
+ * @returns {?}
+ */
 Process.prototype.doMapCodeOrHeader = function (aContext, anOption, aString) {
     if (this.inputOption(anOption) === 'code') {
         return this.doMapCode(aContext, aString);
@@ -3600,6 +4221,11 @@ Process.prototype.doMapCodeOrHeader = function (aContext, anOption, aString) {
     );
 };
 
+/**
+ * @param {?} aContext
+ * @param {?} aString
+ * @returns {?}
+ */
 Process.prototype.doMapHeader = function (aContext, aString) {
     if (aContext instanceof Context) {
         if (aContext.expression instanceof SyntaxElementMorph) {
@@ -3608,6 +4234,11 @@ Process.prototype.doMapHeader = function (aContext, aString) {
     }
 };
 
+/**
+ * @param {?} aContext
+ * @param {?} aString
+ * @returns {?}
+ */
 Process.prototype.doMapCode = function (aContext, aString) {
     if (aContext instanceof Context) {
         if (aContext.expression instanceof SyntaxElementMorph) {
@@ -3616,6 +4247,10 @@ Process.prototype.doMapCode = function (aContext, aString) {
     }
 };
 
+/**
+ * @param {?} type
+ * @param {?} aString
+ */
 Process.prototype.doMapValueCode = function (type, aString) {
     var tp = this.inputOption(type);
     switch (tp) {
@@ -3639,6 +4274,11 @@ Process.prototype.doMapValueCode = function (type, aString) {
 
 };
 
+/**
+ * @param {?} part
+ * @param {?} kind
+ * @param {?} aString
+ */
 Process.prototype.doMapListCode = function (part, kind, aString) {
     var key1 = '',
         key2 = 'delim';
@@ -3658,6 +4298,10 @@ Process.prototype.doMapListCode = function (part, kind, aString) {
     StageMorph.prototype.codeMappings[key1 + key2] = aString || '';
 };
 
+/**
+ * @param {?} aContext
+ * @returns {?}
+ */
 Process.prototype.reportMappedCode = function (aContext) {
     if (aContext instanceof Context) {
         if (aContext.expression instanceof SyntaxElementMorph) {
@@ -3669,11 +4313,17 @@ Process.prototype.reportMappedCode = function (aContext) {
 
 // Process music primitives
 
+/**
+ * @param {number} beats
+ */
 Process.prototype.doRest = function (beats) {
     var tempo = this.reportTempo();
     this.doWait(60 / tempo * beats);
 };
 
+/**
+ * @returns {number}
+ */
 Process.prototype.reportTempo = function () {
     var stage;
     if (this.homeContext.receiver) {
@@ -3685,6 +4335,9 @@ Process.prototype.reportTempo = function () {
     return 0;
 };
 
+/**
+ * @param {?} delta
+ */
 Process.prototype.doChangeTempo = function (delta) {
     var stage;
     if (this.homeContext.receiver) {
@@ -3695,6 +4348,9 @@ Process.prototype.doChangeTempo = function (delta) {
     }
 };
 
+/**
+ * @param {?} bpm
+ */
 Process.prototype.doSetTempo = function (bpm) {
     var stage;
     if (this.homeContext.receiver) {
@@ -3705,6 +4361,10 @@ Process.prototype.doSetTempo = function (bpm) {
     }
 };
 
+/**
+ * @param {number} pitch
+ * @param {number} beats
+ */
 Process.prototype.doPlayNote = function (pitch, beats) {
     var tempo = this.reportTempo();
     this.doPlayNoteForSecs(
@@ -3713,6 +4373,10 @@ Process.prototype.doPlayNote = function (pitch, beats) {
     );
 };
 
+/**
+ * @param {number} pitch
+ * @param {number} secs
+ */
 Process.prototype.doPlayNoteForSecs = function (pitch, secs) {
     // interpolated
     if (!this.context.startTime) {
@@ -3731,6 +4395,9 @@ Process.prototype.doPlayNoteForSecs = function (pitch, secs) {
     this.pushContext();
 };
 
+/**
+ * @param {number} num
+ */
 Process.prototype.doSetInstrument = function (num) {
     this.instrument = +num;
     this.receiver.instrument = +num;
@@ -3738,6 +4405,10 @@ Process.prototype.doSetInstrument = function (num) {
 
 // Process constant input options
 
+/**
+ * @param {?} dta
+ * @returns {?}
+ */
 Process.prototype.inputOption = function (dta) {
     // private - for localization
     return dta instanceof Array ? dta[0] : dta;
@@ -3745,6 +4416,10 @@ Process.prototype.inputOption = function (dta) {
 
 // Process stack
 
+/**
+ * @param {?} expression
+ * @param {?} outerContext
+ */
 Process.prototype.pushContext = function (expression, outerContext) {
     this.context = new Context(
         this.context,
@@ -3756,6 +4431,7 @@ Process.prototype.pushContext = function (expression, outerContext) {
     );
 };
 
+/** */
 Process.prototype.popContext = function () {
     if (this.context) {
         this.context.stopMusic();
@@ -3763,6 +4439,9 @@ Process.prototype.popContext = function () {
     this.context = this.context ? this.context.parentContext : null;
 };
 
+/**
+ * @param {?} value
+ */
 Process.prototype.returnValueToParentContext = function (value) {
     // if no parent context exists treat value as result
     if (value !== undefined) {
@@ -3773,16 +4452,25 @@ Process.prototype.returnValueToParentContext = function (value) {
     }
 };
 
+/**
+ * @returns {number}
+ */
 Process.prototype.reportStackSize = function () {
     return this.context ? this.context.stackSize() : 0;
 };
 
+/**
+ * @returns {number}
+ */
 Process.prototype.reportFrameCount = function () {
     return this.frameCount;
 };
 
 // Process single-stepping
 
+/**
+ * @returns {boolean}
+ */
 Process.prototype.flashContext = function () {
     var expr = this.context.expression;
     if (this.enableSingleStepping &&
@@ -3807,6 +4495,7 @@ Process.prototype.flashContext = function () {
     return false;
 };
 
+/** */
 Process.prototype.flashPausedContext = function () {
     var flashable = this.context ? this.context.lastFlashable() : null;
     if (flashable) {
@@ -3817,6 +4506,7 @@ Process.prototype.flashPausedContext = function () {
     }
 };
 
+/** */
 Process.prototype.doInterrupt = function () {
     this.popContext();
     if (!this.isAtomic) {
@@ -3824,6 +4514,9 @@ Process.prototype.doInterrupt = function () {
     }
 };
 
+/**
+ * @param {number} secs
+ */
 Process.prototype.doIdle = function (secs) {
     if (!this.context.startTime) {
         this.context.startTime = Date.now();
@@ -3835,6 +4528,7 @@ Process.prototype.doIdle = function (secs) {
     this.popContext();
 };
 
+/** */
 Process.prototype.unflash = function () {
     if (this.flashingContext) {
         this.flashingContext.expression.unflash();
@@ -3879,6 +4573,13 @@ Process.prototype.unflash = function () {
     isFlashing      flag for single-stepping
 */
 
+/**
+ * @constructor
+ * @param {?} parentContext
+ * @param {?} expression
+ * @param {?} outerContext
+ * @param {?} receiver
+ */
 function Context(
     parentContext,
     expression,
@@ -3908,6 +4609,9 @@ function Context(
     this.isFlashing = false; // for single-stepping
 }
 
+/**
+ * @returns {String}
+ */
 Context.prototype.toString = function () {
     var expr = this.expression;
     if (expr instanceof Array) {
@@ -3918,6 +4622,9 @@ Context.prototype.toString = function () {
     return 'Context >> ' + expr + ' ' + this.variables;
 };
 
+/**
+ * @returns {HTMLCanvasElement}
+ */
 Context.prototype.image = function () {
     var ring = new RingMorph(),
         block,
@@ -3962,6 +4669,9 @@ Context.prototype.image = function () {
 
 // Context continuations:
 
+/**
+ * @returns {Context}
+ */
 Context.prototype.continuation = function () {
     var cont;
     if (this.expression instanceof Array) {
@@ -3979,6 +4689,9 @@ Context.prototype.continuation = function () {
     return cont;
 };
 
+/**
+ * @returns {Context}
+ */
 Context.prototype.copyForContinuation = function () {
     var cpy = copy(this),
         cur = cpy,
@@ -3995,6 +4708,9 @@ Context.prototype.copyForContinuation = function () {
     return cpy;
 };
 
+/**
+ * @returns {Context}
+ */
 Context.prototype.copyForContinuationCall = function () {
     var cpy = copy(this),
         cur = cpy,
@@ -4012,6 +4728,7 @@ Context.prototype.copyForContinuationCall = function () {
     return cpy;
 };
 
+/** */
 Context.prototype.prepareContinuationForBinding = function () {
     var pos = this.inputs.length,
         slot;
@@ -4028,12 +4745,16 @@ Context.prototype.prepareContinuationForBinding = function () {
 
 // Context accessing:
 
+/**
+ * @param {?} input
+ */
 Context.prototype.addInput = function (input) {
     this.inputs.push(input);
 };
 
 // Context music
 
+/** */
 Context.prototype.stopMusic = function () {
     if (this.activeNote) {
         this.activeNote.stop();
@@ -4043,6 +4764,9 @@ Context.prototype.stopMusic = function () {
 
 // Context single-stepping:
 
+/**
+ * @returns {?}
+ */
 Context.prototype.lastFlashable = function () {
     // for experimental single-stepping when pausing
     if (this.expression instanceof SyntaxElementMorph &&
@@ -4056,6 +4780,9 @@ Context.prototype.lastFlashable = function () {
 
 // Context debugging
 
+/**
+ * @returns {number}
+ */
 Context.prototype.stackSize = function () {
     if (!this.parentContext) {
         return 1;
@@ -4065,32 +4792,54 @@ Context.prototype.stackSize = function () {
 
 // Variable /////////////////////////////////////////////////////////////////
 
+/**
+ * @constructor
+ * @param {*} value
+ * @param {boolean} [isTransient=false]
+ */
 function Variable(value, isTransient) {
     this.value = value;
     this.isTransient = isTransient || false; // prevent value serialization
 }
 
+/**
+ * @returns {String}
+ */
 Variable.prototype.toString = function () {
     return 'a ' + (this.isTransient ? 'transient ' : '') + 'Variable [' +
         this.value + ']';
 };
 
+/**
+ * @returns {Variable}
+ */
 Variable.prototype.copy = function () {
     return new Variable(this.value, this.isTransient);
 };
 
 // VariableFrame ///////////////////////////////////////////////////////
 
+/**
+ * @constructor
+ * @param {?} parentFrame
+ * @param {?} owner
+ */
 function VariableFrame(parentFrame, owner) {
     this.vars = {};
     this.parentFrame = parentFrame || null;
     this.owner = owner || null;
 }
 
+/**
+ * @returns {String}
+ */
 VariableFrame.prototype.toString = function () {
     return 'a VariableFrame {' + this.names() + '}';
 };
 
+/**
+ * @returns {VariableFrame}
+ */
 VariableFrame.prototype.copy = function () {
     var frame = new VariableFrame(this.parentFrame),
         myself = this;
@@ -4100,6 +4849,9 @@ VariableFrame.prototype.copy = function () {
     return frame;
 };
 
+/**
+ * @returns {VariableFrame}
+ */
 VariableFrame.prototype.deepCopy = function () {
     // currently unused
     var frame;
@@ -4112,6 +4864,10 @@ VariableFrame.prototype.deepCopy = function () {
     return frame;
 };
 
+/**
+ * @param {?} name
+ * @returns {VariableFrame}
+ */
 VariableFrame.prototype.find = function (name) {
 /*
     answer the closest variable frame containing
@@ -4126,6 +4882,10 @@ VariableFrame.prototype.find = function (name) {
     );
 };
 
+/**
+ * @param {?} name
+ * @returns {VariableFrame}
+ */
 VariableFrame.prototype.silentFind = function (name) {
 /*
     answer the closest variable frame containing
@@ -4140,6 +4900,11 @@ VariableFrame.prototype.silentFind = function (name) {
     return null;
 };
 
+/**
+ * @param {?} name
+ * @param {?} value
+ * @param {?} sender
+ */
 VariableFrame.prototype.setVar = function (name, value, sender) {
     // change the specified variable if it exists
     // else throw an error, because variables need to be
@@ -4161,6 +4926,11 @@ VariableFrame.prototype.setVar = function (name, value, sender) {
     }
 };
 
+/**
+ * @param {?} name
+ * @param {?} delta
+ * @param {?} sender
+ */
 VariableFrame.prototype.changeVar = function (name, delta, sender) {
     // change the specified variable if it exists
     // else throw an error, because variables need to be
@@ -4187,6 +4957,10 @@ VariableFrame.prototype.changeVar = function (name, delta, sender) {
     }
 };
 
+/**
+ * @param {?} name
+ * @returns {*}
+ */
 VariableFrame.prototype.getVar = function (name) {
     var frame = this.silentFind(name),
         value;
@@ -4208,12 +4982,19 @@ VariableFrame.prototype.getVar = function (name) {
     );
 };
 
+/**
+ * @param {?} name
+ * @param {?} value
+ */
 VariableFrame.prototype.addVar = function (name, value) {
     this.vars[name] = new Variable(value === 0 ? 0
               : value === false ? false
                        : value === '' ? '' : value || 0);
 };
 
+/**
+ * @param {?} name
+ */
 VariableFrame.prototype.deleteVar = function (name) {
     var frame = this.find(name);
     if (frame) {
@@ -4223,6 +5004,9 @@ VariableFrame.prototype.deleteVar = function (name) {
 
 // VariableFrame tools
 
+/**
+ * @returns {Array.<?>}
+ */
 VariableFrame.prototype.names = function () {
     var each, names = [];
     for (each in this.vars) {
@@ -4233,6 +5017,10 @@ VariableFrame.prototype.names = function () {
     return names;
 };
 
+/**
+ * @param {VariableFrame} [upTo]
+ * @returns {Object}
+ */
 VariableFrame.prototype.allNamesDict = function (upTo) {
 	// "upTo" is an optional parent frame at which to stop, e.g. globals
     var dict = {}, current = this;
@@ -4253,6 +5041,10 @@ VariableFrame.prototype.allNamesDict = function (upTo) {
     return dict;
 };
 
+/**
+ * @param {VariableFrame} [upTo]
+ * @returns {Array.<?>}
+ */
 VariableFrame.prototype.allNames = function (upTo) {
 /*
     only show the names of the lexical scope, hybrid scoping is
